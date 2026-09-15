@@ -46,3 +46,7 @@ Thumbs.db
 
 # Claude Code (configurações locais)
 .claude/settings.local.json
+
+# Dados de origem e payloads regenerados (TASKS.md §2, ADR-014)
+data/raw/
+data/golden/*/payloads/
