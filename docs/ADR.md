@@ -18,6 +18,7 @@ Este documento centraliza todas as decisões técnicas, escolhas de design e tra
 | ADR-010 | [Estratégia de Modelos SLM-First com Saída Estruturada via LiteLLM](#adr-010-estratégia-de-modelos-slm-first-com-saída-estruturada-via-litellm) | 2026-09-15 | Aceito |
 | ADR-011 | [Recuperação de Falhas com Máquina de Estados e Checkpoint](#adr-011-recuperação-de-falhas-com-máquina-de-estados-e-checkpoint) | 2026-09-15 | Aceito |
 | ADR-012 | [Gestão de Chaves, Reidentificação e Observabilidade sem PII](#adr-012-gestão-de-chaves-reidentificação-e-observabilidade-sem-pii) | 2026-09-15 | Aceito |
+| ADR-013 | [Reorçamento de Latência: Seleção de Chunks Determinística e Investigação Compacta com SLM 1,5B](#adr-013-reorçamento-de-latência-seleção-de-chunks-determinística-e-investigação-compacta-com-slm-15b) | 2026-09-15 | Aceito |
 
 ---
 
@@ -278,3 +279,29 @@ Adotou-se a **Opção 3**. Se o Vault não estiver disponível, a API responde `
 #### Trade-offs (Consequências)
 * 🟢 **Ganhos (Prós):** nenhum dado pessoal em repouso fora do sistema de origem; caminho direto para KMS sem reescrita; observabilidade auditável sem risco LGPD.
 * 🔴 **Perdas/Riscos (Contras):** reconstrução depende de acesso ao sistema de origem; depuração mais difícil sem payloads nos logs.
+
+---
+
+### ADR-013: Reorçamento de Latência: Seleção de Chunks Determinística e Investigação Compacta com SLM 1,5B
+- **Data:** 2026-09-15
+- **Status:** Aceito
+
+#### Contexto e Problema
+O gate de benchmark do `SPEC.md` (RNF-03) e do ADR-010 reprovou o orçamento original. Na rodada 1 (`reports/benchmark-ollama-2026-09-15.md`), a Investigação com `qwen2.5:3b` (822 tokens de entrada / 150 de saída) teve p95 de 61,0 s contra 12 s orçados, e a Seleção de chunks com `qwen2.5:1.5b` teve p95 de 28,2 s contra 3 s, somando 92,2 s estimados no fluxo. A leitura do prompt dominava a latência (cerca de 33 s dos 55 s da Investigação), a inferência rodou 100% em CPU com o plano de energia já em 100% de desempenho na tomada, e 0% das saídas eram JSON válido porque as respostas eram truncadas no teto de tokens de saída. O `SPEC.md` proíbe relaxar a meta de p95 < 20 s sem novo ADR.
+
+#### Alternativas Consideradas
+* **Opção 1 (Só reduzir contexto):** manter os dois nós LLM e cortar tokens; a estimativa com as taxas medidas deixava a Investigação com 3B em cerca de 21 s, ainda acima do orçamento.
+* **Opção 2 (Mover a meta):** exigir p95 < 20 s apenas em GPU ou nuvem via LiteLLM e medir a execução local à parte.
+* **Opção 3 (A + B + C):** (A) retirar o LLM da Seleção de chunks; (B) Investigação com SLM ~1,5B sobre indicadores agregados, com contexto e saída mínimos; (C) ajustar o runtime no hardware de referência e medir de novo, acionando a Opção 2 somente se a nova rodada reprovar.
+
+#### Decisão Selecionada
+Adotou-se a **Opção 3**, com a Opção 2 mantida apenas como saída caso uma rodada futura reprove.
+* **(A) Seleção determinística:** até 3 `chunk_id` entre os recuperados, priorizando os `article_ref` preferenciais da tipologia no mapeamento versionado e desempatando por RRF entre similaridade vetorial e BM25; `applicability` vem de texto curado no mapeamento. Revisa o ADR-006: o único nó LLM passa a ser a Investigação e nenhum texto livre do dossiê é gerado por IA.
+* **(B) Investigação compacta:** `qwen2.5:1.5b` Q4 recebe apenas indicadores agregados calculados por código (DT-16), com ≤ 300 tokens de entrada e ≤ 60 de saída. A saída é imposta por JSON Schema com chaves curtas (`t`, `c`, `r`, `e`) e evidências como números de `feature_id`, expandidas deterministicamente para o DT-07. Revisa o ADR-010: sem modelo menor validado para fallback, falha de schema ou orçamento após os retries vai direto a `NEEDS_HUMAN`.
+* **(C) Runtime:** `num_thread = 8` no hardware de referência, escolhido por varredura (p50 com 3 execuções por valor: auto 12,94 s; 4 → 15,31 s; 6 → 12,04 s; 8 → 8,96 s; 10 → 9,92 s; 12 → 12,17 s). É parâmetro de configuração do Ollama, não código.
+* **Orçamento p95 redistribuído (meta de 20 s mantida):** determinísticos 1,5 + 0,5 + 0,5 (seleção) + 1 s; Investigação ≤ 14 s; margem 2,5 s.
+* **Evidência (rodada 2, `reports/benchmark-ollama-2026-09-15-v2.md`):** Investigação a frio com 319 / 45 tokens, p50 9,44 s, p95 11,5 s, schema válido em 10/10 execuções — **PASSA**; fluxo estimado 15,0 s, passa também com a margem. Com o prefixo de instruções em cache (situação entre alertas consecutivos), p95 de 8,31 s, registrado apenas como informativo. Sondas prévias mostraram que, sem schema imposto, o 1,5B inventou valores de recomendação fora do enum em 3 de 3 tentativas, o que torna a saída estruturada obrigatória.
+
+#### Trade-offs (Consequências)
+* 🟢 **Ganhos (Prós):** fluxo estimado cai de 92,2 s para 15,0 s no mesmo hardware; 100% de saídas válidas no schema; grounding bruto passa a ser determinístico, sem risco de o LLM propor citação fora do recuperado; menos tokens por alerta, favorecendo a meta FinOps; dossiê sem texto livre gerado por IA, simplificando a revisão.
+* 🔴 **Perdas/Riscos (Contras):** a qualidade de hipótese do 1,5B não está comprovada (nas sondas com indicadores aleatórios respondeu `NENHUMA` com as primeiras features) e precisa passar nos gates de recall, FP e grounding do golden set, sob pena de novo ADR; o modelo só enxerga os indicadores definidos no DT-16, então tipologias novas exigem novos indicadores; o mapeamento curado de aplicabilidade exige manutenção por especialista; `num_thread = 8` é específico deste hardware e a varredura usou amostra pequena; os 3,5 s das etapas determinísticas são orçados, ainda não medidos.

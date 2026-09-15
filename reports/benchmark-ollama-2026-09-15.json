@@ -1,0 +1,315 @@
+{
+  "meta": {
+    "date": "2026-09-15",
+    "ollama_version": "0.34.0",
+    "model_digests": {
+      "qwen2.5:1.5b": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+      "qwen2.5:3b": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b"
+    },
+    "runs": 10,
+    "hardware": {
+      "os": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.15",
+      "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+      "cores": 10,
+      "threads": 12,
+      "ram_gb": 15.7,
+      "gpu": "Intel(R) Iris(R) Xe Graphics"
+    }
+  },
+  "nodes": [
+    {
+      "spec": {
+        "name": "Investigação",
+        "model": "qwen2.5:3b",
+        "target_prompt_tokens": 800,
+        "num_predict": 150,
+        "budget_p95_s": 12.0
+      },
+      "calibrated_size": 9,
+      "summary": {
+        "total_s_p50": 54.11,
+        "total_s_p95": 61.04,
+        "prompt_tps_mean": 24.9,
+        "gen_tps_mean": 6.9,
+        "prompt_tokens_mean": 822,
+        "output_tokens_mean": 150,
+        "valid_json_ratio": 0.0,
+        "budget_p95_s": 12.0,
+        "passes": false
+      },
+      "runs": [
+        {
+          "run": 1,
+          "prompt_tokens": 813,
+          "output_tokens": 150,
+          "prompt_eval_s": 36.318,
+          "eval_s": 21.18,
+          "load_s": 0.004,
+          "total_s": 57.524,
+          "prompt_tps": 22.4,
+          "gen_tps": 7.1,
+          "valid_json": false
+        },
+        {
+          "run": 2,
+          "prompt_tokens": 818,
+          "output_tokens": 150,
+          "prompt_eval_s": 31.22,
+          "eval_s": 20.472,
+          "load_s": 0.001,
+          "total_s": 51.711,
+          "prompt_tps": 26.2,
+          "gen_tps": 7.3,
+          "valid_json": false
+        },
+        {
+          "run": 3,
+          "prompt_tokens": 821,
+          "output_tokens": 150,
+          "prompt_eval_s": 38.404,
+          "eval_s": 22.616,
+          "load_s": 0.0,
+          "total_s": 61.04,
+          "prompt_tps": 21.4,
+          "gen_tps": 6.6,
+          "valid_json": false
+        },
+        {
+          "run": 4,
+          "prompt_tokens": 831,
+          "output_tokens": 150,
+          "prompt_eval_s": 32.07,
+          "eval_s": 20.046,
+          "load_s": 0.003,
+          "total_s": 52.138,
+          "prompt_tps": 25.9,
+          "gen_tps": 7.5,
+          "valid_json": false
+        },
+        {
+          "run": 5,
+          "prompt_tokens": 820,
+          "output_tokens": 150,
+          "prompt_eval_s": 32.49,
+          "eval_s": 20.666,
+          "load_s": 0.002,
+          "total_s": 53.179,
+          "prompt_tps": 25.2,
+          "gen_tps": 7.3,
+          "valid_json": false
+        },
+        {
+          "run": 6,
+          "prompt_tokens": 832,
+          "output_tokens": 150,
+          "prompt_eval_s": 32.459,
+          "eval_s": 21.621,
+          "load_s": 0.003,
+          "total_s": 54.107,
+          "prompt_tps": 25.6,
+          "gen_tps": 6.9,
+          "valid_json": false
+        },
+        {
+          "run": 7,
+          "prompt_tokens": 818,
+          "output_tokens": 150,
+          "prompt_eval_s": 32.682,
+          "eval_s": 26.153,
+          "load_s": 0.001,
+          "total_s": 58.853,
+          "prompt_tps": 25.0,
+          "gen_tps": 5.7,
+          "valid_json": false
+        },
+        {
+          "run": 8,
+          "prompt_tokens": 824,
+          "output_tokens": 150,
+          "prompt_eval_s": 33.274,
+          "eval_s": 24.52,
+          "load_s": 0.001,
+          "total_s": 57.818,
+          "prompt_tps": 24.8,
+          "gen_tps": 6.1,
+          "valid_json": false
+        },
+        {
+          "run": 9,
+          "prompt_tokens": 821,
+          "output_tokens": 150,
+          "prompt_eval_s": 30.987,
+          "eval_s": 19.468,
+          "load_s": 0.001,
+          "total_s": 50.477,
+          "prompt_tps": 26.5,
+          "gen_tps": 7.7,
+          "valid_json": false
+        },
+        {
+          "run": 10,
+          "prompt_tokens": 821,
+          "output_tokens": 150,
+          "prompt_eval_s": 31.282,
+          "eval_s": 22.871,
+          "load_s": 0.002,
+          "total_s": 54.176,
+          "prompt_tps": 26.2,
+          "gen_tps": 6.6,
+          "valid_json": false
+        }
+      ]
+    },
+    {
+      "spec": {
+        "name": "Seleção de chunks",
+        "model": "qwen2.5:1.5b",
+        "target_prompt_tokens": 700,
+        "num_predict": 60,
+        "budget_p95_s": 3.0
+      },
+      "calibrated_size": 3,
+      "summary": {
+        "total_s_p50": 24.01,
+        "total_s_p95": 28.16,
+        "prompt_tps_mean": 44.6,
+        "gen_tps_mean": 10.0,
+        "prompt_tokens_mean": 790,
+        "output_tokens_mean": 60,
+        "valid_json_ratio": 0.0,
+        "budget_p95_s": 3.0,
+        "passes": false
+      },
+      "runs": [
+        {
+          "run": 1,
+          "prompt_tokens": 790,
+          "output_tokens": 60,
+          "prompt_eval_s": 13.696,
+          "eval_s": 4.705,
+          "load_s": 0.002,
+          "total_s": 18.417,
+          "prompt_tps": 57.7,
+          "gen_tps": 12.8,
+          "valid_json": false
+        },
+        {
+          "run": 2,
+          "prompt_tokens": 790,
+          "output_tokens": 60,
+          "prompt_eval_s": 18.568,
+          "eval_s": 5.407,
+          "load_s": 0.004,
+          "total_s": 24.007,
+          "prompt_tps": 42.5,
+          "gen_tps": 11.1,
+          "valid_json": false
+        },
+        {
+          "run": 3,
+          "prompt_tokens": 790,
+          "output_tokens": 60,
+          "prompt_eval_s": 18.222,
+          "eval_s": 7.821,
+          "load_s": 0.002,
+          "total_s": 26.065,
+          "prompt_tps": 43.4,
+          "gen_tps": 7.7,
+          "valid_json": false
+        },
+        {
+          "run": 4,
+          "prompt_tokens": 790,
+          "output_tokens": 60,
+          "prompt_eval_s": 18.552,
+          "eval_s": 7.078,
+          "load_s": 0.003,
+          "total_s": 25.657,
+          "prompt_tps": 42.6,
+          "gen_tps": 8.5,
+          "valid_json": false
+        },
+        {
+          "run": 5,
+          "prompt_tokens": 790,
+          "output_tokens": 60,
+          "prompt_eval_s": 16.568,
+          "eval_s": 7.099,
+          "load_s": 0.003,
+          "total_s": 23.693,
+          "prompt_tps": 47.7,
+          "gen_tps": 8.5,
+          "valid_json": false
+        },
+        {
+          "run": 6,
+          "prompt_tokens": 790,
+          "output_tokens": 60,
+          "prompt_eval_s": 20.915,
+          "eval_s": 7.201,
+          "load_s": 0.004,
+          "total_s": 28.156,
+          "prompt_tps": 37.8,
+          "gen_tps": 8.3,
+          "valid_json": false
+        },
+        {
+          "run": 7,
+          "prompt_tokens": 790,
+          "output_tokens": 60,
+          "prompt_eval_s": 19.408,
+          "eval_s": 5.366,
+          "load_s": 0.002,
+          "total_s": 24.796,
+          "prompt_tps": 40.7,
+          "gen_tps": 11.2,
+          "valid_json": false
+        },
+        {
+          "run": 8,
+          "prompt_tokens": 790,
+          "output_tokens": 60,
+          "prompt_eval_s": 19.299,
+          "eval_s": 5.465,
+          "load_s": 0.003,
+          "total_s": 24.792,
+          "prompt_tps": 40.9,
+          "gen_tps": 11.0,
+          "valid_json": false
+        },
+        {
+          "run": 9,
+          "prompt_tokens": 790,
+          "output_tokens": 60,
+          "prompt_eval_s": 15.153,
+          "eval_s": 7.607,
+          "load_s": 0.002,
+          "total_s": 22.78,
+          "prompt_tps": 52.1,
+          "gen_tps": 7.9,
+          "valid_json": false
+        },
+        {
+          "run": 10,
+          "prompt_tokens": 791,
+          "output_tokens": 60,
+          "prompt_eval_s": 19.35,
+          "eval_s": 4.5,
+          "load_s": 0.004,
+          "total_s": 23.894,
+          "prompt_tps": 40.9,
+          "gen_tps": 13.3,
+          "valid_json": false
+        }
+      ]
+    }
+  ],
+  "flow": {
+    "llm_p95_sum_s": 89.2,
+    "deterministic_budget_s": 3.0,
+    "estimated_flow_p95_s": 92.2,
+    "passes_with_margin": false,
+    "passes_limit": false
+  }
+}

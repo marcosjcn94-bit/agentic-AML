@@ -2,10 +2,10 @@
 
 | Campo | Valor |
 | :--- | :--- |
-| Versão | 1.0.0 |
+| Versão | 1.1.0 (ADR-013: seleção de chunks determinística e investigação compacta) |
 | Status | Aprovado |
 | Origem | `INTENT.md` (aprovado em 2026-09-15) |
-| Decisões vinculadas | `docs/ADR.md` — ADR-001 a ADR-012 |
+| Decisões vinculadas | `docs/ADR.md` — ADR-001 a ADR-013 |
 | Próximos documentos | `SOUL.md` (limites comportamentais) → `AGENTS.md` (papéis e tools por agente) → `PLAN.md` → `TASKS.md` |
 | Gate técnico | Aprovado por: marcosjcn94@gmail.com — Data: 2026-09-15 |
 
@@ -20,8 +20,9 @@ Cada requisito tem ID rastreável (`RF`, `RNF`, `DT`, `API`, `MCP`) e critério 
 por agentes → recebe citações normativas verificadas → vira minuta de dossiê → é submetido pelo analista → recebe decisão do
 Compliance Officer. Cada passo gera evento na trilha de auditoria.
 
-**Princípio de fronteira (ADR-006):** LLM só onde há julgamento — síntese investigativa e seleção de trechos normativos.
-Sanitização, triagem, verificação de citação, montagem do dossiê, controle de prazo e auditoria são código determinístico.
+**Princípio de fronteira (ADR-006, revisado pelo ADR-013):** LLM só onde há julgamento — hipótese investigativa sobre indicadores agregados.
+Sanitização, triagem, cálculo de indicadores, recuperação e seleção de trechos normativos, verificação de citação, montagem do dossiê,
+controle de prazo e auditoria são código determinístico.
 
 ### Dentro do escopo
 - Processamento de um alerta por vez via API (lote apenas no script de avaliação).
@@ -109,6 +110,8 @@ ou ocultação em camadas.
 - Tipologias não críticas têm recall medido e reportado, sem meta de 100%.
 - A CC 4.001/2020 não menciona PIX. Na camada brasileira, PIX é apenas um valor sintético de `payment_type`, enquadrado no inciso IV por decisão do projeto.
 - O mapeamento é versionado em `data/mappings/saml_d_to_cc4001.yaml` (`mapping_version` gravado em cada dossiê).
+  Para cada tipologia, o arquivo também lista os `article_ref` preferenciais e o texto curado de aplicabilidade usados pela
+  seleção determinística de trechos (RF-06, ADR-013).
 
 ### 3.3 Demais perguntas
 
@@ -156,15 +159,22 @@ ou ocultação em camadas.
 - **Aceite:** teste de troca de `corpus_version` zera acertos; teste de inspeção da coleção de cache não contém `alert_id`, recomendação ou token de dado pessoal.
 
 ### RF-05 — Investigação (nó LLM)
-- MUST receber apenas o alerta sanitizado, a `TriageDecision` e resultados das tools MCP (MCP-01, MCP-02).
-- MUST devolver JSON válido no schema DT-07 (saída estruturada); JSON inválido após os retries → `NEEDS_HUMAN`.
-- Toda evidência MUST referenciar `transaction_id` ou resultado de tool existente; referência inexistente é descartada deterministicamente e registrada.
+- MUST receber apenas indicadores agregados (DT-16), calculados por código determinístico a partir do alerta sanitizado, da `TriageDecision`
+  e dos resultados das tools MCP (MCP-01, MCP-02); a lista bruta de transações não entra no prompt (ADR-013).
+- Contexto MUST ficar em ≤ 300 tokens de entrada e ≤ 60 de saída, com SLM ~1,5B quantizado Q4 (ADR-013).
+- MUST devolver JSON válido no schema DT-07, imposto na geração por JSON Schema com chaves curtas (`t`, `c`, `r`, `e`)
+  e evidências como números de `feature_id` (enum dos presentes no DT-16), que o código expande para os campos do DT-07; JSON inválido após os retries → `NEEDS_HUMAN`.
+- Toda evidência MUST referenciar `feature_id` existente no DT-16; referência inexistente é descartada deterministicamente e registrada.
+  As transações que compõem cada indicador são anexadas ao dossiê pelo código, não pelo LLM.
 - Pós-processamento determinístico: se a triagem disparou detector crítico ou `typology_hypothesis` é crítica e a recomendação é `ARQUIVAR`, o alerta vai para `NEEDS_HUMAN`.
 - **Aceite:** 100% das saídas do golden set validam no schema ou terminam em `NEEDS_HUMAN`; 0 evidências com referência inexistente no dossiê.
 
 ### RF-06 — Pesquisa normativa
 - Recuperação determinística: consulta montada por template a partir da tipologia hipotética e dos incisos mapeados (seção 3.2), top-k = 8 via MCP-03.
-- Nó LLM seleciona no máximo 3 `chunk_id` entre os recuperados e escreve justificativa de aplicabilidade (≤ 300 caracteres).
+- Seleção determinística, sem LLM (ADR-013): no máximo 3 `chunk_id` entre os recuperados, priorizando os `article_ref` preferenciais
+  da tipologia no mapeamento (seção 3.2) e desempatando por fusão de ranks (RRF) entre similaridade vetorial e BM25 sobre os trechos
+  recuperados; trechos abaixo de `selection.min_score` são descartados.
+- `applicability` (≤ 300 caracteres) vem do texto curado do mapeamento para o par tipologia × `article_ref`, nunca de geração.
 - MUST NOT gerar, parafrasear ou completar texto normativo; o trecho citado é sempre copiado do chunk via MCP-04.
 - `chunk_id` fora do conjunto recuperado é descartado e contabilizado como citação não verificada na métrica bruta.
 - **Aceite:** grounding bruto ≥ 99% (RNF-02) no golden set.
@@ -177,7 +187,8 @@ ou ocultação em camadas.
 - **Aceite:** 0 citações não verificadas em dossiês `DRAFT_READY`; teste com citação adulterada (1 caractere) é rejeitada.
 
 ### RF-08 — Montagem do dossiê
-- MUST gerar o dossiê por template (Jinja2) a partir de DT-07, DT-10 e DT-12; nenhum texto livre do dossiê vem do LLM além de `rationale` (DT-07) e `applicability` (DT-09), ambos marcados como "gerado por IA".
+- MUST gerar o dossiê por template (Jinja2) a partir de DT-07, DT-09, DT-10, DT-12 e DT-16; nenhum texto livre do dossiê vem do LLM (ADR-013). Os campos decididos pelo LLM
+  (`typology_hypothesis`, `confidence`, `recommendation`, `evidence_feature_ids`) são listados em `ai_generated_fields` e marcados como "gerado por IA".
 - Campos obrigatórios: DT-11. Campo obrigatório ausente → `NEEDS_HUMAN`.
 - Tipos: `COS` (recomendação `COMUNICAR`) ou `ARQUIVAMENTO` (triagem ou recomendação `ARQUIVAR`); `INCONCLUSIVO` → `NEEDS_HUMAN`.
 - **Aceite:** teste de snapshot do template; validação de schema DT-11 em 100% dos dossiês.
@@ -240,7 +251,7 @@ qualquer estado anterior a DRAFT_READY ──(falha / orçamento esgotado / fail
 | ID | Requisito | Meta | Medição |
 | :--- | :--- | :--- | :--- |
 | RNF-01 | Recall de tipologias críticas | 100% | `alertas críticos com desfecho ∈ {COS recomendado, NEEDS_HUMAN} / alertas críticos` no golden set, cache desligado |
-| RNF-02 | Grounding normativo | Bruto ≥ 99%; final 0 não verificadas | Bruto = citações propostas pelo nó LLM que passam no Revisor / total proposto; final = inspeção de `DRAFT_READY` |
+| RNF-02 | Grounding normativo | Bruto ≥ 99%; final 0 não verificadas | Bruto = citações propostas pela seleção de trechos (RF-06) que passam no Revisor / total proposto; final = inspeção de `DRAFT_READY` |
 | RNF-03 | Latência por minuta | p95 < 20 s | Script de benchmark no hardware de referência (seção 3.3); orçamento abaixo |
 | RNF-04 | Custo por alerta | < R$ 0,005 (R$ 0 local) | Fórmula da seção 11 com tokens medidos |
 | RNF-05 | Privacidade | 0 ocorrências | Teste canário: valores sintéticos marcados inseridos em alertas são procurados em prompts capturados pelo callback do LiteLLM, logs, coleções ChromaDB, cache e SQLite |
@@ -254,15 +265,18 @@ qualquer estado anterior a DRAFT_READY ──(falha / orçamento esgotado / fail
 
 | Etapa | Tipo | Orçamento |
 | :--- | :--- | ---: |
-| Sanitização + triagem + chamadas MCP de dados | Determinístico | ≤ 1,5 s |
+| Sanitização + triagem + chamadas MCP de dados + cálculo de indicadores (DT-16) | Determinístico | ≤ 1,5 s |
 | Embedding da consulta + busca vetorial (+ cache) | Determinístico | ≤ 0,5 s |
-| Investigação — SLM ~3B quantizado Q4, ≤ 800 tokens de entrada, ≤ 150 de saída | LLM | ≤ 12 s |
-| Seleção de chunks — SLM ~1,5B quantizado Q4, saída só IDs + justificativa curta | LLM | ≤ 3 s |
+| Seleção de chunks — mapeamento + RRF (vetorial × BM25) | Determinístico | ≤ 0,5 s |
+| Investigação — SLM ~1,5B quantizado Q4, ≤ 300 tokens de entrada, ≤ 60 de saída, JSON Schema | LLM | ≤ 14 s |
 | Revisor + template + auditoria | Determinístico | ≤ 1 s |
-| Margem | — | 2 s |
+| Margem | — | 2,5 s |
 
 - **Gate antes do `PLAN.md`:** benchmark de tokens/s (processamento de prompt e geração) dos modelos candidatos no hardware de referência.
   Se o orçamento não fechar, a ação é reduzir contexto ou modelo (ADR-010), nunca relaxar a meta sem novo ADR.
+- **Revisão 1.1.0 (ADR-013):** a rodada 1 (`reports/benchmark-ollama-2026-09-15.md`, 3B + 1,5B) reprovou o orçamento original;
+  o orçamento acima o substitui. Rodada 2 (`reports/benchmark-ollama-2026-09-15-v2.md`, 1,5B, `num_thread` 8): Investigação
+  p95 11,5 s, schema válido 100%, fluxo estimado 15,0 s — **PASSA** (detalhes no ADR-013).
 
 ---
 
@@ -316,7 +330,7 @@ flowchart LR
       TRI["Triagem<br/>determinística"]
       INV["Investigação<br/>LLM"]
       RET["Recuperação<br/>determinística"]
-      SEL["Seleção de chunks<br/>LLM"]
+      SEL["Seleção de chunks<br/>determinística"]
       REV["Revisor<br/>determinístico"]
       DOS["Dossiê por template"]
       HUM["NEEDS_HUMAN"]
@@ -337,14 +351,14 @@ flowchart LR
   MCPD -. saída sanitizada .-> SAN
   INV --> RET --> SEL --> REV --> DOS
   RET <--> MCPN <--> CHR
-  INV & SEL <--> LLM
+  INV <--> LLM
   INV & SEL & REV -. falha / orçamento .-> HUM
   DOS --> AUD
   UI <--> API
   API -- reidentificação autorizada --> VAULT
 ```
 
-- Nós LLM: apenas `Investigação` e `Seleção de chunks`. Todos os demais são código determinístico (ADR-006).
+- Nó LLM: apenas `Investigação`. Todos os demais, inclusive `Seleção de chunks`, são código determinístico (ADR-006, ADR-013).
 - Todo nó escreve evento de auditoria; toda mensagem entre nós usa o envelope A2A (DT-14).
 
 ---
@@ -373,15 +387,16 @@ flowchart LR
 | DT-04 | `SanitizedAlert` | Mesmos campos de DT-01 com tokens, + `pii_token_count`, `sanitizer_version` | Sem dado pessoal |
 | DT-05 | `AlertRecord` | `alert_id`, `state`, `triage_level`, `selected_at`, `prazo_interno`, `prazo_regulatorio_analise`, `failure_reason`, `created_at`, `updated_at` | Sem dado pessoal |
 | DT-06 | `TriageDecision` | `alert_id`, `level`, `fired_rules[]{rule_id, description, critical}`, `rules_version` | Sem dado pessoal |
-| DT-07 | `InvestigationOutput` | `typology_hypothesis` (enum: 17 suspeitas + `NENHUMA`), `confidence` (0–1), `recommendation` (`COMUNICAR`,`ARQUIVAR`,`INCONCLUSIVO`), `evidence[]{evidence_id, source (transaction|tool), ref, description}`, `rationale` (≤ 600 caracteres) | Sem dado pessoal |
+| DT-07 | `InvestigationOutput` | `typology_hypothesis` (enum: 17 suspeitas + `NENHUMA`), `confidence` (0–1), `recommendation` (`COMUNICAR`,`ARQUIVAR`,`INCONCLUSIVO`), `evidence_feature_ids[]` (≤ 3, cada um ∈ DT-16) | Sem dado pessoal |
 | DT-08 | `NormChunk` | `chunk_id`, `doc_id`, `article_ref`, `text`, `text_sha256`, `corpus_version`, `source_url` | Público |
 | DT-09 | `Citation` | `chunk_id`, `article_ref`, `quoted_text`, `applicability` (≤ 300 caracteres) | Público |
 | DT-10 | `ReviewVerdict` | `verified_citations[]`, `rejected_citations[]{chunk_id, reason}`, `grounding_raw_ratio` | Sem dado pessoal |
-| DT-11 | `Dossier` | `dossier_id`, `alert_id`, `type` (`COS`,`ARQUIVAMENTO`), `summary`, `typology`, `cc4001_incisos[]`, `evidence[]`, `citations[]` (só verificadas), `recommendation`, `ai_generated_fields[]`, `deadlines{selecao_em, prazo_interno, prazo_regulatorio_analise}`, `versions{rules, corpus, mapping, prompt, model}`, `status` | Sem dado pessoal (tokens) |
+| DT-11 | `Dossier` | `dossier_id`, `alert_id`, `type` (`COS`,`ARQUIVAMENTO`), `summary`, `typology`, `cc4001_incisos[]`, `evidence[]`, `citations[]` (só verificadas), `recommendation`, `ai_generated_fields[]`, `deadlines{selecao_em, prazo_interno, prazo_regulatorio_analise}`, `versions{rules, corpus, mapping, features, prompt, model}`, `status` | Sem dado pessoal (tokens) |
 | DT-12 | `AuditEvent` | Campos do RF-11 + `seq`, `event_key`, `occurred_at` | Sem dado pessoal |
 | DT-13 | `SanitizationTestCase` | `text`, `expected_entities[]{type, start, end}` | Dado pessoal sintético |
 | DT-14 | `A2AEnvelope` | `message_id`, `alert_id`, `trace_id`, `from_node`, `to_node`, `type` (`TASK`,`RESULT`,`ERROR`), `schema_version`, `payload`, `created_at` | Sem dado pessoal |
 | DT-15 | `Approval` | `alert_id`, `decision`, `justification`, `decided_by_role`, `decided_at`, `prazo_comunicacao` | Sem dado pessoal |
+| DT-16 | `InvestigationFeatures` | `alert_id`, `features[]{feature_id, name, value, transaction_ids[]}`, `features_version` | Sem dado pessoal (tokens) |
 
 ### 8.3 Dados de origem (ADR-005)
 - **Transações rotuladas:** SAML-D (CC BY-NC-SA 4.0). Colunas esperadas pelo artigo de origem: `Time`, `Date`, `Sender_account`, `Receiver_account`, `Amount`, `Payment_currency`, `Received_currency`, `Sender_bank_location`, `Receiver_bank_location`, `Payment_type`, `Is_laundering`/`Is_Suspicious`, `Laundering_type`/`Type`.
@@ -450,7 +465,7 @@ Todas as tools: timeout 2 s, erro estruturado `{error_code, retryable}`, evento 
 ### 9.3 Estado do grafo e envelope A2A
 
 `InvestigationState` (Pydantic, persistido no checkpoint): `alert_id`, `trace_id`, `state`, `sanitized_alert` (DT-04),
-`triage` (DT-06), `investigation` (DT-07 | null), `retrieved_chunk_ids[]`, `citations[]` (DT-09), `review` (DT-10 | null),
+`triage` (DT-06), `features` (DT-16), `investigation` (DT-07 | null), `retrieved_chunk_ids[]`, `citations[]` (DT-09), `review` (DT-10 | null),
 `dossier` (DT-11 | null), `budget{tokens_used, started_at}`, `attempts{node: int}`, `failure_reason`.
 
 Mensagens entre nós usam DT-14; `payload` MUST validar contra o schema do tipo declarado em `schema_version`.
