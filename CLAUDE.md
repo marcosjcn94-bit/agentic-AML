@@ -34,6 +34,11 @@ Não envia dados bancários não anonimizados para provedores externos de LLM.
 - **Simples** (1-2 arquivos, escopo claro): executar direto → teste focado.
 - **Complexo** (múltiplos módulos/arquitetura): Plan Mode → validar plano → executar em lotes.
 
+## Code Review (economia de tokens)
+- Revisão Python: usar o agente do projeto `python-reviewer` (`.claude/agents/python-reviewer.md`), não `ecc:python-reviewer`.
+- Foco exclusivo: lógica, segurança, performance. Formatação/PEP 8 ficam com o ruff — não reportar.
+- Todo revisor (agentes, `/code-review`, pr-review-toolkit) exclui os paths de `.reviewignore` do diff e da leitura.
+
 ## ADR — Regras de Atualização
 - Toda decisão estrutural (lib, banco, padrão, contrato, infra, FinOps) vira entrada nova em `docs/ADR.md`.
 - Histórico cumulativo (nunca apagar); numeração sequencial (ADR-00N); manter índice do topo atualizado; seguir exatamente a estrutura existente.

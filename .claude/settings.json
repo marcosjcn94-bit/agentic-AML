@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py=\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\"; [ -x \"$py\" ] || py=\"$CLAUDE_PROJECT_DIR/.venv/bin/python\"; \"$py\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/ruff_fix.py\"",
+            "timeout": 30,
+            "statusMessage": "ruff format + fix"
+          }
+        ]
+      }
+    ]
+  }
+}
