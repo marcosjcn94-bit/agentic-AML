@@ -48,3 +48,8 @@ Não envia dados bancários não anonimizados para provedores externos de LLM.
 ## Formato de Resposta
 - Sem preâmbulos ou repetição do pedido. Ação/diff/resultado direto.
 - Ao concluir: (1) o que mudou (arquivos), (2) comandos de validação + resultado, (3) próximo passo se houver.
+
+## Code Style & Architecture
+- **File Length Constraint:** Keep all new or refactored files under 300 lines of code.
+- **Single Responsibility:** If a component or module exceeds 350 lines, automatically break it down into smaller, reusable sub-components or utility functions.
+- **Refactoring Rule:** Do not append new features to large existing files. Instead, extract logic into smaller standalone modules and import them.
