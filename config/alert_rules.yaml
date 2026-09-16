@@ -1,0 +1,24 @@
+# Regras versionadas do gerador de alertas do monitoramento legado SIMULADO (T0.8, SPEC.md §3.1, §8.3).
+# Regras clássicas e ingênuas de um sistema legado — não são os detectores críticos de `triage_rules.yaml`
+# (RF-03). O objetivo aqui é produzir alertas com taxa de falso positivo alta (90-95%, INTENT), servindo de
+# ENTRADA ruidosa para a triagem determinística avaliar, nunca uma segunda camada de detecção precisa.
+# Mudança de regra ou limiar incrementa alert_rules_version e exige Ask First (TASKS.md §1).
+alert_rules_version: 1
+
+aprovacao:
+  por: marcosjcn94@gmail.com
+  em: 2026-09-16
+  situacao: provisorio
+  referencia: >-
+    T0.8 Ask First: desenho (valor elevado + contagem/velocidade) e limiares provisórios, calibrados sobre o
+    core_sintetico real para taxa de falso positivo na faixa 90-95% do SPEC.md §8.3
+
+regras:
+  valor_elevado:
+    descricao: "Transação isolada de valor elevado (regra clássica de monitoramento legado)"
+    limiar_brl: "100000.00"
+    janela_agrupamento_dias: 7
+  contagem_velocidade:
+    descricao: "N ou mais transações da mesma conta remetente em janela móvel, qualquer valor"
+    min_transacoes: 6
+    janela_dias: 30
