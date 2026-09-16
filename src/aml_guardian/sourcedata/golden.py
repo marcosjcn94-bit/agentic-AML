@@ -9,8 +9,11 @@ Golden set MUST NOT ser usado para calibrar regras de triagem — ajuste usa `al
 
 from __future__ import annotations
 
+import random
+import sqlite3
 from collections import Counter
 from collections.abc import Mapping
+from dataclasses import dataclass
 
 from aml_guardian.contracts.ingestion import Alert
 from aml_guardian.sourcedata.mapping import SamlDMapping
@@ -62,3 +65,29 @@ def estrato_de_alerta(alerta: Alert, rotulos: Mapping[str, str], mapping: SamlDM
         raise GoldenSetError(f"alerta {alerta.alert_id}: nenhuma transação com rótulo conhecido do mapeamento")
     maior = max(contagem.values())
     return min(rotulo for rotulo, quantidade in contagem.items() if quantidade == maior)
+
+
+@dataclass(frozen=True)
+class ParticaoContas:
+    """Contas remetentes particionadas para o golden set: `golden` fica inteiramente fora do `desenvolvimento`,
+    mesmo os alertas de `golden` não selecionados na amostra final (ADR-014) — garante interseção de
+    transação vazia por construção, já que a mesma transação nunca aparece em duas contas diferentes."""
+
+    golden: frozenset[str]
+    desenvolvimento: frozenset[str]
+
+
+def particiona_contas(
+    conn: sqlite3.Connection, seed: int, *, fracao_suspeitas: float = 0.5, fracao_normais: float = 0.3
+) -> ParticaoContas:
+    todas_suspeitas = {
+        linha[0] for linha in conn.execute("SELECT DISTINCT sender_account FROM transacoes WHERE is_laundering = 1")
+    }
+    todas_contas = {linha[0] for linha in conn.execute("SELECT DISTINCT sender_account FROM transacoes")}
+    todas_normais = todas_contas - todas_suspeitas
+
+    rng = random.Random(seed)
+    golden_suspeitas = set(rng.sample(sorted(todas_suspeitas), round(len(todas_suspeitas) * fracao_suspeitas)))
+    golden_normais = set(rng.sample(sorted(todas_normais), round(len(todas_normais) * fracao_normais)))
+    golden = golden_suspeitas | golden_normais
+    return ParticaoContas(golden=frozenset(golden), desenvolvimento=frozenset(todas_contas - golden))

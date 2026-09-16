@@ -3,12 +3,21 @@ from __future__ import annotations
 import json
 import uuid
 import uuid as uuid_mod
+from contextlib import closing
 from datetime import UTC, datetime
 
 import pytest
 
-from aml_guardian.contracts.ingestion import Alert, OccurrenceWindow, PaymentType, SenderCustomer, Transaction
-from aml_guardian.sourcedata.golden import GoldenSetError, _distribui_agua, estrato_de_alerta
+from aml_guardian.contracts.ingestion import (
+    Alert,
+    OccurrenceWindow,
+    PaymentType,
+    SenderCustomer,
+    SyntheticCustomer,
+    Transaction,
+)
+from aml_guardian.sourcedata.core_db import conecta, cria_schema, grava_clientes, grava_meta, grava_transacoes
+from aml_guardian.sourcedata.golden import GoldenSetError, _distribui_agua, estrato_de_alerta, particiona_contas
 from aml_guardian.sourcedata.golden_manifest import (
     carrega_manifesto,
     constroi_manifesto,
@@ -43,6 +52,38 @@ def test_distribui_agua_levanta_erro_se_total_pedido_excede_disponibilidade():
         _distribui_agua({"A": 1, "B": 1}, total=10)
 
 
+def _monta_banco_particao(tmp_path, *, contas_suspeitas: int, contas_normais: int):
+    db = tmp_path / "particao.sqlite"
+    with closing(conecta(db)) as conn:
+        cria_schema(conn)
+        clientes = [
+            SyntheticCustomer(
+                customer_id=f"cli-{i}",
+                name=f"Cliente {i}",
+                cpf_cnpj=f"CPF_{i:04d}",
+                accounts=[f"conta-{i}"],
+                segment="PF",
+                restriction_flags=[],
+            )
+            for i in range(contas_suspeitas + contas_normais)
+        ]
+        grava_clientes(conn, clientes)
+        transacoes = []
+        for i in range(contas_suspeitas):
+            transacoes.append((_tx_conta(f"conta-{i}", 1), "Structuring", True))
+        for i in range(contas_suspeitas, contas_suspeitas + contas_normais):
+            transacoes.append((_tx_conta(f"conta-{i}", 1), "Normal_Fan_Out", False))
+        grava_transacoes(conn, transacoes)
+        grava_meta(conn, {"seed": 1})
+        conn.commit()
+    return db
+
+
+def _tx_conta(conta: str, indice: int) -> Transaction:
+    tx = _tx(indice)
+    return tx.model_copy(update={"transaction_id": f"tx-{conta}-{indice:04d}", "sender_account": conta})
+
+
 def _tx(indice: int) -> Transaction:
     return Transaction(
         transaction_id=f"tx-{indice:04d}",
@@ -68,6 +109,23 @@ def _alerta(transacoes: list[Transaction]) -> Alert:
         sender_customer=SenderCustomer(name="Cliente Teste", cpf_cnpj="CPF_01"),
         transactions=transacoes,
     )
+
+
+def test_particiona_contas_e_disjunta_e_cobre_todas_as_contas(tmp_path):
+    db = _monta_banco_particao(tmp_path, contas_suspeitas=20, contas_normais=20)
+    with closing(conecta(db)) as conn:
+        particao = particiona_contas(conn, seed=20260916)
+    assert particao.golden.isdisjoint(particao.desenvolvimento)
+    assert particao.golden | particao.desenvolvimento == {f"conta-{i}" for i in range(40)}
+    assert particao.golden  # não vazio com essas frações
+
+
+def test_particiona_contas_e_deterministica_pela_seed(tmp_path):
+    db = _monta_banco_particao(tmp_path, contas_suspeitas=20, contas_normais=20)
+    with closing(conecta(db)) as conn:
+        p1 = particiona_contas(conn, seed=7)
+        p2 = particiona_contas(conn, seed=7)
+    assert p1 == p2
 
 
 @pytest.fixture(scope="module")
