@@ -9,7 +9,11 @@ Golden set MUST NOT ser usado para calibrar regras de triagem — ajuste usa `al
 
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Mapping
+
+from aml_guardian.contracts.ingestion import Alert
+from aml_guardian.sourcedata.mapping import SamlDMapping
 
 
 class GoldenSetError(ValueError):
@@ -40,3 +44,21 @@ def _distribui_agua(disponibilidade: Mapping[str, int], total: int) -> dict[str,
         for indice, rotulo in enumerate(sorted(livres)):
             travados[rotulo] = cota_base + (1 if indice < sobra else 0)
     return travados
+
+
+def estrato_de_alerta(alerta: Alert, rotulos: Mapping[str, str], mapping: SamlDMapping) -> str | None:
+    """Estrato = a única tipologia suspeita presente nas transações do alerta (rótulo bruto do SAML-D), ou,
+    se nenhuma transação for suspeita, o rótulo normal DOMINANTE (maior contagem; empate por ordem alfabética).
+    Devolve `None` quando o alerta mistura 2+ tipologias suspeitas distintas — confirmado ausente nos dados
+    reais (T0.9 Ask First), mas tratado explicitamente para não presumir invariante não garantida por schema."""
+    rotulos_do_alerta = [rotulos[t.transaction_id] for t in alerta.transactions]
+    suspeitos = sorted({rotulo for rotulo in rotulos_do_alerta if mapping.is_suspeito(rotulo)})
+    if len(suspeitos) > 1:
+        return None
+    if len(suspeitos) == 1:
+        return suspeitos[0]
+    contagem = Counter(rotulo for rotulo in rotulos_do_alerta if rotulo in mapping.normais)
+    if not contagem:
+        raise GoldenSetError(f"alerta {alerta.alert_id}: nenhuma transação com rótulo conhecido do mapeamento")
+    maior = max(contagem.values())
+    return min(rotulo for rotulo, quantidade in contagem.items() if quantidade == maior)
