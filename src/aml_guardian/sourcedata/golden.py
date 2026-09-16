@@ -21,7 +21,7 @@ from aml_guardian.config.alert_rules import AlertRulesConfig, load_alert_rules
 from aml_guardian.contracts.ingestion import Alert
 from aml_guardian.sourcedata.alert_generator import gera_alertas
 from aml_guardian.sourcedata.core_db import CORE_DB_PATH, conecta, conteudo_sha256
-from aml_guardian.sourcedata.golden_manifest import GoldenManifest, constroi_manifesto
+from aml_guardian.sourcedata.golden_manifest import GoldenManifest, GoldenSetError, constroi_manifesto
 from aml_guardian.sourcedata.mapping import SamlDMapping, load_saml_d_mapping
 
 SEED_PADRAO = 20260916
@@ -30,10 +30,6 @@ FRACAO_GOLDEN_NORMAIS = 0.3
 POR_TIPOLOGIA_CRITICA = 30
 POR_TIPOLOGIA_NAO_CRITICA = 10
 TOTAL_NORMAIS = 210
-
-
-class GoldenSetError(ValueError):
-    """Estrato sem candidatos suficientes para a quota, ou quota total acima da disponibilidade (ADR-014)."""
 
 
 def _distribui_agua(disponibilidade: Mapping[str, int], total: int) -> dict[str, int]:
@@ -142,26 +138,32 @@ def seleciona_golden(
     por_tipologia_critica: int = 30,
     por_tipologia_nao_critica: int = 10,
     total_normais: int = 210,
-) -> list[tuple[Alert, str]]:
+) -> tuple[list[tuple[Alert, str]], dict[str, int]]:
+    """Devolve (selecionados, disponibilidade_por_estrato) — a disponibilidade é o tamanho da pool golden de
+    cada estrato ANTES da amostragem, para o manifesto permitir reponderação por probabilidade inversa de
+    seleção (ADR-014)."""
     rng = random.Random(seed)
     selecionados: list[tuple[Alert, str]] = []
+    disponibilidade_por_estrato: dict[str, int] = {}
 
     for rotulo in sorted(mapping.tipologias):
         quota = por_tipologia_critica if mapping.tipologias[rotulo].critica else por_tipologia_nao_critica
         candidatos = sorted(pools.get(rotulo, []), key=lambda a: str(a.alert_id))
+        disponibilidade_por_estrato[rotulo] = len(candidatos)
         if len(candidatos) < quota:
             raise GoldenSetError(f"{rotulo}: {len(candidatos)} alertas disponíveis na pool golden, quota {quota}")
         for alerta in rng.sample(candidatos, quota):
             selecionados.append((alerta, rotulo))
 
     disponibilidade_normais = {rotulo: len(pools.get(rotulo, [])) for rotulo in mapping.normais}
+    disponibilidade_por_estrato.update(disponibilidade_normais)
     quotas_normais = _distribui_agua(disponibilidade_normais, total_normais)
     for rotulo in sorted(mapping.normais):
         candidatos = sorted(pools.get(rotulo, []), key=lambda a: str(a.alert_id))
         for alerta in rng.sample(candidatos, quotas_normais[rotulo]):
             selecionados.append((alerta, rotulo))
 
-    return selecionados
+    return selecionados, disponibilidade_por_estrato
 
 
 def constroi_golden(
@@ -186,7 +188,7 @@ def constroi_golden(
     pools, desenvolvimento = constroi_estrato_pools(
         caminho, config, mapa, seed, fracao_suspeitas=fracao_suspeitas, fracao_normais=fracao_normais
     )
-    selecionados = seleciona_golden(
+    selecionados, disponibilidade_por_estrato = seleciona_golden(
         pools, mapa, seed,
         por_tipologia_critica=por_tipologia_critica,
         por_tipologia_nao_critica=por_tipologia_nao_critica,
@@ -200,6 +202,7 @@ def constroi_golden(
         alert_rules_version=config.alert_rules_version,
         mapping_version=mapa.mapping_version,
         seed=seed,
+        disponibilidade_por_estrato=disponibilidade_por_estrato,
     )
     return manifesto, selecionados, desenvolvimento
 

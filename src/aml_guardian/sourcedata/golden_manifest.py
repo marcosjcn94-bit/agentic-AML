@@ -18,6 +18,11 @@ from aml_guardian.contracts.ingestion import Alert
 from aml_guardian.contracts.pipeline import Sha256Hex, VersionNumber
 
 
+class GoldenSetError(ValueError):
+    """Estrato sem candidatos suficientes para a quota, quota total acima da disponibilidade, ou manifesto
+    carregado do disco com hash inconsistente com o próprio conteúdo (ADR-014)."""
+
+
 class _ManifestModel(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -35,6 +40,7 @@ class GoldenManifest(_ManifestModel):
     alert_rules_version: VersionNumber
     mapping_version: VersionNumber
     contagem_por_estrato: dict[str, int]
+    disponibilidade_por_estrato: dict[str, int]
     alertas: list[AlertaManifesto]
     manifest_sha256: Sha256Hex
 
@@ -52,6 +58,7 @@ def _conteudo_para_hash(
     alert_rules_version: int,
     mapping_version: int,
     contagem_por_estrato: dict[str, int],
+    disponibilidade_por_estrato: dict[str, int],
     alertas_ordenados: list[AlertaManifesto],
 ) -> bytes:
     corpo = {
@@ -61,9 +68,25 @@ def _conteudo_para_hash(
         "alert_rules_version": alert_rules_version,
         "mapping_version": mapping_version,
         "contagem_por_estrato": dict(sorted(contagem_por_estrato.items())),
+        "disponibilidade_por_estrato": dict(sorted(disponibilidade_por_estrato.items())),
         "alertas": [item.model_dump(mode="json") for item in alertas_ordenados],
     }
     return json.dumps(corpo, sort_keys=True, ensure_ascii=False).encode("utf-8")
+
+
+def _conteudo_para_hash_de_manifesto(manifesto: GoldenManifest) -> bytes:
+    """Mesmo conteúdo de `_conteudo_para_hash`, mas lido dos campos de um `GoldenManifest` já construído —
+    usado por `verifica_manifesto`, que só recebe o manifesto carregado do disco, nunca a seleção original."""
+    return _conteudo_para_hash(
+        golden_version=manifesto.golden_version,
+        seed=manifesto.seed,
+        core_sintetico_sha256=manifesto.core_sintetico_sha256,
+        alert_rules_version=manifesto.alert_rules_version,
+        mapping_version=manifesto.mapping_version,
+        contagem_por_estrato=manifesto.contagem_por_estrato,
+        disponibilidade_por_estrato=manifesto.disponibilidade_por_estrato,
+        alertas_ordenados=manifesto.alertas,
+    )
 
 
 def constroi_manifesto(
@@ -73,10 +96,13 @@ def constroi_manifesto(
     alert_rules_version: int,
     mapping_version: int,
     seed: int,
+    disponibilidade_por_estrato: dict[str, int],
     golden_version: str = "v1",
 ) -> GoldenManifest:
     """`selecionados`: pares (alerta, estrato) já amostrados. Ordena por `alert_id` (string) antes de tudo —
-    nunca por ordem de geração — para o hash não depender de ordem de iteração acidental."""
+    nunca por ordem de geração — para o hash não depender de ordem de iteração acidental.
+    `disponibilidade_por_estrato`: tamanho da pool golden de onde cada estrato foi amostrado (uma chave para
+    cada rótulo de `contagem_por_estrato`), para permitir reponderação por probabilidade inversa de seleção."""
     ordenados = sorted(selecionados, key=lambda par: str(par[0].alert_id))
     alertas_manifesto = [
         AlertaManifesto(alert_id=alerta.alert_id, estrato=estrato, payload_sha256=payload_sha256(alerta))
@@ -92,6 +118,7 @@ def constroi_manifesto(
         alert_rules_version=alert_rules_version,
         mapping_version=mapping_version,
         contagem_por_estrato=contagem,
+        disponibilidade_por_estrato=disponibilidade_por_estrato,
         alertas_ordenados=alertas_manifesto,
     )
     return GoldenManifest(
@@ -101,6 +128,7 @@ def constroi_manifesto(
         alert_rules_version=alert_rules_version,
         mapping_version=mapping_version,
         contagem_por_estrato=contagem,
+        disponibilidade_por_estrato=disponibilidade_por_estrato,
         alertas=alertas_manifesto,
         manifest_sha256=hashlib.sha256(conteudo).hexdigest(),
     )
@@ -117,5 +145,17 @@ def grava_golden(destino: Path, manifesto: GoldenManifest, selecionados: list[tu
         arquivo.write_text(alerta.model_dump_json(indent=2) + "\n", encoding="utf-8")
 
 
+def verifica_manifesto(manifesto: GoldenManifest) -> None:
+    """Recomputa `manifest_sha256` pelo mesmo método de `constroi_manifesto` e levanta `GoldenSetError` se não
+    bater com o hash gravado — protege contra edição manual do `manifest.json` passar despercebida (ADR-014)."""
+    esperado = hashlib.sha256(_conteudo_para_hash_de_manifesto(manifesto)).hexdigest()
+    if esperado != manifesto.manifest_sha256:
+        raise GoldenSetError(
+            f"manifesto com hash inconsistente: esperado {esperado}, gravado {manifesto.manifest_sha256}"
+        )
+
+
 def carrega_manifesto(path: Path) -> GoldenManifest:
-    return GoldenManifest.model_validate_json(path.read_text(encoding="utf-8"))
+    manifesto = GoldenManifest.model_validate_json(path.read_text(encoding="utf-8"))
+    verifica_manifesto(manifesto)
+    return manifesto

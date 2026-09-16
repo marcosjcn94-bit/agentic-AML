@@ -34,6 +34,36 @@
     "Behavioural_Change_2": 10,
     "Normal_Cash_Deposits": 1
   },
+  "disponibilidade_por_estrato": {
+    "Behavioural_Change_1": 22,
+    "Behavioural_Change_2": 28,
+    "Bipartite": 49,
+    "Cash_Withdrawal": 71,
+    "Cycle": 126,
+    "Deposit-Send": 157,
+    "Fan_In": 78,
+    "Fan_Out": 23,
+    "Gather-Scatter": 44,
+    "Layered_Fan_In": 142,
+    "Layered_Fan_Out": 53,
+    "Over-Invoicing": 26,
+    "Scatter-Gather": 47,
+    "Single_large": 118,
+    "Smurfing": 47,
+    "Stacked Bipartite": 63,
+    "Structuring": 198,
+    "Normal_Small_Fan_Out": 8722,
+    "Normal_Fan_Out": 1078,
+    "Normal_Fan_In": 1682,
+    "Normal_Group": 888,
+    "Normal_Cash_Withdrawal": 325,
+    "Normal_Cash_Deposits": 1,
+    "Normal_Periodical": 715,
+    "Normal_Plus_Mutual": 994,
+    "Normal_Mutual": 1671,
+    "Normal_Foward": 148,
+    "Normal_single_large": 651
+  },
   "alertas": [
     {
       "alert_id": "00002cca-7dac-541c-b3eb-f896df97c185",
@@ -2536,5 +2566,5 @@
       "payload_sha256": "b0fd13f8c4bd9edf79014b3efe0ddb9cbf9184d65d420442fbec92744ce42f19"
     }
   ],
-  "manifest_sha256": "22b13d813b80b210675b4c4c97b74d3367ba1a6e9e12bb74fe36dd06720f24e1"
+  "manifest_sha256": "43ec5d2321f5f5d28ad270b8acd8fd7f1fa7db5d8160e316e14ae2036956e1aa"
 }

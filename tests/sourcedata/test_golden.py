@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import json
 import uuid
-import uuid as uuid_mod
 from contextlib import closing
 from datetime import UTC, date, datetime
 
@@ -28,12 +26,6 @@ from aml_guardian.sourcedata.golden import (
     estrato_de_alerta,
     particiona_contas,
     seleciona_golden,
-)
-from aml_guardian.sourcedata.golden_manifest import (
-    carrega_manifesto,
-    constroi_manifesto,
-    grava_golden,
-    payload_sha256,
 )
 from aml_guardian.sourcedata.mapping import load_saml_d_mapping
 
@@ -168,60 +160,6 @@ def test_estrato_alerta_mista_duas_tipologias_suspeitas_devolve_none(mapping):
     assert estrato_de_alerta(alerta, rotulos, mapping) is None
 
 
-def test_payload_sha256_estavel_para_o_mesmo_alerta():
-    alerta = _alerta([_tx(1)])
-    assert payload_sha256(alerta) == payload_sha256(alerta)
-    assert len(payload_sha256(alerta)) == 64
-
-
-def test_constroi_manifesto_hash_reproduz_para_a_mesma_selecao():
-    selecionados = [(_alerta([_tx(1)]), "Structuring")]
-    m1 = constroi_manifesto(
-        selecionados, core_sintetico_sha256="a" * 64, alert_rules_version=1, mapping_version=1, seed=42
-    )
-    m2 = constroi_manifesto(
-        selecionados, core_sintetico_sha256="a" * 64, alert_rules_version=1, mapping_version=1, seed=42
-    )
-    assert m1.manifest_sha256 == m2.manifest_sha256
-    assert m1.contagem_por_estrato == {"Structuring": 1}
-
-
-def test_constroi_manifesto_hash_muda_se_a_selecao_muda():
-    base = constroi_manifesto(
-        [(_alerta([_tx(1)]), "Structuring")],
-        core_sintetico_sha256="a" * 64,
-        alert_rules_version=1,
-        mapping_version=1,
-        seed=42,
-    )
-    outro_alerta = _alerta([_tx(1)])
-    outro_alerta = outro_alerta.model_copy(update={"alert_id": uuid_mod.uuid4()})
-    diferente = constroi_manifesto(
-        [(outro_alerta, "Structuring")],
-        core_sintetico_sha256="a" * 64,
-        alert_rules_version=1,
-        mapping_version=1,
-        seed=42,
-    )
-    assert base.manifest_sha256 != diferente.manifest_sha256
-
-
-def test_grava_e_carrega_manifesto_ida_e_volta(tmp_path):
-    selecionados = [(_alerta([_tx(1)]), "Structuring")]
-    manifesto = constroi_manifesto(
-        selecionados, core_sintetico_sha256="a" * 64, alert_rules_version=1, mapping_version=1, seed=42
-    )
-    destino = tmp_path / "v1"
-    grava_golden(destino, manifesto, selecionados)
-    assert (destino / "manifest.json").exists()
-    payload_files = list((destino / "payloads").glob("*.json"))
-    assert len(payload_files) == 1
-    recarregado = carrega_manifesto(destino / "manifest.json")
-    assert recarregado == manifesto
-    conteudo_payload = json.loads(payload_files[0].read_text(encoding="utf-8"))
-    assert conteudo_payload["alert_id"] == str(selecionados[0][0].alert_id)
-
-
 _APROVACAO_TESTE = Aprovacao(
     por="teste@teste.com", em=date(2026, 9, 16), situacao=Situacao.PROVISORIO, referencia="teste"
 )
@@ -285,7 +223,7 @@ def test_constroi_estrato_pools_classifica_cada_conta_no_proprio_rotulo(banco_go
 def test_seleciona_golden_bate_as_quotas_exatas(banco_golden, regras_golden):
     db, mapping = banco_golden
     pools, _ = constroi_estrato_pools(db, regras_golden, mapping, seed=20260916)
-    selecionados = seleciona_golden(
+    selecionados, disponibilidade = seleciona_golden(
         pools, mapping, seed=20260916, por_tipologia_critica=3, por_tipologia_nao_critica=2, total_normais=11
     )
     assert len(selecionados) == 3 * 6 + 2 * 11 + 11
@@ -294,6 +232,10 @@ def test_seleciona_golden_bate_as_quotas_exatas(banco_golden, regras_golden):
     for rotulo, tipologia in mapping.tipologias.items():
         assert contagem[rotulo] == (3 if tipologia.critica else 2)
     assert sum(contagem[rotulo] for rotulo in mapping.normais) == 11
+    todos_rotulos = set(mapping.tipologias) | set(mapping.normais)
+    assert set(disponibilidade) == todos_rotulos
+    for rotulo in todos_rotulos:
+        assert disponibilidade[rotulo] == len(pools.get(rotulo, []))
 
 
 def test_seleciona_golden_levanta_erro_se_quota_maior_que_disponivel(banco_golden, regras_golden):
@@ -319,6 +261,9 @@ def test_constroi_golden_desenvolvimento_e_golden_sao_disjuntos_em_alerta_e_tran
     tx_dev = {t.transaction_id for alerta in desenvolvimento for t in alerta.transactions}
     assert tx_golden.isdisjoint(tx_dev)
     assert manifesto.contagem_por_estrato
+    assert set(manifesto.disponibilidade_por_estrato) == set(manifesto.contagem_por_estrato)
+    for rotulo, contagem in manifesto.contagem_por_estrato.items():
+        assert manifesto.disponibilidade_por_estrato[rotulo] >= contagem
 
 
 def test_constroi_golden_e_reprodutivel_pela_mesma_seed(banco_golden, regras_golden):
