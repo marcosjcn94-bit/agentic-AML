@@ -6,15 +6,15 @@ import uuid as uuid_mod
 from datetime import UTC, datetime
 
 import pytest
+
+from aml_guardian.contracts.ingestion import Alert, OccurrenceWindow, PaymentType, SenderCustomer, Transaction
+from aml_guardian.sourcedata.golden import GoldenSetError, _distribui_agua, estrato_de_alerta
 from aml_guardian.sourcedata.golden_manifest import (
     carrega_manifesto,
     constroi_manifesto,
     grava_golden,
     payload_sha256,
 )
-
-from aml_guardian.contracts.ingestion import Alert, OccurrenceWindow, PaymentType, SenderCustomer, Transaction
-from aml_guardian.sourcedata.golden import GoldenSetError, _distribui_agua, estrato_de_alerta
 from aml_guardian.sourcedata.mapping import load_saml_d_mapping
 
 
