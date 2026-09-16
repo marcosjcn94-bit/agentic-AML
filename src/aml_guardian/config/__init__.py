@@ -2,6 +2,7 @@
 
 from aml_guardian.config._base import CONFIG_DIR, Aprovacao, ConfigError, Situacao
 from aml_guardian.config.baseline import BaselineConfig, load_baseline
+from aml_guardian.config.cambio import CambioConfig, CambioError, load_cambio
 from aml_guardian.config.feriados import FeriadosConfig, load_feriados
 from aml_guardian.config.litellm import LiteLLMConfig, load_litellm
 from aml_guardian.config.triage import TriageRulesConfig, load_triage_rules
@@ -10,12 +11,15 @@ __all__ = [
     "CONFIG_DIR",
     "Aprovacao",
     "BaselineConfig",
+    "CambioConfig",
+    "CambioError",
     "ConfigError",
     "FeriadosConfig",
     "LiteLLMConfig",
     "Situacao",
     "TriageRulesConfig",
     "load_baseline",
+    "load_cambio",
     "load_feriados",
     "load_litellm",
     "load_triage_rules",

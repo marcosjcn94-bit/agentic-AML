@@ -1,0 +1,61 @@
+# Taxas de câmbio SINTÉTICAS para a camada brasileira (SPEC.md §8.3, T0.7 Ask First).
+# NÃO são cotações reais e NÃO devem ser usadas para qualquer fim que não a geração do `core_sintetico`.
+# São valores fixos, na ordem de grandeza do período coberto pelo SAML-D (2022-10-07 a 2023-08-23), escolhidos
+# para que os limiares em BRL do `triage_rules.yaml` (fragmentação < R$ 10.000,00) façam sentido sobre a base.
+#
+# A chave de `moedas` é o rótulo EXATO da coluna `Payment_currency`/`Received_currency` do SAML-D (`UK pounds`,
+# `Moroccan dirham`); `iso` traz o código ISO-4217 que vai para `currency_sent`/`currency_received` do DT-02
+# (`^[A-Z]{3}$`). A diferença entre rótulo e código é dado versionado aqui, nunca conversão implícita em código.
+#
+# `taxa_brl` é decimal exato em string (nunca float, para não herdar imprecisão binária): 1 unidade da moeda
+# em BRL. A conversão arredonda para 2 casas (ROUND_HALF_UP) e falha se o resultado não for > 0, porque o
+# `amount_brl` do DT-02 exige valor positivo com 2 casas decimais.
+# Mudança de qualquer taxa ou código incrementa `cambio_version`.
+cambio_version: 1
+
+aprovacao:
+  por: marcosjcn94@gmail.com
+  em: 2026-09-16
+  situacao: provisorio
+  referencia: "T0.7 Ask First: taxas fixas sintéticas versionadas, offline e determinísticas (sem PTAX real)"
+
+moedas:
+  UK pounds:
+    iso: GBP
+    taxa_brl: "6.20"
+  Euro:
+    iso: EUR
+    taxa_brl: "5.40"
+  US dollar:
+    iso: USD
+    taxa_brl: "5.00"
+  Swiss franc:
+    iso: CHF
+    taxa_brl: "5.60"
+  Dirham:              # dirham dos Emirados Árabes Unidos (AED); `Moroccan dirham` é outra moeda
+    iso: AED
+    taxa_brl: "1.36"
+  Moroccan dirham:
+    iso: MAD
+    taxa_brl: "0.50"
+  Mexican Peso:
+    iso: MXN
+    taxa_brl: "0.29"
+  Turkish lira:
+    iso: TRY
+    taxa_brl: "0.19"
+  Indian rupee:
+    iso: INR
+    taxa_brl: "0.060"
+  Albanian lek:
+    iso: ALL
+    taxa_brl: "0.053"
+  Yen:
+    iso: JPY
+    taxa_brl: "0.035"
+  Pakistani rupee:
+    iso: PKR
+    taxa_brl: "0.018"
+  Naira:               # menor taxa da tabela: o menor Amount do SAML-D nesta moeda (13,91) vira R$ 0,09 > 0
+    iso: NGN
+    taxa_brl: "0.0065"

@@ -1,0 +1,55 @@
+# Camada brasileira: correspondência entre os rótulos do SAML-D e o domínio do DT-02 (SPEC.md §8.2, §8.3).
+# Mapeamento do projeto sobre base sintética — não descreve o sistema financeiro de nenhuma instituição real.
+#
+# As chaves são o rótulo EXATO das colunas do SAML-D (`Payment_type`, `Sender_bank_location`,
+# `Receiver_bank_location`). A correspondência é dado versionado, nunca conversão implícita em código (T0.6).
+# Mudança de qualquer linha incrementa `br_mapping_version`.
+br_mapping_version: 1
+
+aprovacao:
+  por: marcosjcn94@gmail.com
+  em: 2026-09-16
+  situacao: provisorio
+  referencia: "T0.7 Ask First: ACH→PIX e Cheque→TED; UK→BR e demais países em ISO-2"
+
+# Os 7 valores de `Payment_type` do SAML-D → enum `PaymentType` do DT-02 (os 7 cobrem os 6 valores do enum).
+# Cinco são diretos. Os dois decididos no Ask First da T0.7:
+#   ACH    → PIX: trilho eletrônico de varejo; PIX é o equivalente brasileiro e o instrumento mais relevante
+#                 para AML no Brasil, o que lhe dá volume real na PoC (2.008.807 linhas).
+#   Cheque → TED: liquidação bancária não instantânea; o DT-02 não tem valor próprio para cheque e a TED é o
+#                 valor mais próximo (2.011.419 linhas).
+payment_types:
+  Cash Deposit: ESPECIE_DEPOSITO
+  Cash Withdrawal: ESPECIE_SAQUE
+  Cross-border: TRANSFERENCIA_INTERNACIONAL
+  Debit card: CARTAO
+  Credit card: CARTAO
+  ACH: PIX
+  Cheque: TED
+
+# Os 18 países do SAML-D → código ISO-3166-1 alfa-2 usado em `sender_location`/`receiver_location` do DT-02.
+#
+# ATENÇÃO — `UK: BR` NÃO é erro de código ISO: é a substituição deliberada da T0.7 (Ask First). O SAML-D não tem
+# nenhuma transação no Brasil, e a instituição da PoC é brasileira; o Reino Unido é a origem de 96,6% das linhas
+# (9.183.088 de 9.504.852), então passa a ser o país doméstico. Isso preserva a proporção doméstico/exterior
+# (~96%/4%) de que depende o detector crítico "espécie seguida de envio ao exterior" (RF-03).
+# Exatamente um país mapeia para BR; qualquer outro código significa exterior.
+paises:
+  UK: BR
+  Germany: DE
+  France: FR
+  Italy: IT
+  Spain: ES
+  Netherlands: NL
+  Austria: AT
+  Switzerland: CH
+  Turkey: TR
+  Albania: AL
+  USA: US
+  Mexico: MX
+  Japan: JP
+  India: IN
+  Pakistan: PK
+  UAE: AE
+  Morocco: MA
+  Nigeria: NG

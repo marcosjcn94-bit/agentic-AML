@@ -1,5 +1,32 @@
-"""Dados de origem (ADR-005, SPEC.md §8.3): mapeamento de tipologias e leitura do SAML-D."""
+"""Dados de origem (ADR-005, SPEC.md §8.3): mapeamento de tipologias, leitura do SAML-D e camada brasileira."""
 
+from aml_guardian.sourcedata.br_mapping import (
+    PAIS_DOMESTICO,
+    PAISES_SAML_D,
+    PAYMENT_TYPES_SAML_D,
+    SAML_D_BR_FILE,
+    BrMapping,
+    BrMappingError,
+    load_br_mapping,
+)
+from aml_guardian.sourcedata.brazil_layer import (
+    CONTAS_NORMAIS_PADRAO,
+    SEED_PADRAO,
+    CoreReport,
+    constroi_core,
+    para_transacao,
+    seleciona_contas,
+)
+from aml_guardian.sourcedata.core_db import CORE_DB_PATH, conteudo_sha256, cria_schema
+from aml_guardian.sourcedata.documentos import (
+    cnpj_valido,
+    conta_bancaria,
+    cpf_valido,
+    documento_valido,
+    gera_cnpj,
+    gera_cpf,
+    gera_documentos,
+)
 from aml_guardian.sourcedata.mapping import (
     CRITICAS_ESPERADAS,
     MAPPINGS_DIR,
@@ -24,22 +51,45 @@ from aml_guardian.sourcedata.saml_loader import (
 )
 
 __all__ = [
+    "CONTAS_NORMAIS_PADRAO",
+    "CORE_DB_PATH",
     "CRITICAS_ESPERADAS",
     "FIXED_COLUMNS",
     "FLAG_COLUMNS",
     "MAPPINGS_DIR",
+    "PAISES_SAML_D",
+    "PAIS_DOMESTICO",
+    "PAYMENT_TYPES_SAML_D",
     "RAW_DIR",
+    "SAML_D_BR_FILE",
     "SAML_D_FILE",
     "SAML_D_MAPPING_FILE",
+    "SEED_PADRAO",
     "TYPE_COLUMNS",
+    "BrMapping",
+    "BrMappingError",
+    "CoreReport",
     "LoadReport",
     "SamlDMapping",
     "SamlHeader",
     "SamlLoaderError",
     "Tipologia",
+    "cnpj_valido",
+    "constroi_core",
+    "conta_bancaria",
+    "conteudo_sha256",
+    "cpf_valido",
+    "cria_schema",
+    "documento_valido",
+    "gera_cnpj",
+    "gera_cpf",
+    "gera_documentos",
     "iter_transactions",
+    "load_br_mapping",
     "load_saml_d_mapping",
+    "para_transacao",
     "read_header",
+    "seleciona_contas",
     "validate_file",
     "validate_header",
 ]
