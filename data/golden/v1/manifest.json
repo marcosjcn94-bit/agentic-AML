@@ -1,0 +1,2540 @@
+{
+  "golden_version": "v1",
+  "seed": 20260916,
+  "core_sintetico_sha256": "00a6d2f1f0ae8c007850f849e75891f5aba751e7e4695b4845c302be5f14ca71",
+  "alert_rules_version": 1,
+  "mapping_version": 1,
+  "contagem_por_estrato": {
+    "Normal_Small_Fan_Out": 21,
+    "Layered_Fan_In": 30,
+    "Cash_Withdrawal": 10,
+    "Layered_Fan_Out": 30,
+    "Stacked Bipartite": 30,
+    "Normal_Fan_In": 21,
+    "Normal_Foward": 21,
+    "Fan_Out": 10,
+    "Normal_Cash_Withdrawal": 21,
+    "Deposit-Send": 30,
+    "Cycle": 10,
+    "Normal_Periodical": 21,
+    "Structuring": 30,
+    "Normal_Mutual": 21,
+    "Normal_Fan_Out": 21,
+    "Over-Invoicing": 10,
+    "Normal_Plus_Mutual": 21,
+    "Normal_Group": 21,
+    "Smurfing": 30,
+    "Single_large": 10,
+    "Scatter-Gather": 10,
+    "Behavioural_Change_1": 10,
+    "Normal_single_large": 20,
+    "Gather-Scatter": 10,
+    "Bipartite": 10,
+    "Fan_In": 10,
+    "Behavioural_Change_2": 10,
+    "Normal_Cash_Deposits": 1
+  },
+  "alertas": [
+    {
+      "alert_id": "00002cca-7dac-541c-b3eb-f896df97c185",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "7de8e11aace5017820bb6a1efbe4c8a473fe9f2c9d622f99450f7bfcfb10f81f"
+    },
+    {
+      "alert_id": "00f636e3-2d79-5b7a-9626-3b902cd09b73",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "ef47142710f8fd257371f8bf3e6df0794ecd724ddf26fe3e83fa9eef3c29d8f6"
+    },
+    {
+      "alert_id": "0154f0c9-d459-52f6-b9d8-8b358041db15",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "182ac85ede097e51e4b498bc199d81f5922e41d1fa936f485830636021a4e578"
+    },
+    {
+      "alert_id": "01d86cdf-b96d-5938-aaf1-107e79ea5164",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "a5bc58b2cce7c4435722697877448916cf53e7257059fbe55c077e6bd3f5e229"
+    },
+    {
+      "alert_id": "033cc33e-d566-5c05-9e20-65a95aa45627",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "b98a7929719026a4b742353066a252beac7df704db3c75c50f6c2159c069731c"
+    },
+    {
+      "alert_id": "04a04172-3f55-5f26-9ec3-b6289987a37c",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "95f1345435b96bcbfec2bb44c25f0ec5b429da0afa9a90da696b857e7ce1a96c"
+    },
+    {
+      "alert_id": "04ccbcfd-2dd9-5e90-84c5-9a0cdfcf8d6a",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "eb0d29685e4025ac0744476722309511cca0a89661a5e31f2b6800c70ae735f6"
+    },
+    {
+      "alert_id": "051db629-bf46-56b7-be22-5026758668cb",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "5b2a12f463402608970d0ad9118eac904d16a4239935f4163d6e07b7e42f576c"
+    },
+    {
+      "alert_id": "0574a11f-c345-53d6-ac21-b35a6a12b9eb",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "d48a557f61635c639c51ed8211d8e6630ade780095fbb91387f82a3d42d018d2"
+    },
+    {
+      "alert_id": "05f9c578-e039-5682-9546-c1ff935d5190",
+      "estrato": "Fan_Out",
+      "payload_sha256": "c7be663e7da8fcd350647d35e8f14bc0e8bc9f45ea83dc75bb362c4aa91c91a1"
+    },
+    {
+      "alert_id": "060614fe-7a3b-5b3f-9c16-c6ec4ad51ca5",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "103cef51e892d3ad5ca691e8103ce293fa9e43b0281a23ea6da59112296aad14"
+    },
+    {
+      "alert_id": "066e6113-bb8b-51bf-8ae0-7df94cb742ee",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "a2a1cb71edde335cb2209dc0e0488ec4cb1d19a175a3d5c308dc851a14f95f8c"
+    },
+    {
+      "alert_id": "079b9868-6612-5ef7-bb56-39236843b18f",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "d38447424a41e6bb2f5e6edc84054c874ae3a6d2d531edf602f5bf3048b83805"
+    },
+    {
+      "alert_id": "07c548eb-96c3-57a5-ba02-b9b30666dad5",
+      "estrato": "Cycle",
+      "payload_sha256": "ca0e8f122d1dbb99f12ba45c15a3cc716fa050cb07ef1c4cd04065239a88e81c"
+    },
+    {
+      "alert_id": "087a0e1c-60c7-55cd-9f4c-380fae85b81e",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "48f1ef7b35a7c37231d6ba21db020850df7739def5e3ff85adeea5cdf39e64d5"
+    },
+    {
+      "alert_id": "087c8386-01a8-5977-aaac-90affded1b84",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "d824c95c54967c505a7d4b6b4129f7eaa8a1debe475ef6c1caa9631296438215"
+    },
+    {
+      "alert_id": "0a309161-670d-52bf-b8c8-62d6b336807b",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "c651732576886d0f58854b86d945fc19b4b97664c116fe03195f3cc5bdfc564f"
+    },
+    {
+      "alert_id": "0a573009-7ebd-5bd5-ad47-ff6465d096dd",
+      "estrato": "Cycle",
+      "payload_sha256": "13f4d4f54539f546a3a015ebf7bdfb5c8611ee0a0fbf77e0fe3b5ab2679e5bd6"
+    },
+    {
+      "alert_id": "0aba3418-8d11-528d-8c85-d888ed06cd7a",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "9be976826ac2d864941a0ef1d30fef1f22d59813e5f1655ea6b06529b78c4aca"
+    },
+    {
+      "alert_id": "0af341b9-6fe7-5717-90aa-ef6483981964",
+      "estrato": "Structuring",
+      "payload_sha256": "94c5ef77f741833cf9b8dfb0b9466fecccc11a66616d4e609db027f7332df7aa"
+    },
+    {
+      "alert_id": "0b49051a-e7c9-579c-9b1b-2f51b96201fc",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "069b3bd4251e871dfd807c6d3e0b7aa6150eeacaae51fbe880f2d7b1169c25f9"
+    },
+    {
+      "alert_id": "0db814a4-7a2f-58f5-a7db-66e7395f9fc7",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "90526a6345aae2f9a5ee02f761b201b53bda8747587b45159c6a75eab8d24144"
+    },
+    {
+      "alert_id": "0e06b997-12a1-5854-8ae2-09203a8af742",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "c5d8223d288c181fa4a96e0c5920d8ee25875efc9d0c466c889059c0d916b3b1"
+    },
+    {
+      "alert_id": "0e3720cd-26b6-597e-9903-b53e5d65a670",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "98ee23d0e520a9203dfcb310e1aeacdaa4a0ce27476edbc69d9e7c99830b4a29"
+    },
+    {
+      "alert_id": "0eea7b3d-b5c5-5593-88d4-7baa8527e0f2",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "e8f03f63d4bd1570612898c90a527e4c30a5ace60574713ce9129cc30d7c33ce"
+    },
+    {
+      "alert_id": "0f1e9fe6-d340-545f-aca1-f9bd99c2108f",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "7037355bb41095f38a1fec92d1ec54c0dbf37e186fe9af6e7dee302000b42c19"
+    },
+    {
+      "alert_id": "0f6817a9-e3fd-5cc0-984a-4b077a870766",
+      "estrato": "Structuring",
+      "payload_sha256": "32ad9cbba9584dec956a96977e58f277c7f102c59299071dc1a35474913209f7"
+    },
+    {
+      "alert_id": "10279983-1cf7-5812-b766-b3a44e015b7b",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "d70934cc415ea3437f41d22160dbe14d3f74520cd116315cc6a1ce185deab882"
+    },
+    {
+      "alert_id": "108aa7e4-81a9-5f07-b60c-2e9b7146a86c",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "fde999b311e163b113a1ccafe671a44eafb1a0c8e36dd6b5ba243483ef4a3abd"
+    },
+    {
+      "alert_id": "1135a55b-2c46-5352-99a3-298ff4421f91",
+      "estrato": "Structuring",
+      "payload_sha256": "19aee8d335b9683cc310d61a4712a70bbf66abdac81a4c1790843ec8d1a441bf"
+    },
+    {
+      "alert_id": "11ada36b-6bcb-535a-b8a5-aea3929ff01f",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "81a980d53d31d35f94da5c8173f4186efc640ace1ece5ca39634e2a1d2b8c7bd"
+    },
+    {
+      "alert_id": "11ea9980-ebfc-59fc-9109-274253e5eca1",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "41f88a4893978b6da72a15b56a84aa4998c2a08ecd5a733bc2e919127d1101a7"
+    },
+    {
+      "alert_id": "11fe5551-da34-55ec-9f80-de43ec9b899f",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "8b7ea23196e17159b21304e8139d9a8bd5c4254def0ff98efefbb645bf39fd99"
+    },
+    {
+      "alert_id": "12e45f28-ba17-507b-a8e8-af1b34962f15",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "c41d5aa4dcab2a4536ce20310d4b82042d132ed6bdae9ce3eb96df4366cdbe6c"
+    },
+    {
+      "alert_id": "13a9ce43-cd1e-5e5c-8d8b-2bfb80737208",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "912108a64c6a18169413c9e428c063bd95c8b834028646200417c067e92f757e"
+    },
+    {
+      "alert_id": "14650786-a3a2-5f5a-a32b-58b5f306cd4b",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "ecf2acc80b3235b64c29c3556a1f2b4825ea1dd9f5870dc1685f0aee8cafc34e"
+    },
+    {
+      "alert_id": "148de5fa-f82e-5045-9529-9cfe40259ded",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "db2ec36d950b8721dde4f74ff3e99bc746a8d532e431715640e23bf5685032a2"
+    },
+    {
+      "alert_id": "157f2d84-51a6-5153-8708-ce451f0308c9",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "8681bee94cf825efe21361233270b788cc003ac5f89b791b2079b2f4dd7c9e96"
+    },
+    {
+      "alert_id": "1588e13c-4078-5d07-b71a-b3f23b8cc844",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "59b4b283dcb48188084a77d430d96713b1bd9fa310a62f356fa19eedbed3479e"
+    },
+    {
+      "alert_id": "17c365c7-0b30-5720-89d5-bce67416f232",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "34748e775df7825cafe3fbd7f1734c2396355e13d81c75eeb7410501b909ef00"
+    },
+    {
+      "alert_id": "17de69ef-7499-5764-91c3-45f7a15ebb94",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "db4bbc233740470c04c5bcf5fae42002dde99fe20eb7eded9fe9e29a59c1016a"
+    },
+    {
+      "alert_id": "17e4cbec-cd0f-5b77-9d6c-6bdc9878e203",
+      "estrato": "Normal_Group",
+      "payload_sha256": "9783cfc58f7374cd8fe4322e07d95a569d04c22845f72eec5977c05645d07466"
+    },
+    {
+      "alert_id": "18d2367f-d54f-5f3b-87c7-6fb58cdb24ce",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "00ee1bcc6e9e50354852be36508d8d6de75c1e372f52aefd03005c8b4e7fb1b5"
+    },
+    {
+      "alert_id": "18d34e93-c225-5583-ad14-ef09f5bb54bd",
+      "estrato": "Cycle",
+      "payload_sha256": "93cabd0858de2db9ca0d1151eea1150e9d65eb991859243cb67022980c5e662d"
+    },
+    {
+      "alert_id": "18dc6a02-90fa-5ec4-84f3-cb731f5a47f8",
+      "estrato": "Smurfing",
+      "payload_sha256": "2e1bfa87004252402f04b40bbe574bd54918b5812930be232c9c163214b1680c"
+    },
+    {
+      "alert_id": "18f4e8da-d640-52d4-a3cb-dfb49c6e48c4",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "ca0858927bd02f1b5878ea2df78983b9c7cad1e918aa5903dc611bcc92171001"
+    },
+    {
+      "alert_id": "19a8e501-13f2-5df6-bfa8-646557af356e",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "19bcc53314b66cbe88b14c901cbd58ce8670c89f8596a54a79e95af4be0f0161"
+    },
+    {
+      "alert_id": "19c89712-e4d9-5910-956a-a1e81154743d",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "8ab6af69b4fe18cc60b23caecdde8282ab7a1457c81aaab06f213a9a4cd08b9a"
+    },
+    {
+      "alert_id": "1a080408-a215-51a4-9c74-a8cf26ccaf24",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "e9110c513fd61bf3ddc898c5c8476469147a3a6872444750a03bf98478c6dbb8"
+    },
+    {
+      "alert_id": "1a4d8721-3731-5dfb-b472-99804a9e3896",
+      "estrato": "Single_large",
+      "payload_sha256": "9ebede89baf601f3f2d58bed55a5f83eda138c5791372118b4a575cbdd23172e"
+    },
+    {
+      "alert_id": "1bdca8a1-993f-5092-affb-663f5ecbb990",
+      "estrato": "Smurfing",
+      "payload_sha256": "6de8609de4c4c4bdb64ce007826d1a52a00ae6e699804109ca157a26c2a2f53e"
+    },
+    {
+      "alert_id": "1c76315d-0268-56fb-b3a1-7f6f95e57917",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "c5344a9cf8ccd6314ec1553e7ff5493b302780223ab4a47ed3ebbce163286785"
+    },
+    {
+      "alert_id": "1eb0be4c-b3a6-5815-8886-1d5373e8f8e0",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "16427d3d5650819faace7c550c85c72a786a311dc16f981d13d7e667cc2ff9ac"
+    },
+    {
+      "alert_id": "1f02086f-bb9f-5ca5-a1bd-5d6fbd63f492",
+      "estrato": "Structuring",
+      "payload_sha256": "d5792dfa7385dead7796cc8562f9e90c0beb83105a0576502f4b949235f4e154"
+    },
+    {
+      "alert_id": "21103a0a-af70-5523-b08f-aa9ac15fd1c2",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "c3b18579e53c7c664b4b1c82946d513979d05d6536b935d89fba03deaf22935d"
+    },
+    {
+      "alert_id": "21179903-5839-5679-8c73-5270a720ec41",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "e098567247e14e048f57612215545ac3f2b47a844c0724b307d26db1452cf2ee"
+    },
+    {
+      "alert_id": "21a11b38-3c0f-5838-9fac-c056c11b318a",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "7bf3c285ea1ea1a4fb2e9e494e9a184d6049ee0c1bdf630e5993e1dff4b00faf"
+    },
+    {
+      "alert_id": "21d1e7ac-0575-584e-9171-5907d91f78f2",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "d4eab78759698004006cd14d490d8651f2a17d149ee36db83b6d5d2e551caf3a"
+    },
+    {
+      "alert_id": "220f49db-a561-5d81-9e6a-28d1adc2e306",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "9fe2eacf757e76e92b548c8ae53769237d06c7c1980b7ed79f7b49d3303a2222"
+    },
+    {
+      "alert_id": "22956672-82b5-5e97-9823-b2b921a4671d",
+      "estrato": "Normal_Group",
+      "payload_sha256": "4e3d73dbac3bde466093c4c65897b200bb4ad0b7a74adf8c0e27b2f05b8f9507"
+    },
+    {
+      "alert_id": "22ce8aa7-f4c7-5f69-a923-e5d6fc202264",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "9f96959079f505d202adad54929c10302de3e1c337dba800bf4bb9bbc7c47494"
+    },
+    {
+      "alert_id": "24cebe03-4ef5-5cb9-bcc2-309a1ea66409",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "1b0510ea3ec230a9637db0413b1254625ac329448c8550ca98949fcf3939110f"
+    },
+    {
+      "alert_id": "25ea99fc-6740-5f1f-822b-215a598fd1b0",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "7d0159b686faea579bcb859c4d0d9345ea9f6d5021127d05a0a76a8bcb06c068"
+    },
+    {
+      "alert_id": "2611de70-c761-5ac1-a75f-2fdb633cb5dc",
+      "estrato": "Single_large",
+      "payload_sha256": "b3502882f1173a8a7054cffaeae693513339526e70b66efce1b5595402078477"
+    },
+    {
+      "alert_id": "262f2f72-6f58-507b-9d0c-563254f6987a",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "28ef5850fdb73d835cb9e62fd55e12e91a9ebde08d49e3ab55c470a9a1b4529f"
+    },
+    {
+      "alert_id": "2638acdd-ba4f-5d77-8574-4b0486b4cc78",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "bb6a10dabcc604a6be141bc57eaf1d09e44f16439c15c3f94628ffa20a46d0ac"
+    },
+    {
+      "alert_id": "263b354c-922b-5804-a960-6b509682f532",
+      "estrato": "Normal_Group",
+      "payload_sha256": "6eb17c9a471172221c1ad1b9667c0799a9f5bdfeea90c7435f56881500a36d54"
+    },
+    {
+      "alert_id": "263c1361-4216-5ca1-87d2-189635791ca7",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "37ee639b37fc11d978631557a8ec5ae8296c49dd7a16f9beb95383c85c72eb43"
+    },
+    {
+      "alert_id": "26e0e171-f17f-54f8-b115-75d32a01c374",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "dd172a7d6edb66aa10f57bdf733d82355bf70a08dfb4ccc634280afeca67c84a"
+    },
+    {
+      "alert_id": "27768194-eed3-5a20-94e6-2c62de4856f6",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "aa595f96c0b033dad9f561c7b36da043df38501d0eb6306a14a3bb0cc4bb20d4"
+    },
+    {
+      "alert_id": "27a4f0c5-0108-59b6-8d8b-15b6a56d8e92",
+      "estrato": "Structuring",
+      "payload_sha256": "42050b784837d758e87b0283214b23cd973a17a3aae14e6a3f2ad2b750234f1b"
+    },
+    {
+      "alert_id": "27b68fb3-5681-5073-acc0-c33d0f7a0944",
+      "estrato": "Smurfing",
+      "payload_sha256": "5b95c561c8a59a2473058034b23889087c0d750b71f78d360315705932c436bc"
+    },
+    {
+      "alert_id": "27bb144e-522b-540b-8981-72278d092b8c",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "5bee1fd62dd2fcdef05da13cd16a8a9b75e0b5fb29010990a2e487ffe1afb18b"
+    },
+    {
+      "alert_id": "27d90279-b75d-52ac-86eb-a07aa68b563e",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "0d0ad373183b0aa0d6dc4609155d4f118a6fea4cc29a106f0cffeb463386d18d"
+    },
+    {
+      "alert_id": "288c234a-c0f3-5300-8e47-e6af02e0db7b",
+      "estrato": "Structuring",
+      "payload_sha256": "cfb45f7eeae6778d93bb8c67bac670776eb4513a7df39267440b757815ecd56e"
+    },
+    {
+      "alert_id": "28e50c8d-b999-5b5c-abfe-538254389534",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "30060fcf7556f2606ba1d9bdf4ea7d70448f35d523aba8536aba760d5930c5e8"
+    },
+    {
+      "alert_id": "2926f21c-b868-5cb4-a654-c093110bab36",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "c26138630f2e56741bc3aa815a1af6957f1b2965ddc5e321e9c615c21938f535"
+    },
+    {
+      "alert_id": "2973ee2f-e247-542c-8c1e-f25ed3661b7c",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "bdf33bb07ba3f082ceb71caed61f5ad665c1dba5d21734182ec1ef66346f1624"
+    },
+    {
+      "alert_id": "2a2ceaad-d6e1-56fc-a7c5-c2d806acd0fb",
+      "estrato": "Smurfing",
+      "payload_sha256": "e2e1255f92ef1a24d2e1e38bcc50cf66c357b302eea22450804201ef25afa384"
+    },
+    {
+      "alert_id": "2a961440-d2ca-5c1b-a657-2cb35ac76a43",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "66f0d10645058cfbc2e5fb06bf7ae05e4555d22586b1726bd228c2b35ca14253"
+    },
+    {
+      "alert_id": "2b6c4e38-69be-55d8-b726-3ea2c99485b8",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "cef1e0a900320c1d694af2fabce07a04deb01559ee4698004afbd9433a49f717"
+    },
+    {
+      "alert_id": "2b9476d2-3913-5b09-8aa5-2728a5d39db3",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "3866b4b2a59a332f841c8910d67c19c8b68e9034626a7fbfe645baeaf0f0ee44"
+    },
+    {
+      "alert_id": "2c1b6e3e-2524-541e-99ca-7baa3c6ed2a1",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "32cd41c442e39e77114bfebc88f5d08c64b1a4c25c7cd90090fc087ff6029d27"
+    },
+    {
+      "alert_id": "2c3285ec-1347-5924-89f2-9fe2709afdb1",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "b27a7cc89c4834ce75ec6cab1d48dd30e78785f91063a18724263e572951a1ea"
+    },
+    {
+      "alert_id": "2c3e2666-3cf7-59b9-b0c8-cbec5dd8f32a",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "b64772d46d61f20178d940a813bf843c7e17427f8bfadd38ce4ffbc020b68ef0"
+    },
+    {
+      "alert_id": "2d63bf1e-3d9a-5340-99a6-4a2b607c1d3f",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "17e5d7f02e58f75171ca3843379780f5774f4347b09fe661e0c7203528097db1"
+    },
+    {
+      "alert_id": "2e18649a-1885-585f-b241-ed6e505a52b8",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "30dd4fb6f020bb2a71a4b380576983b63aac11c821c655eaa7eecf8e03b19f7a"
+    },
+    {
+      "alert_id": "2ea5d480-9f08-5773-b9ea-de9a6d498a37",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "c384d7b7f2822905dc965f09b5fe4f910a6333fe42b54dd068802ee4adc38a09"
+    },
+    {
+      "alert_id": "2face736-7964-5e38-a67f-f4f963ed2648",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "7a8892ddc46f0a6e730778b2135cabaa5ee6a784817201110178d0d59a3fc06e"
+    },
+    {
+      "alert_id": "3219ab07-e0e3-56b8-8cdc-e24ea4326cb8",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "35ff596f18bf1d3b210ebb8fb89a87bad3660c04e0633a828311877aa8928b04"
+    },
+    {
+      "alert_id": "3237beea-3413-552b-abf9-62b24e314e5e",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "7d9809d73b6b17385bca06fc229347ab10066458d4b912249dfd5bdad2c8cb90"
+    },
+    {
+      "alert_id": "327e4e48-7f82-5304-a939-64131973fa92",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "ca8c501f79d7d2c2952d5821f04461dc6c9d1365e585998de711c66ae95d2aad"
+    },
+    {
+      "alert_id": "33f6b6c8-1385-519f-bd0a-1d2867f8ec1c",
+      "estrato": "Normal_Group",
+      "payload_sha256": "0d01bf3b8d79f7f6a23d22c93e3934bb59058a110339b912068a1f4f0081e426"
+    },
+    {
+      "alert_id": "341907dd-aa2b-5b67-8671-f85f68e55238",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "e10d17e37fc298ebc4c6e21b69cc35add079c1296d5d7bd96ad6840e6b6ca352"
+    },
+    {
+      "alert_id": "34bdb6ed-1b58-5507-a99a-3e32268d4023",
+      "estrato": "Fan_Out",
+      "payload_sha256": "731efdf861fae5fa110ef0f0b93c033f7610f6c5d8ab314e69ac575ae7d96551"
+    },
+    {
+      "alert_id": "34fa873f-e569-58ed-a0f8-60181680c74c",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "f7ec1a4af0034646dc0ff8a8b2c0b13f8d9091ebddf01cb0eb632c001380c6d9"
+    },
+    {
+      "alert_id": "35efd962-bc11-56cd-ba22-b7b6ca577c02",
+      "estrato": "Bipartite",
+      "payload_sha256": "3d915f0f9edef54869d74334b4bb224dcd65891b87cec4b6e5a74a09af0225b3"
+    },
+    {
+      "alert_id": "360846cc-7a92-528d-9499-930a1c0e7ba0",
+      "estrato": "Smurfing",
+      "payload_sha256": "bb2b4ca42fd9ebc2b5ef952d86ac38cf431b754efd37da2cf7126c274ae056bd"
+    },
+    {
+      "alert_id": "361b95ec-5415-54a8-a520-27f4a15706cc",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "fd720bfd8bf6d5eb17b37edfa023a7526361634830fe5bfbfc36be110b8e63a8"
+    },
+    {
+      "alert_id": "3646fa99-941f-5ff3-819e-5ca21dd2ace9",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "ae42645a73fdc26c32cff3626d5dd698711f839cec7c968bbef86a8eecbd81b4"
+    },
+    {
+      "alert_id": "36561fd7-858b-5bd9-adce-fe8bc67bee41",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "6658f904aca38b59d5f4974ff20f18f8eb9ea55d62877e556a9154f92825681a"
+    },
+    {
+      "alert_id": "36c58d1f-5ec6-59aa-ba04-793e14ee94bd",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "1ecaa9f5a9a0025cbf71da3256c60bdc642fde8d2373990644af24328009d788"
+    },
+    {
+      "alert_id": "36dcee03-7f18-5ab5-81f4-b1e7efeb4494",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "d144790a1f1b52a7f819ed4134f74747fa9ac4f72f5cf259dc78deaa785d7677"
+    },
+    {
+      "alert_id": "36f1811c-60a6-5ec1-827d-ca868e3fd2a9",
+      "estrato": "Normal_Group",
+      "payload_sha256": "933432e7504707f433f3b9c6f8ca657c62ed5c77e906ca85e8f414a80c6ab2db"
+    },
+    {
+      "alert_id": "3732594e-0715-59d7-a28c-bc17fa9cea37",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "da25a1855d4691cc8b6e24ddad4dbc5ff78cbbf2069580037dcceb9062f75829"
+    },
+    {
+      "alert_id": "3802377e-f3dc-511e-be71-0be5fd6f0446",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "720926720394b3f15991248677779dffc825c0ac7b85cefd1d28dd6403b45355"
+    },
+    {
+      "alert_id": "38638075-6d21-5469-abbc-0a3c2444a64e",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "762fbfb56a5ec664a03660e31be6736c7e5fbe4160c0fee8ffd2bd9af1a2bf59"
+    },
+    {
+      "alert_id": "3880b8b2-9077-52e4-9dd2-13e21461e89f",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "9a9e1c3744c82f03513784beed795803d5240b65ea7cebbdf89950decfbbb1bf"
+    },
+    {
+      "alert_id": "394596aa-dec7-5032-af2f-4fd5a5202e04",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "8e244f9da390353a2d4c942a9c42123f697f83fab0aedd8a98e9705f30c340b8"
+    },
+    {
+      "alert_id": "394fae6e-6524-53ef-ab58-8cdd90ca0dc3",
+      "estrato": "Normal_Group",
+      "payload_sha256": "7bf80236c1f1b76d51d24b7cfd9302b5b5d9f340f838347c5ac68b11ff072fc1"
+    },
+    {
+      "alert_id": "3959e7fd-6f53-5205-8618-ce74d834b538",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "ef67eadb7e47bcac1938c2c443236ab421c797637b73792ab3c8c8a306b17051"
+    },
+    {
+      "alert_id": "39b81864-3c22-54de-9a5b-e0153fb2be27",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "d320063414d502a52ec9785470cd9430e6b8b62e776c16386de936d15b92e37d"
+    },
+    {
+      "alert_id": "39c0d673-13f0-532a-9bf1-d12235974d9c",
+      "estrato": "Smurfing",
+      "payload_sha256": "9d4bcb788abe93c53af5a668614245f27591c6958d9375d97a5a7e0f0301f89d"
+    },
+    {
+      "alert_id": "39efed38-6371-5aa9-a2cf-dd0d23880d61",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "02f56f94874b97e3bc60ab00d85ab3b915e94d271fe9bfea69cae1081a60f087"
+    },
+    {
+      "alert_id": "3a7f2541-12bf-5cb3-9814-0a90d1090c62",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "d4acc00200f5b5d15b6b941a5bdd1b9564bac122853573056213b5898c4c8fa6"
+    },
+    {
+      "alert_id": "3ad95a31-bcf3-53f4-82e2-9ec2cfda81de",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "549704373c14570d97d93218c8b4efdfc544aa7ab383e25b63201a1d8e48aa7b"
+    },
+    {
+      "alert_id": "3b26f41c-9c41-5462-bf60-ffd3c4bb7181",
+      "estrato": "Smurfing",
+      "payload_sha256": "ba628cc53bc8fc53cfc1ead4943b0384acf3ea115b56b97600bdff387082bae1"
+    },
+    {
+      "alert_id": "3b86a4f7-cb24-5922-aa77-383e12cc5570",
+      "estrato": "Fan_Out",
+      "payload_sha256": "60631e2687587d51ddb10fb41726721e99206b13f9609d27e02d64cc1ea06474"
+    },
+    {
+      "alert_id": "3be7b983-a3a1-5642-aeef-4cbf6988bb64",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "18559e5f475ee20175271deed2812170a4713623313558e601d87c502ba4d6e0"
+    },
+    {
+      "alert_id": "3c9319eb-268b-5095-b834-622ec06dba66",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "58e6e72d868efff518ffd312eecd14d2bfdfe0ecc7757b94bc7a3811c2d1e869"
+    },
+    {
+      "alert_id": "3d815bf3-52fd-5623-99a2-43a1bbcd7bcf",
+      "estrato": "Smurfing",
+      "payload_sha256": "3fe77c972dec9e4c4edde6ce464b18a93b4ea0fa9001759145d8967aa085541c"
+    },
+    {
+      "alert_id": "3e2bb44a-d77f-5264-ac39-5eae693d6c19",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "5a9fede7910da67de253ccbd0e5770bead78ff03815050f5a6976b346374b73c"
+    },
+    {
+      "alert_id": "3e3b0c51-15ec-5203-a2d0-7a5ce66f7723",
+      "estrato": "Fan_In",
+      "payload_sha256": "0da10c91e848735e0689454cb83426156ff75611a008b5f0a2b5f38954ba418f"
+    },
+    {
+      "alert_id": "3eb33752-5fa3-5407-bfe7-1d9b189b0832",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "28a493a6082a49135a5bed7ec7c14e8c31f5c8b7007db8601b2e962904b63fc4"
+    },
+    {
+      "alert_id": "3ff47ab8-34e7-5958-af09-9b54a3354b7b",
+      "estrato": "Fan_Out",
+      "payload_sha256": "3c144c8a2ad0153d90518b2e298ce11790016899b9398111f296bb75479ebdc8"
+    },
+    {
+      "alert_id": "3ff700e7-95ce-5596-b589-6b8bf913dc6f",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "223764a99738da91183e53594c50d3397ac0b8edacff4d417cc9da2badfa90e7"
+    },
+    {
+      "alert_id": "404004ee-46f7-53ca-8b72-420045f4078e",
+      "estrato": "Smurfing",
+      "payload_sha256": "45bc63b3a77aa5ce79745732a9e7f84ff562e4fe03b48ab0ea5b228a852947e1"
+    },
+    {
+      "alert_id": "411b13c4-86c8-5534-9656-42fe8c8e33ff",
+      "estrato": "Smurfing",
+      "payload_sha256": "ae70d309b8915cf5cbd7348e904f1fed35a7ea3f1614a229729d4b075fac0c05"
+    },
+    {
+      "alert_id": "41830aed-7f2c-5b90-9491-28c5faf6e1c3",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "8ac601563c8dc31f1a9199c35d2d20a82513cf5c4bb5f5593fec8ebe494e9f19"
+    },
+    {
+      "alert_id": "41c5a661-1e82-56ad-8197-25bb70f27fc8",
+      "estrato": "Fan_Out",
+      "payload_sha256": "ea76046584fe82659cbc4ec1e7d436234ff1e8cb7f6d68b919721e3fee0cc612"
+    },
+    {
+      "alert_id": "42394580-a941-5c42-85e5-ca80551cb791",
+      "estrato": "Smurfing",
+      "payload_sha256": "9fcf134cbc7b783e064f62cb5d3f91f0f2f17d7b9dbd5938e2f0962052d8e271"
+    },
+    {
+      "alert_id": "42bcbdbb-58de-51ec-b7fc-b4136802f2c4",
+      "estrato": "Smurfing",
+      "payload_sha256": "79b101fc1bb0cd780ee6f18761b0dde313ae929c780ee70b40d7a6608d5a3854"
+    },
+    {
+      "alert_id": "4494edde-4503-5cee-b64b-0eff5024c2da",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "c30ada3b652f15b5fcf542f5490eb4f444d794f3825c155d572fc1eb89c9bc6d"
+    },
+    {
+      "alert_id": "44eb9e77-1958-57f6-8a93-a55c1836d74d",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "7d3533fada180db465acce2ad16a7be562f2ef5cf0a4fceed549820be5dcaa0c"
+    },
+    {
+      "alert_id": "450e5c2e-a50b-55cd-889e-deeaa94e20b0",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "825a65efa7748a99d76d788ed7058fd4555ee3cd4f46cd043d830e2df3b9d144"
+    },
+    {
+      "alert_id": "45a6898c-6df0-54a7-ba8f-34d69530f1b8",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "c1c47909b4f45f1d240080dcc2f9672473fccb7c4f68cdc5f5130bad53dd0dc4"
+    },
+    {
+      "alert_id": "487164ca-21f9-5bdd-b191-60478e71c8dc",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "ba76e4c80e154a005ab1063b297874ac8ea29842483818ebe4500ffefd010da4"
+    },
+    {
+      "alert_id": "4898c8dd-22ae-5dd1-9d66-434b080b03e7",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "ab390221b8b5602f44b0e2d00c6e9e494f6bccb5bd2853da408adfb5d73616de"
+    },
+    {
+      "alert_id": "4993c74f-69c2-57d4-a55e-1374bd2a70be",
+      "estrato": "Normal_Group",
+      "payload_sha256": "11d74b3e446913651e1daa27d7412d17ae16ce36334c27f90d7642b6c6411900"
+    },
+    {
+      "alert_id": "49aa4b5c-185c-5c68-b447-14d8e9834ed5",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "556bbb54c45d49a9a36ff94fe8963cf6c7a7fb5450eb661f1aa7a2d7fcad0436"
+    },
+    {
+      "alert_id": "4a572520-7eeb-5e45-b271-bc5a32fd3fea",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "328f948ba80ec888a5b19caf44e04bf7426efbec9343b380ed81f680c283ff91"
+    },
+    {
+      "alert_id": "4b088e80-35e0-5788-8c7d-bf8d16e2413d",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "7263683b244ce92d6110ef08ce1790a5aac2fb6bd903826d89e37e45e0f26b44"
+    },
+    {
+      "alert_id": "4b2cd10e-f5e1-5eb3-b8a8-bbb4b013c0fd",
+      "estrato": "Smurfing",
+      "payload_sha256": "d77fe2bd58561c9f0a95954f5104199cc38a7a4f741cb72a82bdc5366f3937fd"
+    },
+    {
+      "alert_id": "4ba24a15-1953-539d-b082-e65e7016faab",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "d054cb97a240c64798e3c9a6d685d35668b68464410357fa1008300b66dcafd7"
+    },
+    {
+      "alert_id": "4c31c39d-dc05-5b96-86d2-94cc92ffa1d0",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "1252e8717af5447f41e1d011aa83b4f2a045fd8aa3125c5d52fd25168bdd3351"
+    },
+    {
+      "alert_id": "4c70b56c-8c45-5ed7-b666-073b19823651",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "0ce44b8eaafdaef51c8af32a3013fe056532c98e0d7a4dd5f981aa7171c88f5c"
+    },
+    {
+      "alert_id": "4c8610ba-3f40-580b-b1cf-eb76082b748b",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "8469d3e93bb98e5e1549bab36be479184528b5c7e6f39c7323e5353368575f87"
+    },
+    {
+      "alert_id": "4cbd1eb1-0684-5e80-989c-ab5e4b2bc36d",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "d6d924a07c77bb9cbced63458e1d0f3c4b1ec80d3708994c1687475b9bf82aff"
+    },
+    {
+      "alert_id": "4df8824b-b1bc-51dd-92a0-43da7eae18c4",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "c07c0930a0060b4c5aba95ad959ee3c4e37b041faeacff5efe800063670437c4"
+    },
+    {
+      "alert_id": "4fd0a7d1-7a2c-58f4-b4f7-657defaadf93",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "f7f7b0412aace8775dab3c62c55fa0e09ed6911f679d331a6b44ddb8d1c5d835"
+    },
+    {
+      "alert_id": "50419fda-a939-5b94-8812-ea4c86d5c4a0",
+      "estrato": "Single_large",
+      "payload_sha256": "56169cb8c1767a030320a1c64696830af1849d29b0b5b203989f8af7fddd47ac"
+    },
+    {
+      "alert_id": "504aeb98-9486-527b-a14f-40ff1fdf026b",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "4564b219fa521831b8fa2a014e9ad8c9232eda506673f53e50971dd85ae39460"
+    },
+    {
+      "alert_id": "505852ab-614d-5b4d-9dd9-fb90fc645e65",
+      "estrato": "Structuring",
+      "payload_sha256": "22b2b13fcb16d019ec548141855b0135223551582f3e311cd2bfcdd8f0cecfff"
+    },
+    {
+      "alert_id": "519ac6d7-4ccb-5e75-8d48-600fe4b2b4b2",
+      "estrato": "Fan_In",
+      "payload_sha256": "703c40a67484a37f35d4f62e9a1394c6d6078f33e36319c71443fa8b269c03d5"
+    },
+    {
+      "alert_id": "5275bcf9-f0dc-545a-bd9e-5e3cb85b3517",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "b25cd6eb914b4848861bad26fdec599c2ea9fca6d089d929e6d426ef6ed3159f"
+    },
+    {
+      "alert_id": "52e60188-f2a4-5669-8c1c-0ebe489e1f6c",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "05e93371f4ae404b097b8219e314fa4f58356defdf1d304c207c3f61779c8e14"
+    },
+    {
+      "alert_id": "52ef9545-49a8-5777-858c-56626550660d",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "cf74eb70eca12a0b2beae5997b20cf1e7f83901a535db3f13587bc0304a2faa9"
+    },
+    {
+      "alert_id": "532c8b5b-3837-5350-b9c7-6f9c4104d8de",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "9a559ad53336c3c63ef523b2acf8e2bff89e140ce85eb31c1f87442107e1cc0c"
+    },
+    {
+      "alert_id": "532fa24f-40ac-56e6-a6ac-f498946b0bea",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "7dddc3cb8330178571bbc771e8fa0f649fda538c3960e68e7abe2ca9178362b0"
+    },
+    {
+      "alert_id": "53943ce6-4451-57f5-82bb-79c462ec315f",
+      "estrato": "Structuring",
+      "payload_sha256": "fc63bdb9121e64caeadf427a00c4bbe67cc4ad8afb00eba45814d53611d063b6"
+    },
+    {
+      "alert_id": "53e84b7f-d3aa-52f7-8f32-8ad726639eca",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "5aa75b902d25e031ac4bde5d0ee5d0faa7da604488cd240f56aa0f0709e639ec"
+    },
+    {
+      "alert_id": "55337e07-351d-5bc3-bb67-10d9612a1dbe",
+      "estrato": "Cycle",
+      "payload_sha256": "6aee60f3229ee049dc6e2174e1cc967badd1492b7359ee50ca1f940a0b0c517b"
+    },
+    {
+      "alert_id": "55398dc2-ca68-58e2-bb94-576a5bb362f0",
+      "estrato": "Fan_In",
+      "payload_sha256": "8dab4e21f4960e5a62a0fe8570fbdf45896432858d71c29c5350f237acaca54c"
+    },
+    {
+      "alert_id": "55c1ccb8-d3b4-58ae-b1a8-ec4e3eb0c729",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "5cee60aec456495b9a7cdb1b9aff3bc59ede51102891de1fb162f902b12b683e"
+    },
+    {
+      "alert_id": "55f60456-4c8d-5f31-a532-7bd876ab09e1",
+      "estrato": "Smurfing",
+      "payload_sha256": "b87a66296f462a791eddf9184472c1fd8d7a1860440a131fbce54da52cc11a77"
+    },
+    {
+      "alert_id": "56caac17-132b-5b14-afa1-9726881b8fe9",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "257a01647c2627373e902d6ab737f9615ff1294e27e105cca1853330d1aad73a"
+    },
+    {
+      "alert_id": "57ac130a-0f31-5d35-9308-1f23ed6b5ad6",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "70b13f3fc6cc54e80e843882e2f07edd4925622d1198dc0fabbc13c7f3398422"
+    },
+    {
+      "alert_id": "57dc6663-4c1c-5833-89f1-537c49de5df7",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "3366ad1ba4e56f087b700585e750c580abb8ddf45ac786fbc34700e904b1a9ac"
+    },
+    {
+      "alert_id": "57ec31e4-65f6-5e67-ace2-f9deaf76332a",
+      "estrato": "Structuring",
+      "payload_sha256": "01e5d3d609dad364db2752432c04a4effc7957f8542b73cf17513167c0237b1f"
+    },
+    {
+      "alert_id": "58039f9f-35d0-5fa5-8576-ff2fb3b28a7d",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "95dd3f4d94e3014e17f66afd4cb2098c1fc951faa37ecd29633ae13b1e6d7626"
+    },
+    {
+      "alert_id": "59a842cb-e24a-5f1b-8638-f014de7d1d0c",
+      "estrato": "Structuring",
+      "payload_sha256": "448138440a3348b79f880405c1b8b23472017a6902b4d5467aa6337644e23234"
+    },
+    {
+      "alert_id": "59afa7c7-34b8-5491-89ec-7d87f397463a",
+      "estrato": "Smurfing",
+      "payload_sha256": "de72de15c522a805d62a6dc72b588f843eee2a41374cb4116d28f3c97e7685e0"
+    },
+    {
+      "alert_id": "59d40ce3-f37a-5107-965a-e0e09bbf6aef",
+      "estrato": "Smurfing",
+      "payload_sha256": "8228717fe9abcd29696b6c6fa35a5d419366afb21da531c2940a6964b91b0e09"
+    },
+    {
+      "alert_id": "5a1ba09b-195e-5c92-a417-3cb26f131390",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "4af9742e641dd389346c76144c1214b39e3bb5e5278434caa40af60213c5e6dd"
+    },
+    {
+      "alert_id": "5b3414b8-a128-5ade-b121-d43e0b8cb032",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "5cbe417141ae40527d98bd4242c7bae6e1a3f93083dfc918889d22dc166395d1"
+    },
+    {
+      "alert_id": "5ca7b5fd-684f-5a40-9f02-7e3e13414a66",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "257159681793e1a9044fcf54f86a72876923165b3550e95daa12bd8b196650d3"
+    },
+    {
+      "alert_id": "5d0317b7-05fb-5633-b0c9-16ae76e796b1",
+      "estrato": "Smurfing",
+      "payload_sha256": "a8d9a4fd318f8e3656c01b5f3c3b5003bd69ec4074849caae807b37fac200247"
+    },
+    {
+      "alert_id": "5df0de89-c25f-5383-83e8-0ed3e85abd80",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "47abef5b55a0cdb48cd3d0bef47b9413964bb2a701a07269f76581616fd348fa"
+    },
+    {
+      "alert_id": "5e4a98da-10c4-5d3b-bff8-53332daf455d",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "a25fdd1c633f12a67076a62d65d36fa2eaa22f9383e215ab3904baca62a6a306"
+    },
+    {
+      "alert_id": "5ed7bca2-6475-5fa6-be36-650f3c552830",
+      "estrato": "Smurfing",
+      "payload_sha256": "4aefc8cb2d1e189979fa6a0bb69aad04480f5088730cf307f5bdf7bb479fc1af"
+    },
+    {
+      "alert_id": "5f01996f-227f-5b95-a55e-e52ade3a0f30",
+      "estrato": "Cycle",
+      "payload_sha256": "ad39f9fb6025fc0b227f26d3f1e68527020e1f2e99c00d4040b03bc0d50a0699"
+    },
+    {
+      "alert_id": "5f39c064-899a-524c-bf69-c624d3ebb6ec",
+      "estrato": "Normal_Group",
+      "payload_sha256": "af470c57adc6eaa0db4704a380d8c581dcc00f5ebe9c9f77f7b5946edf876896"
+    },
+    {
+      "alert_id": "5f491035-be41-5c4c-8d1f-b2a75b172ce6",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "5480b3c7bcb31f1f3bcb51f8479910945ae41ff99ae97b024f8e6f6e39eaeb25"
+    },
+    {
+      "alert_id": "5f847a17-fe2e-508a-a789-d5299265f7a4",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "801d624663ab12987545a79c0e81147bb73a4862d918104e5106154246d01301"
+    },
+    {
+      "alert_id": "5f981727-3cdb-511b-9700-bd408c68cd69",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "94657d78f97799c8589bd4ebffacb80a7cdbc9f98ca9219e4ceb917241d41e4b"
+    },
+    {
+      "alert_id": "612553e8-b77f-5bbc-b53d-e7e4f596ee31",
+      "estrato": "Structuring",
+      "payload_sha256": "321d9ffd6202706c7aaed9037ca315f59b7f0c3275b564d62df7c1ee906bbc33"
+    },
+    {
+      "alert_id": "61b8e4e4-b2be-57f3-b342-7a337ff57825",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "c71846fc3fa003993b780e99456612dd8b889a1257409b41b399db3530a437e7"
+    },
+    {
+      "alert_id": "61e2b7d1-29f0-56d8-923e-600addce9ea2",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "2e497327160d47163f4b0f11c9771e4359ef425205ca9b0685f70e12bed71f4d"
+    },
+    {
+      "alert_id": "62003b3d-f1a4-511d-b7aa-c0a8cbcd3acd",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "df5a94e943c9c4a07cbefea63c95fd222f1b4afa180f5c956e051b527caf6e0a"
+    },
+    {
+      "alert_id": "622e93ee-00ee-5b27-9d83-0e73e26b962e",
+      "estrato": "Smurfing",
+      "payload_sha256": "072fd8442b63929040880d8dd4d906b430cd7bca030ae9534002f5e59680a074"
+    },
+    {
+      "alert_id": "63b2a8d3-f056-5107-998d-adaaca6e4186",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "b8d7f1d17116b7ae751f28bbeea3adce37dcf18c985f31ad6ef1de743503de77"
+    },
+    {
+      "alert_id": "647ecbf2-160c-5143-8643-63e99ab75bfe",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "434a4b1a4a0368e71647ff8d6c83edc0688c290bf7e619507a3b765249f7bb6b"
+    },
+    {
+      "alert_id": "64a63193-eb5a-59dd-a37e-c8c1d2745fd7",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "78051721c859705128b57a1e1c31c346a8c77f3a1e51519738bde7acd00b54bd"
+    },
+    {
+      "alert_id": "6637d6fc-72bb-5356-b99a-c8ebe9b44a5a",
+      "estrato": "Cycle",
+      "payload_sha256": "365dd007dc34559016369123a9e70e0c0eb185296844bd77f19b7ae93e067e36"
+    },
+    {
+      "alert_id": "68da7c83-a820-52ad-bcbe-670000903224",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "9dd180f815c29d8c6c3948edf264656bd40da65e4f1bc96cbdb0a2378eeb344e"
+    },
+    {
+      "alert_id": "68e2ced5-ba8d-5c89-8d39-9ef1877fb790",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "f8536820fcb6b34ae718e15477868f4e9febd124110f47ce6d3ba2f737df5179"
+    },
+    {
+      "alert_id": "69905c3a-1563-52be-b5d4-6df5aa2e8ec3",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "eb89dde3bd4c720d527c0e00d4b6d8f422881a352e66bfbd470582ed9b7f630a"
+    },
+    {
+      "alert_id": "6ac774fa-f082-5d68-8500-ade9a96495f8",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "b4563d5e9c300be4614eabcfaa35e063de25a81d2eb9d0dbb4aa3157de816e18"
+    },
+    {
+      "alert_id": "6ad39bf3-7292-5668-822b-6b96a0c55a4f",
+      "estrato": "Normal_Group",
+      "payload_sha256": "7d202d4f20196dfcd08d3d385bd1201bcf75625592d14a3189b33bad044a22b2"
+    },
+    {
+      "alert_id": "6b5490fb-5f67-50ef-8126-3941f5bfe19f",
+      "estrato": "Bipartite",
+      "payload_sha256": "5a35502fc2e5f47da416d3592cab452c96cd9eb1c3221add342c05cf111b46db"
+    },
+    {
+      "alert_id": "6b651003-c7a9-5a5a-8e53-e7dfc87d0dcb",
+      "estrato": "Normal_Group",
+      "payload_sha256": "0fb71bff14404a4e721c15b6a871ca88790859faf2c0b8fd065e0cdb3ffd10e4"
+    },
+    {
+      "alert_id": "6c7ea3a5-f1b8-5a76-9ce2-01518aa120e4",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "1ff9595311ab65ada06b280d472cd32a75b3d23ed6a1ac6adf1726ea660082aa"
+    },
+    {
+      "alert_id": "6cc1b055-8cec-57d7-ad58-33569f7a3843",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "2a815ab7c5290105bb1ede5e061d04a942e409553d2447985dcc0a71b77e1a47"
+    },
+    {
+      "alert_id": "6d54c245-79b2-5fb0-8e78-bf24f405b3e4",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "f6d3c65b1b7f9a06a9a4d51a8ed9df0da5800e85cffff7643835859621413b97"
+    },
+    {
+      "alert_id": "6e7d0dba-7a59-5fd8-8855-dd1ef2d6208c",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "04bc897de7ede41101b908f572f4cc49a41a1b7ffc9d61f45cc63119c1bef1bf"
+    },
+    {
+      "alert_id": "6e7d415c-68c2-55a1-a28c-3113da3bce2d",
+      "estrato": "Normal_Group",
+      "payload_sha256": "067c0d974f99417dfdf8af80bf3300163885cb66850c7815554260c386cea04d"
+    },
+    {
+      "alert_id": "6eaac4f6-e23a-57da-a7a8-2d25be76338a",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "c2c74f6668967df8f1cd8d2321c322d114bd8a660eb79c9c76d6c15107bf0d0f"
+    },
+    {
+      "alert_id": "6f05bd9e-c6cd-5381-b675-2349a7ff800c",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "f939d66870bc2a122e0a9cd0a19c9fcaee74db0daa221414e78431ae7d14f067"
+    },
+    {
+      "alert_id": "6f46c842-8292-51aa-a889-3cec60f6ef45",
+      "estrato": "Structuring",
+      "payload_sha256": "b713027851047fddf941a03b0d6ce5f6c6802a2e1c7a6c18e3e3cab06fb9c599"
+    },
+    {
+      "alert_id": "6fbe1dff-6cb6-5bf0-b26c-8de4aaff3b3b",
+      "estrato": "Single_large",
+      "payload_sha256": "ffc380217d4208e8d7edbcbacb89a8b44ab93dd49a704f597a3e3931037de938"
+    },
+    {
+      "alert_id": "6fd23ef5-bb89-5660-b24c-3c44923b319c",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "faefce994567d1608457c6cad2f4c251d36180ecb1012655cc24fff019ba3ca7"
+    },
+    {
+      "alert_id": "70097123-07b3-543a-8384-e99260da8cc2",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "2b14a31c20cbbbeefbee95b30bf361fe32226783f29aa5e86e77c826eb0102cd"
+    },
+    {
+      "alert_id": "700b42f8-eb1d-5948-924e-74ebd39a4cec",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "e1d30d98a5e0bf09163cf027c1180e15c28d501f5cc2a2808d907dc73f84a15c"
+    },
+    {
+      "alert_id": "705a45cc-125f-53a5-9362-366841fdbdda",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "9aff48c1c478cf1371b9193fdf2f3444d3cea68fdadd5832699cb5f7065ab906"
+    },
+    {
+      "alert_id": "706e1bff-87d9-5dd7-987f-26bcebd2a482",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "0a626ff488af14ccd08c6091527091a83583af86be55713c80783086ab504161"
+    },
+    {
+      "alert_id": "707dfc2a-26e8-5fdc-b330-fecfe495e9e2",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "83e1db0f719c8ae1eab92bfd891ef0952c95310f810dad76a1381d1440395525"
+    },
+    {
+      "alert_id": "70b320d8-904e-5e22-b20e-3ba14ab812cf",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "d22c63ab1bde00ee20194badb584ac3a000c1591de593b32afda96ce108abe18"
+    },
+    {
+      "alert_id": "70c82e81-cdff-5751-af72-b563a4d235fe",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "95080d376329272fbf43dedd34779e0ad1a3213d157d8e92a71e85ab2e945a17"
+    },
+    {
+      "alert_id": "71157090-f444-5052-9b60-53fc9e59f912",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "21b0945050f229f3ee27eb1cc0fd992babc53e9fc43c37a07732971a029cb9c2"
+    },
+    {
+      "alert_id": "715f8914-3db3-5b69-adb5-85cddfd5d1ef",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "e601880acaf24f8e19261e070a16e5a54fa6dad97a8e1ea98b5ce3bc4fe43aa2"
+    },
+    {
+      "alert_id": "71df0705-dc94-5b80-a1ee-1031481e7cd8",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "c571d66ce2976c5f912fed92c2f49ecce1a4b6eb45d33a69b734441ddb2e4fad"
+    },
+    {
+      "alert_id": "722d072a-58f8-5565-99b1-8c832594bdf4",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "70cc8368a698ff38469059451a36b720c5e9ca777c7bdbcd2079c316e7611ac9"
+    },
+    {
+      "alert_id": "725a7ed0-46a8-5ab7-8033-2d695bb3d98c",
+      "estrato": "Fan_In",
+      "payload_sha256": "a33eff465b0a5eb3cd327d2e091d9d1dff34a2d2e11a0ddd97e5c04d944339f0"
+    },
+    {
+      "alert_id": "726851af-c0b2-54cf-b99b-555f1aac1f76",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "9c706969a412385e9868f1d2d825e89030daa67da227bf501ee34d7694733088"
+    },
+    {
+      "alert_id": "727075c1-9c4d-5daa-b3e5-cf97b59ccccd",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "b7afaba27a9e7614f3cc465c6c0ad19fc6c2e2d2864e7cbc24a850833937dbe1"
+    },
+    {
+      "alert_id": "73198834-1079-5641-b14f-d4ac981545d2",
+      "estrato": "Smurfing",
+      "payload_sha256": "8d99f4fc9ee102c18af24ba9c40836c39ae108d752b6677cbbc0f1a82095f66e"
+    },
+    {
+      "alert_id": "765a3b9f-58df-5dce-8386-cb2648a1fba9",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "37075d865c1ae5669ae9ac7e715212012d473e60df2e85318f48c27ef4424cf8"
+    },
+    {
+      "alert_id": "76733e73-8c2e-51e2-8234-0be31499ee73",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "75107bf9a1166249db4217d434a35862e0d5c9d81b1e324c383b274f534b230a"
+    },
+    {
+      "alert_id": "7713a724-b066-5064-8152-b26bfe643c6e",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "78f0933933c702ad8e5888f174f8b2f4faef768b5f87d4aea6bd002c5f427713"
+    },
+    {
+      "alert_id": "773e0089-68c1-5054-87c4-0d05c455bb55",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "7950abe03a38393234336e00d5f0db9a70ca3ac031942e9f798fa05e38f5ca56"
+    },
+    {
+      "alert_id": "78d56329-5c11-5d56-8618-218683f437a4",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "9bec02a39a68f46f1592939c258cb505215461fb49c89043c412f8024ca20307"
+    },
+    {
+      "alert_id": "79c01cef-2a94-5efc-b8f0-4879bec19fd6",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "15a716399cf585c5655d48ad3070f8a3129d23e48c68b6a7ed08cf6bcb9bfed4"
+    },
+    {
+      "alert_id": "79ef6400-7355-5f70-a1d3-fdc281ac5a3f",
+      "estrato": "Normal_Cash_Deposits",
+      "payload_sha256": "7363b20b6202c0fe753bc19e87cd71ffedc081e84986da8e361663141b7efb7c"
+    },
+    {
+      "alert_id": "7a384e95-743c-51fe-b3fc-56260d2e9d6a",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "f53fdb6e3562f06851f396b655506533ffa48ed02c3f3a3a2cf2720d84675e17"
+    },
+    {
+      "alert_id": "7af10b79-7918-5cf5-8eb3-cabacbb11476",
+      "estrato": "Smurfing",
+      "payload_sha256": "616f120bc6822dce8d53cfdfbd5537bee807b08e4e1200d87030148251b5eb35"
+    },
+    {
+      "alert_id": "7ba016a2-05c1-5d13-b74b-f8b125ee68bb",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "148fcfe483dcdc31fce8b82123749b41d4d1a26a37b15404e701f3aaf70b77a7"
+    },
+    {
+      "alert_id": "7bc0b6ce-b502-568f-b0e2-2d5d8ae2bc71",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "d1450ecda4325576e8020f33fe16dd399a1b747f740d4363988ec099f274b9c0"
+    },
+    {
+      "alert_id": "7c8b54e1-1fe1-530a-9884-3eb7c61780ce",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "d54e8497da636316d71070731af09ed20a9760d90300ed3a8cfd649087943566"
+    },
+    {
+      "alert_id": "7df9f381-4066-5ea6-a84b-51d46f424f41",
+      "estrato": "Structuring",
+      "payload_sha256": "5c9fa45852239063c63da8df4b02eb4c77054ac135639722e02601a5b6d05ae9"
+    },
+    {
+      "alert_id": "7eb2726d-a6d5-55ab-a260-76b83327f6f4",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "7427bfba3cbccb943c10414ea3069afac44a84facf3ef5c52d0629d35cd03a9a"
+    },
+    {
+      "alert_id": "7ec36201-e4f1-50f7-823f-1f1f918c6f78",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "60ac607a14597273e70c58be246185a8b327294ad597b7794f2b94d13bdea326"
+    },
+    {
+      "alert_id": "7ee2a985-7a18-5eb7-b168-130ed5bfe81b",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "24455ef524f5866c1e576a0c86992e78fb1e4d2fd59b0309a6d236dfaf59b8a3"
+    },
+    {
+      "alert_id": "7fbe871b-7733-5ecd-8dca-4aebb4e45c12",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "36d20a8e082de5a57d43890746c1715e47147740703bfebc52e741cc9ad310b6"
+    },
+    {
+      "alert_id": "7fe72132-35c9-53b9-8b14-e274b47c3e9c",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "4af3a01bfa1a32d6c357fcd0543c9cb3e4509094b6fded70c785696135698fae"
+    },
+    {
+      "alert_id": "8107f81d-e19c-5543-aaed-b5cd8aa19bb8",
+      "estrato": "Cycle",
+      "payload_sha256": "ad1dcef59b9928c60475688a21c623873c42aa8bb26cf8ebafcd4ebebc5fa372"
+    },
+    {
+      "alert_id": "814570ec-95da-542c-bae6-5a1a01672be9",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "0c827241f3ab463b025aeb9fe3dc1404a5d841ba4403000b69a0499dabf4a7bd"
+    },
+    {
+      "alert_id": "81b1591d-ffa4-556f-8197-8e912d3529c5",
+      "estrato": "Single_large",
+      "payload_sha256": "463b1cbc3c14609d123b71345d00aa275399e1ad8102e589f437b1f920d838f8"
+    },
+    {
+      "alert_id": "830317ed-3b00-5ae2-abc5-0a66db234616",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "383f80dca6b083a01ef4381196b274c6978b1981392b5b92d8599dd7649e817e"
+    },
+    {
+      "alert_id": "83587237-45a6-525f-8c9d-c4657e0a2e54",
+      "estrato": "Smurfing",
+      "payload_sha256": "eb7428f67183007bc6d7bf4685fbf04bfa8691980aee1ee2aed992824d4676a3"
+    },
+    {
+      "alert_id": "844cf997-9231-5fce-bfe9-93f93ea70774",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "3e4065ddb68ed300049643687bed28bac73f52d62ecdb6b44d82194e1094a2d0"
+    },
+    {
+      "alert_id": "849aff46-b9fc-545d-a168-1051dd3dbbd5",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "fdb1329337b953fac3d9d82e26fae81e2cf73d74af01bb52b1bcac9152cd06a7"
+    },
+    {
+      "alert_id": "84dc808f-1a5a-530d-8444-9867169592ea",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "fa60f993f6c798d6ec712345f9d14bbb5e65d4b2cf8befa9bad15d94f66d140e"
+    },
+    {
+      "alert_id": "85028b50-086f-5830-997f-c5e1474936d0",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "f4cbaa1fd765e3e1fba98d2432b6a530e36137138d076b86cdfe8ad70e72713e"
+    },
+    {
+      "alert_id": "85687e2e-b82a-58db-a1c9-eab201cccc19",
+      "estrato": "Structuring",
+      "payload_sha256": "c21c96d30f7630f18a235056a759e45d5f93de0b11ca5fe73f197f880db94112"
+    },
+    {
+      "alert_id": "858729bf-1eb5-51f7-af27-122692375f7d",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "2ff788d6ecf723e1aef4783348bbe7d21a4b270cbac99adeab74bd9e3838a517"
+    },
+    {
+      "alert_id": "858fb9b5-6cb9-5189-b030-7be1f7162646",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "25687de7041a1aaa59313fe44e872faea5f8534091c40db76b7b63e6227bb7e4"
+    },
+    {
+      "alert_id": "866131f0-cb84-531e-8b03-35833c81dd60",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "6c93458f9a6c5ceaab4db7c27a7c410fce2d1973d1ac90c57b0af29189f79287"
+    },
+    {
+      "alert_id": "87c2158f-6522-575c-97b4-db522705be68",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "fe4034e465479d632945681b0ee50284683a4913778c88b6507b0bf87680c44d"
+    },
+    {
+      "alert_id": "88d5f057-662b-5e16-9826-909cd415bef4",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "b4394aff9228c22c863cab3ec617592dad3bf193d801b553f80f9d352b6f4a16"
+    },
+    {
+      "alert_id": "89120709-7f94-59f4-9de1-7a6adb23924c",
+      "estrato": "Single_large",
+      "payload_sha256": "fa4f6c8a590bfe1b8769c8610ad93ef5fb5b002fd77c429450cc680df393b7f5"
+    },
+    {
+      "alert_id": "8a0dcc42-ea28-5908-8cdc-ecc46b100c85",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "9a4b92ac4f62aa5fc9f737834eff96a10a542d41d8e058a2a5cade957e107f06"
+    },
+    {
+      "alert_id": "8b3093fb-9848-5c6e-8e02-cc458b74fb68",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "b0e05682535af510c2585b2c473bb54ac0ce4e51d398cb47fa8d2a645ddfaf47"
+    },
+    {
+      "alert_id": "8b648047-5d1d-5a4e-9c59-6edb96e528bf",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "cd8691f6b3b191d20687e4020b0a29193f7da9e38efb332702911f815a5a7bdb"
+    },
+    {
+      "alert_id": "8bc2250f-b469-5769-aae1-806986d950d7",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "5f62544c701eb0f4191adafe2f93c76750514d7acc8144ee03a864a9609c4e7d"
+    },
+    {
+      "alert_id": "8c0463e3-64ee-5011-bbdc-00b886c0d6b0",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "cdbba7454aefb7cdaaca73e57b1d5583691b70b19a2ba6bb9b681a0a2c31c32d"
+    },
+    {
+      "alert_id": "8c1a0ffd-650e-54f2-8cf1-bc4085046918",
+      "estrato": "Bipartite",
+      "payload_sha256": "b7c16aeb431beb3c32cd0ec0f5fe23b04f10c1ee995542348334705c6cb5c3b7"
+    },
+    {
+      "alert_id": "8ddad6cd-fb06-5bbd-ac1f-39223a70f24e",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "96798aaabe4087da9f767eb43b7f28efdbae4c87b3deeb9b2ab08c782b8a54a8"
+    },
+    {
+      "alert_id": "8e26404d-9300-5141-a4cb-0b73f2cfcb83",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "f5994d0cc4e0a38436dff3f5c57b632177b19b493316bc684d685287c90027e0"
+    },
+    {
+      "alert_id": "8e2c0171-2105-502d-9c4e-5ccf64faf9fd",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "de348b16e8eecec0ec41b9986784da2eb2fdd283a634e87e5fe0de4358342729"
+    },
+    {
+      "alert_id": "8e497ffc-ef70-5c9d-80f1-224840266514",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "7953842307d78a10ac963975f39b5db6acb97933a53def2355b8e98b9a1fc9d6"
+    },
+    {
+      "alert_id": "8e729524-887e-5a30-99c9-f0e25314b4e9",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "ff3e907ea69744905e20599e3bd3dad1847daf13d1da49fb75c4edab456c81de"
+    },
+    {
+      "alert_id": "8ea417cb-2a5b-5492-8f9a-2ac12e3ef5fa",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "0215d712241d0863a55ca00170b46eae5d196e1ae5bfcec5d77ba73211456045"
+    },
+    {
+      "alert_id": "8ec81ef9-2c6d-5307-8ce9-b72e91bb95ba",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "95bcc3cf83bd7672107b05526c551a7e328825a6f57731294d3460f54ee73fce"
+    },
+    {
+      "alert_id": "8f3eb28a-4c69-53dc-8a27-44ddd8217800",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "fab737d3786faca73af7cc65a3ebd7c28b7193e5f045ec70d052c027591cbe73"
+    },
+    {
+      "alert_id": "8faa0c27-1d9b-5de5-a578-9afedd44f04c",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "d91fd99f24429f3d5cf3b132f0b38d3d4a125af4d43f847c1f54da570e839e51"
+    },
+    {
+      "alert_id": "8fb012a6-44fa-53f2-b4e9-9f47383270cc",
+      "estrato": "Normal_Group",
+      "payload_sha256": "197e7cfdfbe3ffa1ee1802f471d01c140c51023d9dec3a0c797fb0cb076e47c5"
+    },
+    {
+      "alert_id": "900e4973-56bc-5f2e-bd9d-5689f3dc72cb",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "36c6a9ea03026f164c6fccfd39ef7fa37ba9dffd1ef512b6dddf82c381a77304"
+    },
+    {
+      "alert_id": "9064e962-450d-5f82-a739-673fcf6372ea",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "53f54b929abb364e47c56ac529ee7286e07e287da8df9e708a96348c84c1784e"
+    },
+    {
+      "alert_id": "90aa4900-d2fd-58e3-a9f0-bc6fcd7fb4c8",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "c6457a83df20c798a03f95ac04182dcd587014ed09a5c9bc67ccf7f107f0eede"
+    },
+    {
+      "alert_id": "911716a7-39d4-561c-a059-5e9e21035f02",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "23bd467f1f5924b74e11288fc1e85da5790b81a5eba30e2ae4894f1aa6965c55"
+    },
+    {
+      "alert_id": "91790edf-fb4f-5c11-861c-2acc8bd874b5",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "04775f7df483bb13cd612a8d7d9784fb6770eae35fd8eaef583da9653dcea0f5"
+    },
+    {
+      "alert_id": "91ca84e3-ae4a-523a-8514-7cd895f9dce4",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "00cc931380a83d00f1d2deefe6bf10f09f9ae47ec8655ccf889c555b288a2311"
+    },
+    {
+      "alert_id": "927d7428-0d34-579a-ac17-4b7f62412d31",
+      "estrato": "Bipartite",
+      "payload_sha256": "b4ac39b366349c80aacaf659d263a6c4b78274994618fd3c4ba182b778dcd781"
+    },
+    {
+      "alert_id": "92949eca-5afe-56f0-82a8-7df0a170379e",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "f1c823bb0ca84b14746b81d6d1b07fcd674f63e59696c5d607b0bee039817eb4"
+    },
+    {
+      "alert_id": "930fa2aa-833c-5b39-94e2-ca0362994ab7",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "405f31bd2aa9b970f9a54c4222b350be27093d7bd39a955aba79c0a9394b2c9a"
+    },
+    {
+      "alert_id": "93323bef-7741-55f6-9b43-0e389a8fd23c",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "e1c8700af1d90fbdcba084055395bb26bef62779e233d7830baa7638c8d7fb97"
+    },
+    {
+      "alert_id": "9410ead5-9e28-504d-9376-0565dfe75cf5",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "0959139d7ed15f5ffb40f76f6175bf6b44f1e04114b8792d597e50b45da59584"
+    },
+    {
+      "alert_id": "94c6c511-c185-5507-87a0-66d36b099013",
+      "estrato": "Bipartite",
+      "payload_sha256": "21df3236bdbbcbf99bb9f9c079e194db3714348dfb3e5ba89b21a9f8e3636d7a"
+    },
+    {
+      "alert_id": "9557c6e8-47f3-5adf-9449-377e629d65ac",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "d8410ede25ae8283521b61d824fd3b960ff178dfb0b54ed234fdda281c49129b"
+    },
+    {
+      "alert_id": "957ad536-b4b4-50eb-871c-905d9c9425b7",
+      "estrato": "Normal_Group",
+      "payload_sha256": "0d2d80be1f5ebdc8a9d1396c06211446f9caa7e2178cb0d8fc7827f1453d33c3"
+    },
+    {
+      "alert_id": "95a99e51-278c-535e-926f-dc1b130fefb5",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "867509ea404beac3d7eeeb56e37a42aee721fb0932e8cc6394d0f7b3e59543a1"
+    },
+    {
+      "alert_id": "95ae1d17-1c54-5ed1-afb3-b5a975caae2b",
+      "estrato": "Normal_Group",
+      "payload_sha256": "83d2bb69774306fdfa202c59f1e3a2ccfbb2421edf7fb82f055aebdf2eda3434"
+    },
+    {
+      "alert_id": "97b5b0db-28da-58a2-8fa9-7f05182610f9",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "01898efc91f872d5d8f1d1db7ca8434eff61f3cdf46bfac657883ad9b852d43c"
+    },
+    {
+      "alert_id": "9802a4a0-360d-5ec0-ac67-c07e513d3f54",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "8dfc87e575af0cdd899518d17fc16b7f16182ea7cd656e1463b6e77355c2b189"
+    },
+    {
+      "alert_id": "981080df-4aa4-5741-9d93-036126f142f4",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "0b366510274bfe8d45bb33ab48fb8174942b5e23113093de56bb1c3d2492bc1c"
+    },
+    {
+      "alert_id": "9838b218-4a4b-5603-9f30-edd526be1a4f",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "bf407912873c005c90fa355fa883267adb3b1e9a73005b0b71e748a4b337fbb4"
+    },
+    {
+      "alert_id": "986cff99-32f5-578d-a88f-8db2d163612d",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "7ea7371400ede30796a7be76fc9595c58ee211acd4929a1aa1c3efa9ee6615bb"
+    },
+    {
+      "alert_id": "99d11a3c-1b46-5d34-983b-488fa98298e5",
+      "estrato": "Structuring",
+      "payload_sha256": "4d94e1914ec514ecdd8e447d3b5a9d3b7107d56384328e85c3d4f7bd1d4e87ca"
+    },
+    {
+      "alert_id": "99f7c078-a3f7-541a-a81f-48fdc023e3ce",
+      "estrato": "Structuring",
+      "payload_sha256": "df568ab02a35e661653bd231cc757e3530c6b867551664effe14b14c03c934f8"
+    },
+    {
+      "alert_id": "9a2f0105-2129-579b-bfae-6a75fcf8875d",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "5c8f16016571888c347289b519da184d708cb93350dffa76de30659d05b90426"
+    },
+    {
+      "alert_id": "9a7c08dd-4ee2-505a-8bcd-ff61e57c88e9",
+      "estrato": "Single_large",
+      "payload_sha256": "e146ebec1138a2fe8ad14b7274e93fc90aa30b2828c1ca28dee0a960cf4becf4"
+    },
+    {
+      "alert_id": "9aa51af0-4baa-5e43-a83c-f2fb1a521c3d",
+      "estrato": "Normal_Group",
+      "payload_sha256": "a008732c9ba9b91e072613dbed193cb0378cbe581f7930c9e56b794e0dec880e"
+    },
+    {
+      "alert_id": "9add0b68-5043-58d6-b5c9-de0470a52670",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "7144c48b47d0a1d7b53f9257eb3e1f8a7b1b04a2653acd5b8aa0d9b1da1e8a29"
+    },
+    {
+      "alert_id": "9affd142-1956-5add-87e7-a104a20687fa",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "1e5ff387f99ff1cec15ce36a6b4247cb6a4137b0c666263ef8508ae3bbdb0dbd"
+    },
+    {
+      "alert_id": "9b5c315d-a93d-5d0a-91c4-43d7f2a61bc6",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "6c465fbc723baf070a3874471799737346a1a3b5c633b28c2548dde0d99cd6e8"
+    },
+    {
+      "alert_id": "9baa7479-8bfa-5de1-8bd3-a76ff0e69b2a",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "884ffda55266afca0b6d236a4d2a9ebdabc7f6cb82182b82689e077b5aee2029"
+    },
+    {
+      "alert_id": "9d6d26ee-c1b4-5f91-abc7-1e96481d705e",
+      "estrato": "Fan_In",
+      "payload_sha256": "1405ffe5def4611ea5b0ccd59696220c7c11ccf4aa1bc48beab5b932100e3817"
+    },
+    {
+      "alert_id": "9f36262e-4955-5285-8680-193c8578510a",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "f490a070b87ad24bbb27325f7f14dc120949c80ca88a748009c295e330c9301f"
+    },
+    {
+      "alert_id": "9f383ddb-d32a-54f1-8fc6-4e428d81c33b",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "3d5fc5690147ad0e425376798d08272639ee718753fec588662a23aae1d1cf74"
+    },
+    {
+      "alert_id": "a02c5fcb-7ad8-5bcd-b714-b25ab5843ad1",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "49b59bd3dd582ae3519464fb4661e738bd2acbd9524649bd68df1b1f274f6761"
+    },
+    {
+      "alert_id": "a07e66af-d01a-52c2-b1c0-5f922b8ef1ee",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "106b0fb075273e7d2f51f30b4bc728a5ec2492c34594a280266ba559f04b43bf"
+    },
+    {
+      "alert_id": "a191a500-7e5a-5744-97e1-da3c4959f7c7",
+      "estrato": "Fan_In",
+      "payload_sha256": "c73b6d679650254b751e95c5db604874ed13f7b31e07df8c168ee5b7d7650b92"
+    },
+    {
+      "alert_id": "a1c0bcb2-a1f5-5286-90a4-0c9f8c19091e",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "3eb656bdef913c144ca18e3c2b58fb8ffdc52f74d68695ed7246ca184a15c3a5"
+    },
+    {
+      "alert_id": "a24e4146-b34b-5556-9123-fd5c8a561cdd",
+      "estrato": "Structuring",
+      "payload_sha256": "c9b7f5ceb1c47bcc8c0e434384a78af110c27bc01076db500155f106009b2ba2"
+    },
+    {
+      "alert_id": "a3c0f70f-4b7f-5fe8-8d0a-21fe23dc499b",
+      "estrato": "Smurfing",
+      "payload_sha256": "c1fdd732f00aff0e03577ebec5ed216f20ff789750f5e0d1ffef2c61b4722b64"
+    },
+    {
+      "alert_id": "a4060088-e8b3-5bf3-8880-b92445c29776",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "d972d9fa2f5d293504658f45a6169337ba5690a25cf4ccc179d698e24822f86c"
+    },
+    {
+      "alert_id": "a4499d29-5324-5cf1-aa7b-92c82742f791",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "ca9fa382930e03fbe9090374e43a69a93d615656d43e040f4fb159c97fb678a4"
+    },
+    {
+      "alert_id": "a4ba16c3-797f-523e-92fc-4840d6741151",
+      "estrato": "Structuring",
+      "payload_sha256": "97c8c1e8af3e24fce7acdb3a95feec0cdd5532a5e14e2f60834466ae6e8d4493"
+    },
+    {
+      "alert_id": "a4be1a6c-17ae-5483-8ba1-1b39790a3400",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "fdd009611a9214fcc5e669ab6cabe04482ccd0ee4028e712e5e4b25ef6c6aecd"
+    },
+    {
+      "alert_id": "a5133918-eb08-5dd0-9c1f-9fed82d12f22",
+      "estrato": "Bipartite",
+      "payload_sha256": "1bc3bd9a664a7263c9c825cd440572994a4fb2d85cb91f13458727372b0c2640"
+    },
+    {
+      "alert_id": "a62f80e7-e76b-51a6-8844-de6b102aa612",
+      "estrato": "Fan_In",
+      "payload_sha256": "dbeb1fc6b78be2472103c9f9e5e7421d55e89159e48a6300c46da1635adb4c04"
+    },
+    {
+      "alert_id": "a660c1f6-38c9-5769-9ec5-c8de88c95b83",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "1a12fd2609238c15b75f30d6bab2dab5307b66eddedf0916f3c0620b739634ba"
+    },
+    {
+      "alert_id": "a67712d4-a7c7-5173-9536-e8d6435d1ea4",
+      "estrato": "Normal_Group",
+      "payload_sha256": "9742f7544d39ae701763aa5f5ff981f349b193fa1d1ea70ef8ee25174f153438"
+    },
+    {
+      "alert_id": "a753bac6-394e-5831-b71a-a84f68d8749c",
+      "estrato": "Bipartite",
+      "payload_sha256": "732cdb374fcbc0a2b4d6e507addea5b19b6c8b82bd4a69478a398d67afb677ca"
+    },
+    {
+      "alert_id": "a79f44e8-e346-56eb-8533-1f63f57892b6",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "c4b138e07d172e969b6376f88949c9a8d2fd5fb2d451d8dc689869dc562fcf75"
+    },
+    {
+      "alert_id": "a7ee9459-3511-5acb-bc43-638fa6451591",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "6f9a8b9e4e835e74e2b9fb59b21a31c6dda8c248f3f43981d12ed8c59d491554"
+    },
+    {
+      "alert_id": "a897a749-1824-54fd-a50e-39f29529b1dd",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "839d123aa86a6b138726d4c8f98750690efed64c796c1f684a6821f3482ff84a"
+    },
+    {
+      "alert_id": "a981cc95-a164-519f-aa2e-f2d9389becf1",
+      "estrato": "Smurfing",
+      "payload_sha256": "4c5b9326db2af891f43e13b5c8a1d0f1daa4abca33f377fc3b8b4b2f912ba486"
+    },
+    {
+      "alert_id": "ab6ee9f7-bf91-5807-89e4-cced528ece95",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "55bfb19b072324eac90656b6337e1c06a0436df9a6f1f8b4482152fa32af3f41"
+    },
+    {
+      "alert_id": "abc95da1-5285-5674-8787-359dd694b738",
+      "estrato": "Fan_In",
+      "payload_sha256": "068e502211037902ae551f4d71e545bd72e3982c9cd59ed5ae6044f0cd300b48"
+    },
+    {
+      "alert_id": "adb95731-abb8-5db9-9178-873da19a57fe",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "7469fa23bbd1b95c229b15898d97a39158a5893ca7db188a0a8ab1b0c92f6d61"
+    },
+    {
+      "alert_id": "aec7c11d-a06c-59d6-bc0a-52e6932677e7",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "6dab24e5a274a075d083659d602d5a997b272e1a1bbef169d46380d8fa194875"
+    },
+    {
+      "alert_id": "aec8e285-bb72-59fd-bfde-8edce3430680",
+      "estrato": "Fan_Out",
+      "payload_sha256": "9aa981a85a79e65bb4da5f3a8aae2b0ce32501947ec664b517b906fff3ebb830"
+    },
+    {
+      "alert_id": "af06cd91-38d0-5697-97a5-218b2cfde2af",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "c6fb005187130c2249652ee628f75a8f9244f046656c7c11814b994589aad298"
+    },
+    {
+      "alert_id": "afd8da61-fbce-5ad1-a5e2-7a5e03fbb753",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "a42eb0e1a32adfef892d800a48cfda51d88fa5ed19b5fbdf91de336970e14a73"
+    },
+    {
+      "alert_id": "b0a0e0e1-09ac-500f-9275-8c0d8ec2821c",
+      "estrato": "Structuring",
+      "payload_sha256": "93d5373aae5e1ff06b985a49900052934008dcda58eba0c4d4cdf01c9e488d0f"
+    },
+    {
+      "alert_id": "b0cb6377-43f7-517a-b45d-19de172ae53b",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "8626b5905d3171fb08b53273c907060743acbfb8af4d6502767764be5ad5cb27"
+    },
+    {
+      "alert_id": "b13ffa0b-4111-5411-9707-9aeb5469bc09",
+      "estrato": "Structuring",
+      "payload_sha256": "cb271d16e15db81ee5515cf0acabca3b18d5b3c0fbca77d3c7d760bd171a1b59"
+    },
+    {
+      "alert_id": "b23215b4-236d-56ea-873d-9e59f1e5e0ae",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "97a83659023e0543ea6e7463fb75fc0ff4cafcf2819bf11fb3f306aa1572ee7c"
+    },
+    {
+      "alert_id": "b2348c12-333c-5af6-9b8f-ef22bab04baf",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "acd8dbd050a71d9ff8daba273252539598f09ac8f8848606684621f52760370f"
+    },
+    {
+      "alert_id": "b264e587-47b1-5023-8d09-21eb22bb74d6",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "ec8731411a488857cfa95b219ff3bdf5a168a5d14205a837638db10b40d0ef76"
+    },
+    {
+      "alert_id": "b33e2788-9654-53f3-ad65-c0b157913005",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "88c999f0ecb23f00fb86d92e3729d4b301939eafe6a272d7a054f396f8766781"
+    },
+    {
+      "alert_id": "b38bd517-e692-530f-8fb4-9a8eff71dec1",
+      "estrato": "Smurfing",
+      "payload_sha256": "07df77dd63c475ba753bc5ed07d5397f807d5af9f7cbe9ddc184fed819b1d1bd"
+    },
+    {
+      "alert_id": "b3b6733f-b6cf-5234-bffd-3db0da08407a",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "41572e762c98a61e44d16e790f3b559c540bd95d1d71729e0182f0296fb2470e"
+    },
+    {
+      "alert_id": "b3c4a87d-b7e3-5c17-87d4-44c9ca245ec4",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "c2618626446e07b7b374d8936c0567c11036b95cd35a362cb45cbb24771446d0"
+    },
+    {
+      "alert_id": "b41ba70f-bd30-5e59-9812-0e8991e69ff3",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "e06d077c1a38204fc2ab5eb798cfacfaceadde0535fd487fb48dd4a4019a878d"
+    },
+    {
+      "alert_id": "b47b0ad8-fbea-5aaa-bb23-88f8273b45a7",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "bfafaf9e5e1d681fe2512bbcc8164e2355882ac8036ad7c663e9166620290167"
+    },
+    {
+      "alert_id": "b4c2bcbb-875f-5f39-b6eb-f0ee233d8f58",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "278828901d3c98212ccf77f77d7f77783b2e3074dc24222ad282e418de858731"
+    },
+    {
+      "alert_id": "b5009e6d-9358-5021-a2fa-57c2527f58c2",
+      "estrato": "Fan_In",
+      "payload_sha256": "2c7d3234c900fac8b78652ab09514055a9e85504f89667053cff0413bfed2cbc"
+    },
+    {
+      "alert_id": "b54cd0a4-c017-5ba1-b47e-cf23e39714ae",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "11fa9e25f43da2f2e890a44bd18fefd0f67ec456d261a9fb305b0dfc2c3dff18"
+    },
+    {
+      "alert_id": "b56accd6-f4ab-53fd-b0aa-a88472413682",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "7fb6d606b85758a263f18c6b0323d6a292f3722ebcece98326c919c28f61768d"
+    },
+    {
+      "alert_id": "b5e2b064-d663-5380-8722-61b9c4d98332",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "6a2f46a0e5779a8222b31467334249f4972551912a2d691c400d2cb6b07e10a4"
+    },
+    {
+      "alert_id": "b63d252f-445d-584f-90a4-8394e6ce872f",
+      "estrato": "Fan_In",
+      "payload_sha256": "8424898f94563942791c65a359c0011bfae9c9c54d0055da8d3fe7f7a68b6e90"
+    },
+    {
+      "alert_id": "b674a309-c4ea-5aae-9e48-d2c5b3d4063a",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "94d4c3c8cec09ea376b4bd35c44e2d04d2741cd76e19f815055f3b4a96c1b780"
+    },
+    {
+      "alert_id": "b6874bd9-1076-5d4f-be0a-2e51ead8f1ec",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "306ba66d815f915b9a2314af4eb2e5f0a14e2d5875a9d7a7bf35b1316b818c70"
+    },
+    {
+      "alert_id": "b774d369-05f7-5b08-8067-373194ebd4e1",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "7326a428a6669126f20a460104324a75e2776a8926dcf3b36640159081251737"
+    },
+    {
+      "alert_id": "b774e508-2ee4-5337-ab97-c2b05461da7f",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "e96ee4e89ae0f15537fc534f2db29b939ca3f06c9644a9e159ebdc057159d039"
+    },
+    {
+      "alert_id": "b7c4f123-9011-518e-a496-7d664b016d91",
+      "estrato": "Normal_Group",
+      "payload_sha256": "d00e5effc66e45cca7e5c1eba97bdb3c461db1c48d5e469a4a7dabb09517db69"
+    },
+    {
+      "alert_id": "b826b4b8-de3a-54fd-8dda-c5bd81e5b0a4",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "f90a97222d4ca2ee724a55eb91e24ed45c458565fd651a1a02a6aa57a8794593"
+    },
+    {
+      "alert_id": "b8f11bad-3d53-5b18-b75c-8b3c84c21ab0",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "4053c5b76f9a6af2edf7b482996a32ad8368881473ba1f8cdfe62e79e50a333c"
+    },
+    {
+      "alert_id": "b93483b1-168c-56b4-a02c-27807d9c4479",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "341bd3cc2fe2e10ef2b5b64bdb8f8848a97bc7ea2ce886103a25796be3552e27"
+    },
+    {
+      "alert_id": "b945f58f-4ff1-502e-8743-30d61d0711f3",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "e0adfffe959d63460e38a3146773bbf9d76eea292a93f0b7e6f1c1be06b52db3"
+    },
+    {
+      "alert_id": "b9ada307-cbb9-58be-8657-329d6d64248e",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "eaf33d19b6f1c023ee9831a7981d55b2b92283a8955d901734cdb741c0db694a"
+    },
+    {
+      "alert_id": "b9d588e8-de36-54ac-b25a-18dbf6d7c135",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "0c5750ec729b184ab1c2761ac7bce85ff876b8016101f183f57e3dc52c2e44eb"
+    },
+    {
+      "alert_id": "ba4c903b-c417-5ead-8ce0-a9fee20f004f",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "096c36544205fb6aac5b9808c7a090e51e1c3ce0f854723a71d977fc3c1b8229"
+    },
+    {
+      "alert_id": "ba7d6b03-81fe-532c-a25c-fc6668c4b193",
+      "estrato": "Fan_Out",
+      "payload_sha256": "43a47d8b6703e6ac2f4ecc74a96d5af178d9a6a48924946da59a5fdba9061f50"
+    },
+    {
+      "alert_id": "baa13396-d5c3-5bca-bbfb-297a318ef190",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "50d8995904414c410ef7a5f14196d8c0b5fead60898d7003cddc29d39dcdc364"
+    },
+    {
+      "alert_id": "bb091967-a40a-5e84-a11b-10bab33c9dff",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "0251aeaf7e26300a0f12ddff138f14dd7814a7be7463a55e0a8f1954e56b7dbc"
+    },
+    {
+      "alert_id": "bca86eee-9e00-5a39-93ab-5dfd38a309b0",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "a5451ea26df262de0fb7c3a8ca7bfb46ed48f356fab214c7546ed25b7f3bf92e"
+    },
+    {
+      "alert_id": "bd0fcd54-0344-5305-85d1-bea489f49fe3",
+      "estrato": "Structuring",
+      "payload_sha256": "68d5c38ba5eb9061877e7eeaef15ef409fd27033609fe7a43b75daa1140c8e2f"
+    },
+    {
+      "alert_id": "bd5029a2-d530-51b3-8d64-4f5093f2acb3",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "b0dd02681c8cf21cd78970d982aea0331fbfb8eea7dae4cfca9630ab6dbda069"
+    },
+    {
+      "alert_id": "bddc3b2d-14b2-508d-91d5-44cc6a792254",
+      "estrato": "Structuring",
+      "payload_sha256": "eb51cf3e9267af6e9b58a3c18d3dd9d13c92e3ec1bd7b69e4ba2b56ce5ef2ab8"
+    },
+    {
+      "alert_id": "beba429b-3713-5af5-8ecb-c48fb87a1cab",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "105b95e506cbf664427370718de15c9540715a5de084541d791e88fd51d50ccf"
+    },
+    {
+      "alert_id": "bef1d78a-e542-5fc4-ab85-a1245789eee8",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "aaf5b632cb1096098843763650abc7e971ab92cc9e8859cbe6d9e432f67c0ce6"
+    },
+    {
+      "alert_id": "bfe11c9d-2167-5df1-a452-c4d2db76895d",
+      "estrato": "Structuring",
+      "payload_sha256": "4058995f4cc7d4b008fe35025d4781d9a6b1ed6a3d38291b8f76d7a6febc31f2"
+    },
+    {
+      "alert_id": "c06f718d-4dcd-583a-8811-924d7802f164",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "6516b3238f24fcd9ec528b4e26ff87a8f8e9615be56670944bce7ea1cca4ce5e"
+    },
+    {
+      "alert_id": "c12492c9-2f5f-5718-81d6-821c9ddf611c",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "355a81ddbd3b4d662b106eeab9a48b90462c358f072a1611604dd3fced13bd2c"
+    },
+    {
+      "alert_id": "c1988a98-a83c-5d15-8a5c-6d06ac14c982",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "82f2cbde4e23a04f26093c81c9f830b9d2340cb400697d15fddd1d7498f8047f"
+    },
+    {
+      "alert_id": "c1a39f43-4186-5d3b-b352-571ffc027147",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "4a67189a94889068cc0f7a5021b9dcc634b1ad34e86bb738521e3d05685250ab"
+    },
+    {
+      "alert_id": "c1d9f025-133f-569b-a08c-4d98ba4e90d1",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "49174ff4f4903a5e4e15337a9ad98efe5a1e6e08306f4653bb5aa57a23baf2a2"
+    },
+    {
+      "alert_id": "c216b6aa-6568-5c40-b4e3-64a34bddf623",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "971812d4ab44a0006fd9465972cea8b053ae276a3b31f187eee0c26b6a3bd347"
+    },
+    {
+      "alert_id": "c25bf661-ceca-5e79-9c8e-bf36e629e1e1",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "b02ddc28ad4d4754efbaf56036ec2741035dd3694f160fad3862ffbed01722f9"
+    },
+    {
+      "alert_id": "c264510b-37e2-5e6a-8aa8-0dd7637f5442",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "c594a80ec153a18e3446ccd1fdeed84cbac59b2555e2a37b6c3044084c4606b5"
+    },
+    {
+      "alert_id": "c2a68c67-eda3-5b44-981c-b0d9ae64357c",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "9caf63d2399ff7f001756bc660b95cebcf166fade182ba6541109bc711439609"
+    },
+    {
+      "alert_id": "c3d5e479-9fd7-5c2a-9ae5-f7850a942125",
+      "estrato": "Bipartite",
+      "payload_sha256": "ea7b17af4c115ad0713867261d766cd29a12baf01825247ad21b6a50117307af"
+    },
+    {
+      "alert_id": "c48a7823-27ce-5731-a348-8b48926db091",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "0b537ee19bc2d9d56727c5b752711ca7f2bf6538313d944d349b3b8ee2c5bf68"
+    },
+    {
+      "alert_id": "c5652c6a-9517-58f8-9a4a-ed01676f9d97",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "5f05153ff8ff628a72a05a6177132fa4ed1bd50eb790dab7b23c08fceefafd88"
+    },
+    {
+      "alert_id": "c65f6421-3d92-55d4-816e-97a1919feabf",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "bf970ac45a6b2a9b732b62f4ae78168f912846ba54d56b96262e5ab32cedf471"
+    },
+    {
+      "alert_id": "c6c44be6-d55f-5886-9562-3acd4410b0af",
+      "estrato": "Bipartite",
+      "payload_sha256": "8a0cceeaecad9350622753c32b5cc74cb535488a38d6fb9b7644cf8211c68ba6"
+    },
+    {
+      "alert_id": "c707e2ed-9bee-5d1b-9ff8-26eb69e98bb6",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "884e31d41fe90224f9b3d1db30b34c20214eda5100aaaea35d4118dc83c12aba"
+    },
+    {
+      "alert_id": "c7112a8e-973b-55e9-a39f-560843784923",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "932c61ace5b893a84e4e26c34dd21b9ba12c2bcd8e36ede79daf4195ea6462ae"
+    },
+    {
+      "alert_id": "c76833a8-2e85-51aa-80bc-e7e874dd0a91",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "c563017e7c4f51fe8da72e016dcb8db181de91bee9fd3a7c541894841f4ec791"
+    },
+    {
+      "alert_id": "c7e0837b-bd34-569b-8546-a7e7e4ecb9ee",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "e3e25b9b8d5a00d4823f03a3b16e42ec4b82d979431f18c017f403884034688b"
+    },
+    {
+      "alert_id": "c7ec1e96-2664-5692-b928-722598441ad7",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "ce4ca56f242141c35e32f8457e594dd7c3f108686c034a2e65145f2ce8eba9c6"
+    },
+    {
+      "alert_id": "c7f5e607-3056-56da-ab7c-80b7d7f114f8",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "f611195508e317c1059030cbdcfb3994ba172346ad9e2b0b0eccc4963441a5a5"
+    },
+    {
+      "alert_id": "c8171056-1535-509e-9951-e195c9e487d7",
+      "estrato": "Single_large",
+      "payload_sha256": "c5f787ce5d85ab85f19c22a2c17b76be870a4162c2133c336998c6a7d08da439"
+    },
+    {
+      "alert_id": "c8ad0ed6-c8e6-5151-92d9-1721782b671e",
+      "estrato": "Smurfing",
+      "payload_sha256": "d27d974163c45eee2a82c6908e5b0fd1c71f8d328bc7225fa95036e856c2c92b"
+    },
+    {
+      "alert_id": "c8b74270-2623-5081-8197-f31a2655aaf6",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "f8bbcd4976204db2fa226c4c3c66e0d0adf97977e0898a0a1fb28e54ed2f002a"
+    },
+    {
+      "alert_id": "ca4993f0-00d3-5c64-92d9-326435f55356",
+      "estrato": "Single_large",
+      "payload_sha256": "6d08e8618568bafe31ecaea35094d6d89f4e6e2fad163ca2b7b55b2c7428349e"
+    },
+    {
+      "alert_id": "ca881acb-51a3-574c-8904-ffd67601d427",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "25050f8c78a3a409218e62259079d2b9716629a5e0b2920a8ec3013b88472abf"
+    },
+    {
+      "alert_id": "cad79499-340d-5541-aaf9-b0a88eaf017e",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "caaa9e37d9378710dc70292a62d3b9dd6e47d433524dc03623a198575f4c6a14"
+    },
+    {
+      "alert_id": "cba62698-4622-5d4c-b973-3927e71769b1",
+      "estrato": "Structuring",
+      "payload_sha256": "658d08940dd73e0ca77a30cb901a31c32749b3da50beb41c83687b6d2e31a854"
+    },
+    {
+      "alert_id": "cbd7e1e5-3b99-56a6-b103-96854fef452b",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "91c86c4ff3ee4335f5caf5139efac7ec38c7c49c01aeaf5e90398204b6e1aefe"
+    },
+    {
+      "alert_id": "cbfdf912-05b6-5515-be8d-658914541978",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "46d1bfc1eba7a403697081617437e3f608c2c2946e4748092481a3c4b169d8cb"
+    },
+    {
+      "alert_id": "cc275b62-6c81-56ed-9a5d-cacfd1b752d1",
+      "estrato": "Fan_Out",
+      "payload_sha256": "5a37368b9588383942a62edaa03700021c24ca34f5acfc77f691795c19787ce0"
+    },
+    {
+      "alert_id": "cc793694-8eba-56ad-9642-fbfe803f5482",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "de42a29b1b98e4954c352b21382ad619e7bd03226480895204bac4a8658eaebd"
+    },
+    {
+      "alert_id": "cda3f40a-3da6-5e8a-b249-0f555e42845f",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "172e7a04cc316a52f284e4e75662cd98894ef934be6addb87f93b12d261992eb"
+    },
+    {
+      "alert_id": "ce9d3009-0e91-557c-9426-aac5d5d5ee9c",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "c28dc6fbbfaa7e59a4a4c604215126166c20a8ed073d4678cecab28220f875fd"
+    },
+    {
+      "alert_id": "cebd1754-371c-5618-9b34-9cd2a4606894",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "1b5814b27cb2ca0936bd77ce3669f3a5b5ae1a9f05a13d023295ae3c25f29e42"
+    },
+    {
+      "alert_id": "cfd9ba96-c538-5d2e-af00-da00617e8d36",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "8aa513fb7d6f925213aa1d828365d98184ad3163053c038489fdd5ed0ce6fd21"
+    },
+    {
+      "alert_id": "d12382a1-a2e5-5894-93c7-4466902454ba",
+      "estrato": "Structuring",
+      "payload_sha256": "9877e5fdf7bab81408b95d296f9c3104b9141d4b1ac09b0af4fb9fa694f0cf44"
+    },
+    {
+      "alert_id": "d167d5c7-b7eb-5f99-9d96-6f9ac75c6512",
+      "estrato": "Structuring",
+      "payload_sha256": "f6c1c6d1eb4e1e60ce2e5443504bece734ecc8c06686f770a4459c7ef499f9e9"
+    },
+    {
+      "alert_id": "d1ce9ae6-2d4d-521a-bc7a-89dddca0611e",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "2b6c7a52a1b26f3c5f18684eecfce83f9194c63d477b0f8a8aa11e41ebcb460d"
+    },
+    {
+      "alert_id": "d1d2bc8e-359f-550b-8d40-2f887359e1c2",
+      "estrato": "Normal_Periodical",
+      "payload_sha256": "49df8195ebcf306daf3c9b0e2070f2b8ada172281af049e84eef12c4a74ab615"
+    },
+    {
+      "alert_id": "d2436aae-0d3d-5abd-91c3-23de54f74201",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "894bab0cf268faff8dd1992e80e89f3cbb0600b926f6430de889558796c2adbe"
+    },
+    {
+      "alert_id": "d2765fdf-9ced-5dd9-b949-adffaeb4f903",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "bf7437e55875a686b8cd541c2c86e302ef4ee05a41cc454528df999b185dd460"
+    },
+    {
+      "alert_id": "d2c910e9-84a1-5530-b60c-31612899a2ef",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "8169f8dd0be094f31f9ea35a5eff45ff74c686633da02ff950a67cead91a50f8"
+    },
+    {
+      "alert_id": "d36d67a4-06a4-531e-af7a-cdf828a50257",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "e2699a6205556d35f60581101f940055f7ecf2a16d9af28b5086ca622bb82938"
+    },
+    {
+      "alert_id": "d3b447ab-aa3d-570f-9027-81de7d76f352",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "307622f0e0736f4d55478813c52a21396675d48139f6cf7273f149601b992f79"
+    },
+    {
+      "alert_id": "d40dc09f-3c75-5a55-9e4f-0b1a85251ef6",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "91e84493eea0c007845bfcba0484ca7554a183e83e7bceb302e1451a8d5489d7"
+    },
+    {
+      "alert_id": "d4a0aab5-5c95-51b2-be08-47ba3c55df8c",
+      "estrato": "Smurfing",
+      "payload_sha256": "52f8749d16d201f115d54e643eefc8c6da62562b2b879d745aecb99b26daace4"
+    },
+    {
+      "alert_id": "d57743f3-fb35-5856-b329-47ec74085220",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "41da2ff87b3987763355ed8217113ab0ef6a10af5dfb3bae74d32f96b582b295"
+    },
+    {
+      "alert_id": "d5a3fd89-ecf0-511f-988d-24b775b6f0f3",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "f561f6d59570da7b13181e20bfc273cb4f38b8dbc7a382252290b6d288af11d4"
+    },
+    {
+      "alert_id": "d60a85c1-811a-5d52-b42f-5660045f2fea",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "93a512d47da11d265493e1e4cd2f932efc988965fa2ffef16b4e8a1fba8d95fe"
+    },
+    {
+      "alert_id": "d6936dfe-8e97-5b47-8eae-199bd497ac01",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "e8ced15e595400b67e8abc7115b82223272842aa2ac61e202335f3271b9e843d"
+    },
+    {
+      "alert_id": "d6f2d4d2-ee3b-52d5-ac79-fa6a7243e97d",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "e4f45381cafaff455d47933dc558903d94e5e72aa1cda17f8e52f1c8ada1a8d3"
+    },
+    {
+      "alert_id": "d70190e4-175a-5d88-b464-a4db409a843e",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "d50aa0f5b56ae4e8e46677a01402f9dba3a621fc14bb1df09b8eed34416599ed"
+    },
+    {
+      "alert_id": "d7648fd4-1ac7-5bd1-8898-b8c8ff44fec2",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "c9b79357b3bace14bff99068c2f3145fee67aa3442d780e05ddf49d32d7dc2e2"
+    },
+    {
+      "alert_id": "d7be19b5-44f5-592a-a53f-2829769d44c2",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "560cd963e01cb81b6ebec268994b8f46c3d37baba055938c5f27f7d4d3c6f42b"
+    },
+    {
+      "alert_id": "d8c190e9-a9fc-56a9-a422-9236e8c7603f",
+      "estrato": "Normal_Cash_Withdrawal",
+      "payload_sha256": "2e141d9a097b3f820558415b7f93550b267ecdc61d217f425e19541f73e3bbe9"
+    },
+    {
+      "alert_id": "d8c76978-565d-55e8-9fd2-e75462a39e61",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "02ad27bd8fccddbc14565539e3a86dfd5d26b380cbe4c5c7f246583a5bfe8349"
+    },
+    {
+      "alert_id": "d943f07e-e04b-5b84-8514-bc0ec2ab92fe",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "770293f1b4192bc02fe3698e31df0a920291890e0ddecedd3b0173b20ac33375"
+    },
+    {
+      "alert_id": "d9714b15-801b-540a-a484-a4a3782fb2cc",
+      "estrato": "Smurfing",
+      "payload_sha256": "b281355034b68bb4c2e46ecfc829d181f4ea679d511fdadc3c064b01ac5fb3bb"
+    },
+    {
+      "alert_id": "da56744e-a7cc-547a-a586-75bfb0931cc6",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "3d95c4e7a5bc31026686459310b441c628e010c09a70191373a18bcd619020bf"
+    },
+    {
+      "alert_id": "dae7da3f-7179-57e2-958f-7ac67db68f67",
+      "estrato": "Single_large",
+      "payload_sha256": "4fc3a3f2e957b8d9caf0a2836d14fd3150053789c41136d8ec01e76983c56439"
+    },
+    {
+      "alert_id": "db553023-c3b8-5399-b118-989d6869b2c4",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "4b5954ca55d5386e3b130464891995f7b8911bb00d476ddf618b2b1a1abdac3b"
+    },
+    {
+      "alert_id": "dc13a8bf-101b-5168-bf71-ad91c225a99f",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "72073253356444f551b5fde31b813d83fc581c05a5ed691c1aa3882b2d20d5ab"
+    },
+    {
+      "alert_id": "dc366e56-745f-536a-ba1f-a2e135734376",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "554536f74e123dd01c5113a4cea764f72fddb0ee4c2ce9f5c91fa8197ff6c382"
+    },
+    {
+      "alert_id": "dc3b9e03-8db9-5e4f-8608-20e57cc5cfdb",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "2706888a252ad481d21585494b316732a950fd66caddd3041732f81fabf9f65b"
+    },
+    {
+      "alert_id": "dc936a26-4416-5afc-b0f6-c09971052aa1",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "820a2f0f9bde0fcaf349f878fbcb89b03208e6f8963901be0274cc116a379a5e"
+    },
+    {
+      "alert_id": "dcacd2b6-10c8-56d0-8497-00c748e4ca48",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "cba4a43853c03b677581f68c7e1f77446def66622df9318fa1ec6991b5900ead"
+    },
+    {
+      "alert_id": "ded3b468-6a91-517b-b245-a0bb6f286e9e",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "46f05d89fdd12b47db3066d067b9f0fd0f182f51e69ec1bd1d0365bb6080fc64"
+    },
+    {
+      "alert_id": "dee16ba1-6e4a-5f03-a980-bc1bb37a2fb2",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "b989a95aef99e875d3204f5d09330bbd36357dd2c91653eaf22887c8f8283170"
+    },
+    {
+      "alert_id": "df64e6a5-e09f-50f9-9deb-69cde8568513",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "c991ae6e34429c26e96c60ceb0395a11ab91bc419724c24889f5a3d9820b7a72"
+    },
+    {
+      "alert_id": "df9b5077-ae01-5689-88a1-882fa8cc6da2",
+      "estrato": "Cash_Withdrawal",
+      "payload_sha256": "7fcd7179df0e92beda07de06c95bb35ac2bd44cb1221e4cadb00a82e0b2befaa"
+    },
+    {
+      "alert_id": "dfa2dc46-b176-514b-afb0-3591039d6b46",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "ab1fa15e4435c21b45588721d03a8540a773216adf0084b88fdc81ab34d3d49d"
+    },
+    {
+      "alert_id": "dfe0e18f-53be-533f-96c7-0c52e12a9b20",
+      "estrato": "Bipartite",
+      "payload_sha256": "32035dbb4c9fe873129b663aec472e83c6c89e74368812f13d3a51c8b2acce6e"
+    },
+    {
+      "alert_id": "e007e2f5-bc6e-5953-aea2-c9e358f9d3cc",
+      "estrato": "Normal_Mutual",
+      "payload_sha256": "7287c20c34ca877397ea50035c1693bbcfb57d40bf237e2de70c240e88859b8e"
+    },
+    {
+      "alert_id": "e08be156-0dcf-5ae0-b109-f8361d11b520",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "9f5aff34fa0f87fe89c8543850e8124bb00ea6956da3d7ec83f71e2b0e789fea"
+    },
+    {
+      "alert_id": "e14b282e-2e6a-5289-b93a-8602a6e28fd1",
+      "estrato": "Behavioural_Change_2",
+      "payload_sha256": "914dee16f39e688e269ecce49241220b4f39de81c4a35e16553cadf017b225c9"
+    },
+    {
+      "alert_id": "e1aba6ae-dd0c-5f75-824e-1d933f336632",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "ee12c5bb367d36ee9977eca28eddc54ed5f4e83b71907f95b974da5a1c7fa53f"
+    },
+    {
+      "alert_id": "e1e211ce-79c4-5a1d-ae66-8d1fa36390d6",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "b5d7bfb00ff3c70cf5eef760e5649c09b36e8a81276050c41a7b6f500ab1330a"
+    },
+    {
+      "alert_id": "e2065a4d-9832-5a6b-880f-afe77f1f9358",
+      "estrato": "Smurfing",
+      "payload_sha256": "ab394210fdd5c066a06446eea36756fae3180314a05f63404f09cbeab41389b8"
+    },
+    {
+      "alert_id": "e2bb44a3-3e98-53fe-b258-d6bce93da45a",
+      "estrato": "Structuring",
+      "payload_sha256": "7fb44a6840d9b936e6ea34cdd904268008e09916809385846512b82708af3c78"
+    },
+    {
+      "alert_id": "e350120b-bb77-5bc2-82ab-b8a9cc163558",
+      "estrato": "Normal_single_large",
+      "payload_sha256": "aede695b95dd0ccd2c908c82a0dde10049dbcd256a1d3007cbbd44733ddf0d39"
+    },
+    {
+      "alert_id": "e38a8459-9f91-5dd9-b83a-055f2297c41e",
+      "estrato": "Normal_Group",
+      "payload_sha256": "6ffcb760c6cef9df4a7c471adaee3e767dcf4624dca506b515469a2303d3cfdb"
+    },
+    {
+      "alert_id": "e3d6ebd1-fbf3-5274-94a9-72593ebde44d",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "6f78c448e510c6636afabb3f906e18680a91e4a7e0260a2670ecc3baa2adcb77"
+    },
+    {
+      "alert_id": "e3e3af3f-44fc-5da8-b9b0-a0cb540724d3",
+      "estrato": "Cycle",
+      "payload_sha256": "8c429d0b0904f2c84e244597c8c182e3ec9f1344775ed794b546b45bb4cead7d"
+    },
+    {
+      "alert_id": "e478a763-8e98-52f4-8452-d52135cbd95a",
+      "estrato": "Structuring",
+      "payload_sha256": "895b0b2556248b0fd17c442d441d3de4ac5f746ce1e7e02f52e7b6f4c6254b2c"
+    },
+    {
+      "alert_id": "e55da5aa-fa15-5494-a0a5-c6ad6cb97c1b",
+      "estrato": "Cycle",
+      "payload_sha256": "4b64e7a53a09ce535017e45db02c7f6198bfa96736558abc4613b959ae6375a7"
+    },
+    {
+      "alert_id": "e61e2f4a-318c-5e09-a010-7daa0f9998a0",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "2d869b8fee9b98fe716d40f696407077b5706a102486ff6ed9510e83cec4fa99"
+    },
+    {
+      "alert_id": "e6c5ddbf-b820-50ce-9e1b-d505c52e4810",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "a49a28d4a1e13b1365e0ca4a09bb5f1ad5fe1b080d11194ccc73f66b195dadf2"
+    },
+    {
+      "alert_id": "e6f57e84-2a8c-5dc1-a466-793e13e36af0",
+      "estrato": "Fan_Out",
+      "payload_sha256": "9b6a8f0a1d70ac080fe64d174d77f62df0495c669f9f892ee3825b5eefee1f2c"
+    },
+    {
+      "alert_id": "e708684c-7af6-5faa-b42f-7a88eb803b74",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "ddc113fa6222b506b2b42b70807cf389047d2bc920224ef40bc32281bfa7b399"
+    },
+    {
+      "alert_id": "e75d0cc9-7257-558f-a762-9194943590c4",
+      "estrato": "Gather-Scatter",
+      "payload_sha256": "ac38c43e79e2e87e455cc4de7307e3d92415b3fd4f32efe22516bf0c5d409dfb"
+    },
+    {
+      "alert_id": "e7d76e11-6f8d-5325-b710-72b6efdcaa73",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "c4835943d3be073f703895e90897ff49fd5c5e4b04532fe6a420c9a66e200c19"
+    },
+    {
+      "alert_id": "ea0c1ea7-0bd7-520e-921f-0c5ee5432fbd",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "7e2a6bf6b49d7a4bd5e9a41622015d7de58da4a3393401722fca3f89defa929e"
+    },
+    {
+      "alert_id": "eba300ac-07b4-56f7-b1a1-2a494b91f51c",
+      "estrato": "Structuring",
+      "payload_sha256": "89dd06660f13cf6821e074a3209f369c21ea9f325b0066af6644906401298617"
+    },
+    {
+      "alert_id": "ebd99363-1cc9-5bff-ab5a-7956c7a4cb30",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "df4498b190846fa47b36326a71cd16567bbac4b7f01aace15fdaa930b481e3d9"
+    },
+    {
+      "alert_id": "ec174d3b-376b-551a-942b-62576ad98b30",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "ba7cdba52bdcd073f74e6ebb0ffeb0e93911cdbce2775e302c12d1378b0c1ba5"
+    },
+    {
+      "alert_id": "ecbac92e-2e09-5b9b-a428-70b40bf9783c",
+      "estrato": "Normal_Foward",
+      "payload_sha256": "9001fd0b1a65f71446b26725b6758d4e1e67e8f7f1a25ac94a2a89bba183d3de"
+    },
+    {
+      "alert_id": "ece1a3f3-82bd-53a9-b103-a1022ae605e3",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "403783b4fb326561ac10cbfc14f15847543e867980b8a1a4b7bd3c62c12a7a95"
+    },
+    {
+      "alert_id": "ef7f602e-9872-5008-a635-c5050b3886d0",
+      "estrato": "Fan_Out",
+      "payload_sha256": "35b136128400c161d120307f6b5daea29739dd33b0dda5543278b527d00df856"
+    },
+    {
+      "alert_id": "f0ae988b-9645-5f7a-a850-82a3460690b0",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "e9f1c335e982c56413f52a4cf92040fc6c764db93843f82ee3870e8a92a5d1db"
+    },
+    {
+      "alert_id": "f15fff93-d4f1-5b15-a7f6-835cbb697783",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "7245be39cbde4b2a3231d7edbf4754daa121cc641e11871b450cab38d3e2e9a1"
+    },
+    {
+      "alert_id": "f1ffc876-7149-56e1-bb05-29ec9bf0620e",
+      "estrato": "Smurfing",
+      "payload_sha256": "444db2ddd84290b0a611ea780731e152cc7dd8f684e6b9b5a4c0b2a5e48520b6"
+    },
+    {
+      "alert_id": "f2872906-2f59-5f83-9175-cef3aad04856",
+      "estrato": "Normal_Group",
+      "payload_sha256": "480ea4ac773fdcf5a3d135f985142c68dc387737f8354c575c67f83db7e2e4ca"
+    },
+    {
+      "alert_id": "f2c7d4e1-dc70-541b-b704-c3c3e8006dca",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "ec03705651030a076f537a1a27ecca92f5c5a93dc234f8a72661038f7e2dd6f0"
+    },
+    {
+      "alert_id": "f2e12b93-ae48-561a-a089-475b8d8ee320",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "6e53320f0b548650e92171dbe3675b5be5a462055996159bbebe9bb3c345de1c"
+    },
+    {
+      "alert_id": "f40aae17-e470-5be3-82ab-99f810557f42",
+      "estrato": "Normal_Group",
+      "payload_sha256": "2219000e75f3adaa3bb635cd42cdcb2ce71e18a8db8bb8796c7010ecfef2c0d4"
+    },
+    {
+      "alert_id": "f40ba93d-b0ed-594e-9785-0d69fb0ca009",
+      "estrato": "Scatter-Gather",
+      "payload_sha256": "80406e4dd8d81aa529605afe9c6bb6a59253910ee80868f35eba550061f9002e"
+    },
+    {
+      "alert_id": "f4d469f8-cf63-5fc6-afbb-d98a6fda91fd",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "3c723b47b191ba614ee1d996f969b0e41d52a3aba79dd520b524a1a60560c717"
+    },
+    {
+      "alert_id": "f5c60bb8-8748-58ae-9709-1c9f17047936",
+      "estrato": "Normal_Group",
+      "payload_sha256": "1dc0e85fd4c0f384e076fda764c8b5727fdfce9b19501238fbda6fb12686aad2"
+    },
+    {
+      "alert_id": "f5ff07ab-12d8-5fb3-8fb4-08cc22d81268",
+      "estrato": "Structuring",
+      "payload_sha256": "1cfacefaa8a3d15f18d90d26dacf6374cadf85ce25ffa9852989236e97b7fe84"
+    },
+    {
+      "alert_id": "f6abf78e-8aeb-5901-982f-761d596b247e",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "41de52b524ea670cc575c1a1e07eb4859a850c9652113169657eb3f4d25f0221"
+    },
+    {
+      "alert_id": "f74e2ee4-7371-5fdb-ab11-5ad122860c1c",
+      "estrato": "Layered_Fan_Out",
+      "payload_sha256": "29ce8edd0139a619856aadc29fd1ecb9359d7cf468007e30d6aba1d506e2dc85"
+    },
+    {
+      "alert_id": "f75b005a-77b8-59b1-b372-991d472c0151",
+      "estrato": "Normal_Fan_Out",
+      "payload_sha256": "b502480c74624e36a9c1100a51740bcb0d9118d55096aae1995a5ec77eb297ba"
+    },
+    {
+      "alert_id": "f75e8945-2feb-5798-9236-cd8f71a2d1a4",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "3ca46e03f3ac66931fcbb3816ce5c6a62a1bc0644fd292513e402aa940576d2c"
+    },
+    {
+      "alert_id": "f76f2d0d-ff91-5207-9fbf-709fa5408c4a",
+      "estrato": "Normal_Small_Fan_Out",
+      "payload_sha256": "638f12abe6253506359275369e08f8bd4f3acff99fd4da14eadc9b0338941b98"
+    },
+    {
+      "alert_id": "f8836aeb-e98c-55d2-8413-8efe11aa5469",
+      "estrato": "Cycle",
+      "payload_sha256": "869ae730f43035bdb594e7f1810144991b2323bd4db00c1946df4d9c1bd58a87"
+    },
+    {
+      "alert_id": "fa15f025-e301-5368-874a-cd58fb42a75d",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "c239797a97ba7547c4dde81f57b3b5906670955c757f2db7f9b8158e7ede43dc"
+    },
+    {
+      "alert_id": "fa4809a3-4ee2-5b9d-8b77-ee1ebfe9ba24",
+      "estrato": "Normal_Fan_In",
+      "payload_sha256": "7308d8112c76dd7607be7dbccac163787a6ef4e0ba4f38a04a29d71cf524a352"
+    },
+    {
+      "alert_id": "fab1031a-a8a5-5ba8-be06-3f308801c9d1",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "45cc1c736d51cac64f65579a1776466dea5fb8566ddbca7dcf1b8a8de34111a0"
+    },
+    {
+      "alert_id": "fad81ec0-c774-5f9e-b3db-1d64e9386278",
+      "estrato": "Behavioural_Change_1",
+      "payload_sha256": "c43098bc60b552625fb9774e54ef5ec40b1d9bd820d223400f64c044147e55b0"
+    },
+    {
+      "alert_id": "fb73d614-ecc9-5090-9d3f-e251100d1a67",
+      "estrato": "Stacked Bipartite",
+      "payload_sha256": "df4f8a8d26ee3c1363107e22b4d351362db23257088c1d67a83cffe07d0d862f"
+    },
+    {
+      "alert_id": "fb83234a-42d1-5b60-bb9f-3833e3ae933c",
+      "estrato": "Layered_Fan_In",
+      "payload_sha256": "5add1c4fff01ed4e9f6ecbc99bd0aa091b4ba835a157e600ff5f4981acb9e0cd"
+    },
+    {
+      "alert_id": "fbefb722-5ec3-597d-948a-00e9d3b1cac5",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "bc71a8679f86f01632ec82d1cacc78bd63b1165b37375548f35236a6343b1c62"
+    },
+    {
+      "alert_id": "fc9f25ef-6e6b-582e-a597-a8125dd16acd",
+      "estrato": "Normal_Plus_Mutual",
+      "payload_sha256": "86e81bbb35b9b008ddc1af8ce3b4ab80a14103a4776d0a77f0fb1a7ce8009339"
+    },
+    {
+      "alert_id": "feddc585-b9f2-530d-a934-41992ad9de1f",
+      "estrato": "Over-Invoicing",
+      "payload_sha256": "50cfd91aa4f5f5d02b9ff02f99b0143e1e60a451a2c70f306f3df10d3a6a5a41"
+    },
+    {
+      "alert_id": "ff0ed68f-e026-547f-b9a5-df3516e28361",
+      "estrato": "Deposit-Send",
+      "payload_sha256": "b0fd13f8c4bd9edf79014b3efe0ddb9cbf9184d65d420442fbec92744ce42f19"
+    }
+  ],
+  "manifest_sha256": "22b13d813b80b210675b4c4c97b74d3367ba1a6e9e12bb74fe36dd06720f24e1"
+}
