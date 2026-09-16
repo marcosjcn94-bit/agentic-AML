@@ -1,0 +1,176 @@
+# Mapeamento do projeto (NÃO é texto da norma) entre as tipologias do SAML-D e a Carta Circular BCB 4.001/2020.
+# Fonte da tabela: SPEC.md §3.2. Critério de criticidade: indício de financiamento do terrorismo (art. 1º, IX),
+# fragmentação para evitar controles (art. 1º, I e IV) ou ocultação em camadas.
+#
+# As chaves de `tipologias` são o rótulo EXATO da coluna de tipologia do SAML-D (`Layered_Fan_In`, `Single_large`,
+# `Stacked Bipartite` com espaço); `typology` traz a grafia de exibição do enum `Typology` (DT-07). A diferença de
+# grafia é dado versionado aqui, nunca conversão implícita em código (T0.6, Ask First).
+#
+# `article_ref` (dispositivos preferenciais) e `applicability` (texto curado) alimentam a seleção determinística de
+# trechos do RF-06/ADR-013 e ficam vazios até T1.8/M4 — vazio explícito (`[]` e `null`), nunca chave omitida.
+# Mudança de enquadramento, de rótulo ou de criticidade incrementa `mapping_version` (gravado em cada dossiê).
+mapping_version: 1
+
+fonte:
+  referencia: "Carta Circular BCB 4.001, de 29 de janeiro de 2020, art. 1º"
+  url: "https://www.bcb.gov.br/api/conteudo/app/normativos/exibenormativo?p1=Carta%20Circular&p2=4001"
+
+aprovacao:
+  por: marcosjcn94@gmail.com
+  em: 2026-09-16
+  situacao: provisorio
+  referencia: "T0.6 Ask First: chave pelo rótulo bruto do SAML-D e bloco `normais`; incisos e crítica conforme SPEC.md §3.2"
+
+# 17 rótulos suspeitos do SAML-D, na ordem da tabela do SPEC.md §3.2. As 6 primeiras são as críticas.
+tipologias:
+  Deposit-Send:
+    typology: "Deposit-Send"
+    incisos: ["IX"]          # financiamento do terrorismo
+    alineas: []
+    critica: true
+    article_ref: []
+    applicability: null
+
+  Structuring:
+    typology: "Structuring"
+    incisos: ["I", "IV"]     # espécie — fragmentação de depósitos/saques
+    alineas: ["d", "e", "k"]
+    critica: true
+    article_ref: []
+    applicability: null
+
+  Smurfing:
+    typology: "Smurfing"
+    incisos: ["I", "IV"]
+    alineas: ["d", "e", "f", "l", "m"]
+    critica: true
+    article_ref: []
+    applicability: null
+
+  Layered_Fan_In:
+    typology: "Layered Fan-In"
+    incisos: ["IV"]          # movimentação de contas
+    alineas: []
+    critica: true
+    article_ref: []
+    applicability: null
+
+  Layered_Fan_Out:
+    typology: "Layered Fan-Out"
+    incisos: ["IV"]
+    alineas: []
+    critica: true
+    article_ref: []
+    applicability: null
+
+  Stacked Bipartite:
+    typology: "Stacked Bipartite"
+    incisos: ["IV"]
+    alineas: []
+    critica: true
+    article_ref: []
+    applicability: null
+
+  Fan_Out:
+    typology: "Fan-Out"
+    incisos: ["IV"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Fan_In:
+    typology: "Fan-In"
+    incisos: ["IV"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Cycle:
+    typology: "Cycle"
+    incisos: ["IV"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Bipartite:
+    typology: "Bipartite"
+    incisos: ["IV"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Scatter-Gather:
+    typology: "Scatter-Gather"
+    incisos: ["IV"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Gather-Scatter:
+    typology: "Gather-Scatter"
+    incisos: ["IV"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Over-Invoicing:
+    typology: "Over-Invoicing"
+    incisos: ["X"]           # atividades internacionais
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Cash_Withdrawal:
+    typology: "Cash Withdrawal"
+    incisos: ["I"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Single_large:
+    typology: "Single Large Transaction"
+    incisos: ["IV"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Behavioural_Change_1:
+    typology: "Behavioural Change 1"
+    incisos: ["IV"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+  Behavioural_Change_2:
+    typology: "Behavioural Change 2"
+    incisos: ["IV"]
+    alineas: []
+    critica: false
+    article_ref: []
+    applicability: null
+
+# 11 rótulos não suspeitos do SAML-D (`Is_laundering = 0`). Não constam da tabela do SPEC.md §3.2 e não recebem
+# enquadramento na CC 4.001/2020; ficam aqui para o loader aceitá-los sem inferir inciso por omissão e para o
+# golden set do SPEC.md §8.3 (210 normais cobrindo as 11 tipologias normais).
+normais:
+  - Normal_Small_Fan_Out
+  - Normal_Fan_Out
+  - Normal_Fan_In
+  - Normal_Group
+  - Normal_Cash_Withdrawal
+  - Normal_Cash_Deposits
+  - Normal_Periodical
+  - Normal_Plus_Mutual
+  - Normal_Mutual
+  - Normal_Foward        # grafia do dataset de origem (typo de "Forward"): preservada como está no CSV
+  - Normal_single_large

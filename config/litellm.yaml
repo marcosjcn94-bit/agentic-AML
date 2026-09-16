@@ -1,0 +1,38 @@
+# Gateway de modelos (ADR-010, ADR-013, RNF-10). Provedor e modelo existem só neste arquivo; o código usa o alias.
+# Trocar de provedor = alterar apenas este arquivo e rodar scripts/evaluate.py (SPEC.md §11).
+# PoC: somente modelo local via Ollama (custo zero; nenhum dado sai da máquina).
+model_list:
+  - model_name: investigacao
+    litellm_params:
+      model: ollama_chat/qwen2.5:1.5b
+      api_base: http://localhost:11434
+      temperature: 0            # RNF-09
+      seed: 42                  # RNF-09
+      num_ctx: 2048
+      num_predict: 60           # RF-05: <= 60 tokens de saída
+      num_thread: 8             # ADR-013 (C): varredura no hardware de referência
+
+investigation:
+  model_alias: investigacao
+  aprovacao:
+    por: marcosjcn94@gmail.com
+    em: 2026-09-15
+    situacao: definitivo
+    referencia: "ADR-010 e ADR-013 (reports/benchmark-ollama-2026-09-15-v2.md)"
+
+cache:
+  enabled: true                 # RF-04: desligado nas medições de recall e grounding do golden set
+  threshold: 0.92               # RF-04: cosseno mínimo para acerto (padrão do SPEC.md)
+  aprovacao:
+    por: marcosjcn94@gmail.com
+    em: 2026-09-15
+    situacao: definitivo
+    referencia: "SPEC.md RF-04 (padrão 0,92)"
+
+selection:
+  min_score: 0.50               # RF-06: cosseno mínimo do trecho antes do RRF
+  aprovacao:
+    por: marcosjcn94@gmail.com
+    em: 2026-09-15
+    situacao: provisorio
+    referencia: "T0.5 Ask First: valor provisório de selection.min_score (RF-06)"

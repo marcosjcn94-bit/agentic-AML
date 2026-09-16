@@ -1,0 +1,47 @@
+# Arquivos excluídos de code review por agentes (python-reviewer, /code-review, pr-review-toolkit).
+# Sintaxe: git pathspec glob (`**` = qualquer profundidade). Uma entrada por linha.
+# Consumido via: grep -vE '^[[:space:]]*(#|$)' .reviewignore | sed 's/^/:(glob,exclude)/'
+
+# Lockfiles
+**/poetry.lock
+**/uv.lock
+**/Pipfile.lock
+**/pdm.lock
+**/requirements*.lock
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+**/Cargo.lock
+**/Gemfile.lock
+
+# Esquemas e migrações de banco
+**/schema.rb
+**/db/schema.rb
+**/structure.sql
+**/migrations/**
+**/alembic/versions/**
+
+# Código autogerado
+**/*_pb2.py
+**/*_pb2_grpc.py
+**/*.pb.go
+**/generated/**
+**/_generated/**
+**/*.generated.*
+**/*.min.js
+**/*.min.css
+
+# Artefatos de build, cache e relatórios
+**/dist/**
+**/build/**
+**/*.egg-info/**
+**/htmlcov/**
+**/.coverage
+**/coverage.xml
+**/__pycache__/**
+**/.ruff_cache/**
+**/.pytest_cache/**
+**/.mypy_cache/**
+**/.venv/**
+reports/**
+graphify-out/**
