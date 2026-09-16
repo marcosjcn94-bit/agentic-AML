@@ -11,11 +11,16 @@ from __future__ import annotations
 
 import random
 import sqlite3
-from collections import Counter
+from collections import Counter, defaultdict
 from collections.abc import Mapping
+from contextlib import closing
 from dataclasses import dataclass
+from pathlib import Path
 
+from aml_guardian.config.alert_rules import AlertRulesConfig
 from aml_guardian.contracts.ingestion import Alert
+from aml_guardian.sourcedata.alert_generator import gera_alertas
+from aml_guardian.sourcedata.core_db import conecta
 from aml_guardian.sourcedata.mapping import SamlDMapping
 
 
@@ -91,3 +96,61 @@ def particiona_contas(
     golden_normais = set(rng.sample(sorted(todas_normais), round(len(todas_normais) * fracao_normais)))
     golden = golden_suspeitas | golden_normais
     return ParticaoContas(golden=frozenset(golden), desenvolvimento=frozenset(todas_contas - golden))
+
+
+def constroi_estrato_pools(
+    db_path: Path,
+    regras: AlertRulesConfig,
+    mapping: SamlDMapping,
+    seed: int,
+    *,
+    fracao_suspeitas: float = 0.5,
+    fracao_normais: float = 0.3,
+) -> tuple[dict[str, list[Alert]], list[Alert]]:
+    """Devolve (pools por estrato dentro da conta golden, alertas de desenvolvimento). Um alerta cuja conta
+    caiu em `desenvolvimento` nunca entra em `pools`, mesmo que fosse elegível a algum estrato; um alerta
+    misto (`estrato_de_alerta` -> None) de conta golden é descartado de ambos, nunca reaproveitado."""
+    with closing(conecta(db_path)) as conn:
+        particao = particiona_contas(conn, seed, fracao_suspeitas=fracao_suspeitas, fracao_normais=fracao_normais)
+        rotulos = dict(conn.execute("SELECT transaction_id, laundering_type FROM transacoes"))
+
+    pools: dict[str, list[Alert]] = defaultdict(list)
+    desenvolvimento: list[Alert] = []
+    for alerta in gera_alertas(db_path, regras):
+        if alerta.sender_account not in particao.golden:
+            desenvolvimento.append(alerta)
+            continue
+        estrato = estrato_de_alerta(alerta, rotulos, mapping)
+        if estrato is not None:
+            pools[estrato].append(alerta)
+    return dict(pools), desenvolvimento
+
+
+def seleciona_golden(
+    pools: dict[str, list[Alert]],
+    mapping: SamlDMapping,
+    seed: int,
+    *,
+    por_tipologia_critica: int = 30,
+    por_tipologia_nao_critica: int = 10,
+    total_normais: int = 210,
+) -> list[tuple[Alert, str]]:
+    rng = random.Random(seed)
+    selecionados: list[tuple[Alert, str]] = []
+
+    for rotulo in sorted(mapping.tipologias):
+        quota = por_tipologia_critica if mapping.tipologias[rotulo].critica else por_tipologia_nao_critica
+        candidatos = sorted(pools.get(rotulo, []), key=lambda a: str(a.alert_id))
+        if len(candidatos) < quota:
+            raise GoldenSetError(f"{rotulo}: {len(candidatos)} alertas disponíveis na pool golden, quota {quota}")
+        for alerta in rng.sample(candidatos, quota):
+            selecionados.append((alerta, rotulo))
+
+    disponibilidade_normais = {rotulo: len(pools.get(rotulo, [])) for rotulo in mapping.normais}
+    quotas_normais = _distribui_agua(disponibilidade_normais, total_normais)
+    for rotulo in sorted(mapping.normais):
+        candidatos = sorted(pools.get(rotulo, []), key=lambda a: str(a.alert_id))
+        for alerta in rng.sample(candidatos, quotas_normais[rotulo]):
+            selecionados.append((alerta, rotulo))
+
+    return selecionados

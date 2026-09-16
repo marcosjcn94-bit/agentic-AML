@@ -4,10 +4,12 @@ import json
 import uuid
 import uuid as uuid_mod
 from contextlib import closing
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 
 import pytest
 
+from aml_guardian.config._base import Aprovacao, Situacao
+from aml_guardian.config.alert_rules import AlertRulesConfig, ContagemVelocidade, RegrasLegado, ValorElevado
 from aml_guardian.contracts.ingestion import (
     Alert,
     OccurrenceWindow,
@@ -17,7 +19,14 @@ from aml_guardian.contracts.ingestion import (
     Transaction,
 )
 from aml_guardian.sourcedata.core_db import conecta, cria_schema, grava_clientes, grava_meta, grava_transacoes
-from aml_guardian.sourcedata.golden import GoldenSetError, _distribui_agua, estrato_de_alerta, particiona_contas
+from aml_guardian.sourcedata.golden import (
+    GoldenSetError,
+    _distribui_agua,
+    constroi_estrato_pools,
+    estrato_de_alerta,
+    particiona_contas,
+    seleciona_golden,
+)
 from aml_guardian.sourcedata.golden_manifest import (
     carrega_manifesto,
     constroi_manifesto,
@@ -209,3 +218,86 @@ def test_grava_e_carrega_manifesto_ida_e_volta(tmp_path):
     assert recarregado == manifesto
     conteudo_payload = json.loads(payload_files[0].read_text(encoding="utf-8"))
     assert conteudo_payload["alert_id"] == str(selecionados[0][0].alert_id)
+
+
+_APROVACAO_TESTE = Aprovacao(
+    por="teste@teste.com", em=date(2026, 9, 16), situacao=Situacao.PROVISORIO, referencia="teste"
+)
+
+
+@pytest.fixture
+def regras_golden() -> AlertRulesConfig:
+    return AlertRulesConfig(
+        alert_rules_version=1,
+        aprovacao=_APROVACAO_TESTE,
+        regras=RegrasLegado(
+            valor_elevado=ValorElevado(descricao="teste", limiar_brl="100.00", janela_agrupamento_dias=1),
+            contagem_velocidade=ContagemVelocidade(descricao="teste", min_transacoes=99, janela_dias=1),
+        ),
+    )
+
+
+@pytest.fixture
+def banco_golden(tmp_path):
+    """1 conta = 1 alerta (uma única transação acima do limiar), rótulo fixo por conta: cobre as 6 tipologias
+    críticas e as 11 não-críticas com 20 contas cada, e as 11 normais com 20 contas cada — sem escassez, para
+    testar a integração da pool + seleção sem depender da partição aleatória acertar um rótulo raro."""
+    mapping = load_saml_d_mapping()
+    rotulos_suspeitos = list(mapping.tipologias)
+    rotulos_normais = list(mapping.normais)
+    db = tmp_path / "golden.sqlite"
+    with closing(conecta(db)) as conn:
+        cria_schema(conn)
+        contador = 0
+        clientes = []
+        transacoes = []
+        for rotulo in rotulos_suspeitos + rotulos_normais:
+            for _ in range(20):
+                conta = f"conta-{contador:04d}"
+                clientes.append(
+                    SyntheticCustomer(
+                        customer_id=f"cli-{contador}", name=f"Cliente {contador}",
+                        cpf_cnpj=f"CPF_{contador:04d}", accounts=[conta], segment="PF", restriction_flags=[],
+                    )
+                )
+                suspeita = mapping.is_suspeito(rotulo)
+                transacoes.append((_tx_conta(conta, 1), rotulo, suspeita))
+                contador += 1
+        grava_clientes(conn, clientes)
+        grava_transacoes(conn, transacoes)
+        grava_meta(conn, {"seed": 1})
+        conn.commit()
+    return db, mapping
+
+
+def test_constroi_estrato_pools_classifica_cada_conta_no_proprio_rotulo(banco_golden, regras_golden):
+    db, mapping = banco_golden
+    pools, desenvolvimento = constroi_estrato_pools(db, regras_golden, mapping, seed=20260916)
+    todos_rotulos = set(mapping.tipologias) | set(mapping.normais)
+    assert set(pools) <= todos_rotulos
+    assert len(pools) + 0 >= 1
+    total_pool = sum(len(v) for v in pools.values())
+    assert total_pool + len(desenvolvimento) == 20 * len(todos_rotulos)
+
+
+def test_seleciona_golden_bate_as_quotas_exatas(banco_golden, regras_golden):
+    db, mapping = banco_golden
+    pools, _ = constroi_estrato_pools(db, regras_golden, mapping, seed=20260916)
+    selecionados = seleciona_golden(
+        pools, mapping, seed=20260916, por_tipologia_critica=3, por_tipologia_nao_critica=2, total_normais=11
+    )
+    assert len(selecionados) == 3 * 6 + 2 * 11 + 11
+    from collections import Counter
+    contagem = Counter(estrato for _, estrato in selecionados)
+    for rotulo, tipologia in mapping.tipologias.items():
+        assert contagem[rotulo] == (3 if tipologia.critica else 2)
+    assert sum(contagem[rotulo] for rotulo in mapping.normais) == 11
+
+
+def test_seleciona_golden_levanta_erro_se_quota_maior_que_disponivel(banco_golden, regras_golden):
+    db, mapping = banco_golden
+    pools, _ = constroi_estrato_pools(db, regras_golden, mapping, seed=20260916)
+    with pytest.raises(GoldenSetError):
+        seleciona_golden(
+            pools, mapping, seed=20260916, por_tipologia_critica=999, por_tipologia_nao_critica=2, total_normais=11
+        )
