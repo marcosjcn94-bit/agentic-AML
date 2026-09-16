@@ -1,0 +1,11 @@
+# Baseline do processo manual simulado (SPEC.md §3.3, §10; ADR-005).
+# velocidade = tempo_manual_min / (latência_média_min + tempo_revisao_min); ambos gravados no relatório de avaliação.
+# Premissas do autor, sem fonte externa (SPEC.md §12): validar com especialista de compliance antes de uso em business case.
+tempo_manual_min: 120           # minutos para a equipe sênior montar um dossiê à mão
+tempo_revisao_min: 15           # minutos de revisão humana da minuta gerada
+
+aprovacao:
+  por: marcosjcn94@gmail.com
+  em: 2026-09-15
+  situacao: provisorio
+  referencia: "T0.5 Ask First: premissas do autor (SPEC.md §12)"

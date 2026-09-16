@@ -1,0 +1,33 @@
+# Regras versionadas da triagem determinística (SPEC.md RF-03, RNF-09; AGENTS.md §2.2).
+# Mudança de detector, parâmetro ou limiar incrementa rules_version e exige Ask First (SOUL.md §4).
+# Limiares se ajustam apenas com o conjunto de desenvolvimento, nunca com o golden set (SPEC.md §8.3).
+# Os quatro detectores críticos são obrigatórios; nenhum pode ser desligado aqui.
+rules_version: 1
+
+aprovacao:
+  por: marcosjcn94@gmail.com
+  em: 2026-09-15
+  situacao: provisorio
+  referencia: "T0.5 Ask First: limiares provisórios da rules_version 1; ajuste no M3 com o conjunto de desenvolvimento"
+
+detectores_criticos:
+  fragmentacao:
+    descricao: "Fragmentação: transações abaixo do limiar concentradas em janela curta"
+    critico: true
+    limiar_brl: "10000.00"      # valor por transação, em BRL decimal exato (também define F03 do DT-16)
+    min_transacoes: 3
+    janela_dias: 7
+  camadas:
+    descricao: "Dispersão ou concentração em camadas (fan-in/fan-out com profundidade mínima)"
+    critico: true
+    profundidade_minima: 2      # RF-03: profundidade >= 2
+    min_contrapartes: 3
+    janela_dias: 30
+  especie_depois_exterior:
+    descricao: "Depósito em espécie seguido de envio transfronteiriço"
+    critico: true
+    janela_dias: 7
+  lista_restricao:
+    descricao: "Acerto em lista de restrição consultada via MCP-02"
+    critico: true
+    listas: [pep, ceis, cnep]

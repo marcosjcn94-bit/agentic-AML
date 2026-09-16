@@ -1,0 +1,102 @@
+# Dias não úteis para o controle de prazo (SPEC.md RF-09): feriados de âmbito nacional + dias não úteis do mercado
+# financeiro (Res. CMN 4.880/2020, art. 6º). Sábados e domingos não são listados: o cálculo de dia útil os trata à parte.
+# Fontes conferidas no texto oficial em 2026-09-15 (Planalto e API de normativos do BCB).
+# Sexta-feira da Paixão fica fora: não consta do art. 6º da Res. CMN 4.880/2020 e, em lei federal, é feriado religioso
+# municipal (Lei 9.093/1995, art. 2º); incluí-la adiaria prazo_comunicacao sem base normativa.
+# Período: 2022-2023 cobre o provável intervalo do SAML-D (confirmar na T0.6 com o CSV real); 2024-2027 cobre as
+# decisões reais da PoC. Consulta fora do período falha no loader, nunca vira dia útil.
+periodo:
+  ano_inicio: 2022
+  ano_fim: 2027
+
+aprovacao:
+  por: marcosjcn94@gmail.com
+  em: 2026-09-15
+  situacao: definitivo
+  referencia: "T0.5 Ask First: calendário pela Res. CMN 4.880/2020, art. 6º, e leis federais de feriado nacional"
+
+fontes:
+  - id: lei_662_1949
+    referencia: "Lei nº 662/1949, art. 1º, com redação dada pela Lei nº 10.607/2002"
+    url: https://www.planalto.gov.br/ccivil_03/leis/l0662.htm
+  - id: lei_6802_1980
+    referencia: "Lei nº 6.802/1980, art. 1º (12 de outubro)"
+    url: https://www.planalto.gov.br/ccivil_03/leis/l6802.htm
+  - id: lei_14759_2023
+    referencia: "Lei nº 14.759/2023, art. 1º (20 de novembro; DOU de 22/12/2023, aplicável a partir de 2024)"
+    url: https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14759.htm
+  - id: res_cmn_4880_2020
+    referencia: "Resolução CMN nº 4.880/2020, art. 6º, I e II (segunda e terça de Carnaval; Corpus Christi)"
+    url: https://www.bcb.gov.br/api/conteudo/app/normativos/exibenormativo?p1=Resolu%C3%A7%C3%A3o%20CMN&p2=4880
+
+feriados:
+  - {data: 2022-01-01, nome: "Confraternização Universal", fonte: lei_662_1949}
+  - {data: 2022-02-28, nome: "Carnaval (segunda-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2022-03-01, nome: "Carnaval (terça-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2022-04-21, nome: "Tiradentes", fonte: lei_662_1949}
+  - {data: 2022-05-01, nome: "Dia do Trabalho", fonte: lei_662_1949}
+  - {data: 2022-06-16, nome: "Corpus Christi", fonte: res_cmn_4880_2020}
+  - {data: 2022-09-07, nome: "Independência do Brasil", fonte: lei_662_1949}
+  - {data: 2022-10-12, nome: "Nossa Senhora Aparecida", fonte: lei_6802_1980}
+  - {data: 2022-11-02, nome: "Finados", fonte: lei_662_1949}
+  - {data: 2022-11-15, nome: "Proclamação da República", fonte: lei_662_1949}
+  - {data: 2022-12-25, nome: "Natal", fonte: lei_662_1949}
+  - {data: 2023-01-01, nome: "Confraternização Universal", fonte: lei_662_1949}
+  - {data: 2023-02-20, nome: "Carnaval (segunda-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2023-02-21, nome: "Carnaval (terça-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2023-04-21, nome: "Tiradentes", fonte: lei_662_1949}
+  - {data: 2023-05-01, nome: "Dia do Trabalho", fonte: lei_662_1949}
+  - {data: 2023-06-08, nome: "Corpus Christi", fonte: res_cmn_4880_2020}
+  - {data: 2023-09-07, nome: "Independência do Brasil", fonte: lei_662_1949}
+  - {data: 2023-10-12, nome: "Nossa Senhora Aparecida", fonte: lei_6802_1980}
+  - {data: 2023-11-02, nome: "Finados", fonte: lei_662_1949}
+  - {data: 2023-11-15, nome: "Proclamação da República", fonte: lei_662_1949}
+  - {data: 2023-12-25, nome: "Natal", fonte: lei_662_1949}
+  - {data: 2024-01-01, nome: "Confraternização Universal", fonte: lei_662_1949}
+  - {data: 2024-02-12, nome: "Carnaval (segunda-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2024-02-13, nome: "Carnaval (terça-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2024-04-21, nome: "Tiradentes", fonte: lei_662_1949}
+  - {data: 2024-05-01, nome: "Dia do Trabalho", fonte: lei_662_1949}
+  - {data: 2024-05-30, nome: "Corpus Christi", fonte: res_cmn_4880_2020}
+  - {data: 2024-09-07, nome: "Independência do Brasil", fonte: lei_662_1949}
+  - {data: 2024-10-12, nome: "Nossa Senhora Aparecida", fonte: lei_6802_1980}
+  - {data: 2024-11-02, nome: "Finados", fonte: lei_662_1949}
+  - {data: 2024-11-15, nome: "Proclamação da República", fonte: lei_662_1949}
+  - {data: 2024-11-20, nome: "Dia Nacional de Zumbi e da Consciência Negra", fonte: lei_14759_2023}
+  - {data: 2024-12-25, nome: "Natal", fonte: lei_662_1949}
+  - {data: 2025-01-01, nome: "Confraternização Universal", fonte: lei_662_1949}
+  - {data: 2025-03-03, nome: "Carnaval (segunda-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2025-03-04, nome: "Carnaval (terça-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2025-04-21, nome: "Tiradentes", fonte: lei_662_1949}
+  - {data: 2025-05-01, nome: "Dia do Trabalho", fonte: lei_662_1949}
+  - {data: 2025-06-19, nome: "Corpus Christi", fonte: res_cmn_4880_2020}
+  - {data: 2025-09-07, nome: "Independência do Brasil", fonte: lei_662_1949}
+  - {data: 2025-10-12, nome: "Nossa Senhora Aparecida", fonte: lei_6802_1980}
+  - {data: 2025-11-02, nome: "Finados", fonte: lei_662_1949}
+  - {data: 2025-11-15, nome: "Proclamação da República", fonte: lei_662_1949}
+  - {data: 2025-11-20, nome: "Dia Nacional de Zumbi e da Consciência Negra", fonte: lei_14759_2023}
+  - {data: 2025-12-25, nome: "Natal", fonte: lei_662_1949}
+  - {data: 2026-01-01, nome: "Confraternização Universal", fonte: lei_662_1949}
+  - {data: 2026-02-16, nome: "Carnaval (segunda-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2026-02-17, nome: "Carnaval (terça-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2026-04-21, nome: "Tiradentes", fonte: lei_662_1949}
+  - {data: 2026-05-01, nome: "Dia do Trabalho", fonte: lei_662_1949}
+  - {data: 2026-06-04, nome: "Corpus Christi", fonte: res_cmn_4880_2020}
+  - {data: 2026-09-07, nome: "Independência do Brasil", fonte: lei_662_1949}
+  - {data: 2026-10-12, nome: "Nossa Senhora Aparecida", fonte: lei_6802_1980}
+  - {data: 2026-11-02, nome: "Finados", fonte: lei_662_1949}
+  - {data: 2026-11-15, nome: "Proclamação da República", fonte: lei_662_1949}
+  - {data: 2026-11-20, nome: "Dia Nacional de Zumbi e da Consciência Negra", fonte: lei_14759_2023}
+  - {data: 2026-12-25, nome: "Natal", fonte: lei_662_1949}
+  - {data: 2027-01-01, nome: "Confraternização Universal", fonte: lei_662_1949}
+  - {data: 2027-02-08, nome: "Carnaval (segunda-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2027-02-09, nome: "Carnaval (terça-feira)", fonte: res_cmn_4880_2020}
+  - {data: 2027-04-21, nome: "Tiradentes", fonte: lei_662_1949}
+  - {data: 2027-05-01, nome: "Dia do Trabalho", fonte: lei_662_1949}
+  - {data: 2027-05-27, nome: "Corpus Christi", fonte: res_cmn_4880_2020}
+  - {data: 2027-09-07, nome: "Independência do Brasil", fonte: lei_662_1949}
+  - {data: 2027-10-12, nome: "Nossa Senhora Aparecida", fonte: lei_6802_1980}
+  - {data: 2027-11-02, nome: "Finados", fonte: lei_662_1949}
+  - {data: 2027-11-15, nome: "Proclamação da República", fonte: lei_662_1949}
+  - {data: 2027-11-20, nome: "Dia Nacional de Zumbi e da Consciência Negra", fonte: lei_14759_2023}
+  - {data: 2027-12-25, nome: "Natal", fonte: lei_662_1949}
