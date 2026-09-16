@@ -17,11 +17,19 @@ from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
 
-from aml_guardian.config.alert_rules import AlertRulesConfig
+from aml_guardian.config.alert_rules import AlertRulesConfig, load_alert_rules
 from aml_guardian.contracts.ingestion import Alert
 from aml_guardian.sourcedata.alert_generator import gera_alertas
-from aml_guardian.sourcedata.core_db import conecta
-from aml_guardian.sourcedata.mapping import SamlDMapping
+from aml_guardian.sourcedata.core_db import CORE_DB_PATH, conecta, conteudo_sha256
+from aml_guardian.sourcedata.golden_manifest import GoldenManifest, constroi_manifesto
+from aml_guardian.sourcedata.mapping import SamlDMapping, load_saml_d_mapping
+
+SEED_PADRAO = 20260916
+FRACAO_GOLDEN_SUSPEITAS = 0.5
+FRACAO_GOLDEN_NORMAIS = 0.3
+POR_TIPOLOGIA_CRITICA = 30
+POR_TIPOLOGIA_NAO_CRITICA = 10
+TOTAL_NORMAIS = 210
 
 
 class GoldenSetError(ValueError):
@@ -154,3 +162,63 @@ def seleciona_golden(
             selecionados.append((alerta, rotulo))
 
     return selecionados
+
+
+def constroi_golden(
+    db_path: Path | None = None,
+    regras: AlertRulesConfig | None = None,
+    mapping: SamlDMapping | None = None,
+    seed: int = SEED_PADRAO,
+    *,
+    fracao_suspeitas: float = FRACAO_GOLDEN_SUSPEITAS,
+    fracao_normais: float = FRACAO_GOLDEN_NORMAIS,
+    por_tipologia_critica: int = POR_TIPOLOGIA_CRITICA,
+    por_tipologia_nao_critica: int = POR_TIPOLOGIA_NAO_CRITICA,
+    total_normais: int = TOTAL_NORMAIS,
+) -> tuple[GoldenManifest, list[tuple[Alert, str]], list[Alert]]:
+    """Orquestra a construção do golden set `v1`: particiona contas, classifica estratos, amostra as quotas e
+    congela o manifesto com hash (ADR-014). Devolve (manifesto, selecionados, desenvolvimento) para o chamador
+    decidir entre gravar em disco (`grava_golden`) ou apenas inspecionar."""
+    caminho = db_path or CORE_DB_PATH
+    config = regras or load_alert_rules()
+    mapa = mapping or load_saml_d_mapping()
+
+    pools, desenvolvimento = constroi_estrato_pools(
+        caminho, config, mapa, seed, fracao_suspeitas=fracao_suspeitas, fracao_normais=fracao_normais
+    )
+    selecionados = seleciona_golden(
+        pools, mapa, seed,
+        por_tipologia_critica=por_tipologia_critica,
+        por_tipologia_nao_critica=por_tipologia_nao_critica,
+        total_normais=total_normais,
+    )
+    with closing(conecta(caminho)) as conn:
+        core_sha = conteudo_sha256(conn)
+    manifesto = constroi_manifesto(
+        selecionados,
+        core_sintetico_sha256=core_sha,
+        alert_rules_version=config.alert_rules_version,
+        mapping_version=mapa.mapping_version,
+        seed=seed,
+    )
+    return manifesto, selecionados, desenvolvimento
+
+
+def alertas_desenvolvimento(
+    db_path: Path | None = None,
+    regras: AlertRulesConfig | None = None,
+    mapping: SamlDMapping | None = None,
+    seed: int = SEED_PADRAO,
+    *,
+    fracao_suspeitas: float = FRACAO_GOLDEN_SUSPEITAS,
+    fracao_normais: float = FRACAO_GOLDEN_NORMAIS,
+) -> list[Alert]:
+    """Conjunto de desenvolvimento (disjunto do golden por conta) para calibrar regras de triagem (T1.4).
+    Golden set MUST NOT ser usado para esse ajuste (`SPEC.md` §8.3)."""
+    caminho = db_path or CORE_DB_PATH
+    config = regras or load_alert_rules()
+    mapa = mapping or load_saml_d_mapping()
+    _, desenvolvimento = constroi_estrato_pools(
+        caminho, config, mapa, seed, fracao_suspeitas=fracao_suspeitas, fracao_normais=fracao_normais
+    )
+    return desenvolvimento

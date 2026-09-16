@@ -22,7 +22,9 @@ from aml_guardian.sourcedata.core_db import conecta, cria_schema, grava_clientes
 from aml_guardian.sourcedata.golden import (
     GoldenSetError,
     _distribui_agua,
+    alertas_desenvolvimento,
     constroi_estrato_pools,
+    constroi_golden,
     estrato_de_alerta,
     particiona_contas,
     seleciona_golden,
@@ -301,3 +303,42 @@ def test_seleciona_golden_levanta_erro_se_quota_maior_que_disponivel(banco_golde
         seleciona_golden(
             pools, mapping, seed=20260916, por_tipologia_critica=999, por_tipologia_nao_critica=2, total_normais=11
         )
+
+
+def test_constroi_golden_desenvolvimento_e_golden_sao_disjuntos_em_alerta_e_transacao(banco_golden, regras_golden):
+    db, mapping = banco_golden
+    manifesto, selecionados, desenvolvimento = constroi_golden(
+        db_path=db, regras=regras_golden, mapping=mapping, seed=20260916,
+        por_tipologia_critica=3, por_tipologia_nao_critica=2, total_normais=11,
+    )
+    ids_golden = {str(alerta.alert_id) for alerta, _ in selecionados}
+    ids_dev = {str(alerta.alert_id) for alerta in desenvolvimento}
+    assert ids_golden.isdisjoint(ids_dev)
+
+    tx_golden = {t.transaction_id for alerta, _ in selecionados for t in alerta.transactions}
+    tx_dev = {t.transaction_id for alerta in desenvolvimento for t in alerta.transactions}
+    assert tx_golden.isdisjoint(tx_dev)
+    assert manifesto.contagem_por_estrato
+
+
+def test_constroi_golden_e_reprodutivel_pela_mesma_seed(banco_golden, regras_golden):
+    db, mapping = banco_golden
+    m1, _, _ = constroi_golden(
+        db_path=db, regras=regras_golden, mapping=mapping, seed=20260916,
+        por_tipologia_critica=3, por_tipologia_nao_critica=2, total_normais=11,
+    )
+    m2, _, _ = constroi_golden(
+        db_path=db, regras=regras_golden, mapping=mapping, seed=20260916,
+        por_tipologia_critica=3, por_tipologia_nao_critica=2, total_normais=11,
+    )
+    assert m1.manifest_sha256 == m2.manifest_sha256
+
+
+def test_alertas_desenvolvimento_bate_com_constroi_golden(banco_golden, regras_golden):
+    db, mapping = banco_golden
+    _, _, desenvolvimento_a = constroi_golden(
+        db_path=db, regras=regras_golden, mapping=mapping, seed=20260916,
+        por_tipologia_critica=3, por_tipologia_nao_critica=2, total_normais=11,
+    )
+    desenvolvimento_b = alertas_desenvolvimento(db_path=db, regras=regras_golden, mapping=mapping, seed=20260916)
+    assert {a.alert_id for a in desenvolvimento_a} == {a.alert_id for a in desenvolvimento_b}
