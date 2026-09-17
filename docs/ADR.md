@@ -20,6 +20,7 @@ Este documento centraliza todas as decisões técnicas, escolhas de design e tra
 | ADR-012 | [Gestão de Chaves, Reidentificação e Observabilidade sem PII](#adr-012-gestão-de-chaves-reidentificação-e-observabilidade-sem-pii) | 2026-09-15 | Aceito |
 | ADR-013 | [Reorçamento de Latência: Seleção de Chunks Determinística e Investigação Compacta com SLM 1,5B](#adr-013-reorçamento-de-latência-seleção-de-chunks-determinística-e-investigação-compacta-com-slm-15b) | 2026-09-15 | Aceito |
 | ADR-014 | [Formato do Golden Set v1: Partição por Conta, Estrato pela Tipologia Real e Manifesto com Hash](#adr-014-formato-do-golden-set-v1-partição-por-conta-estrato-pela-tipologia-real-e-manifesto-com-hash) | 2026-09-16 | Aceito |
+| ADR-015 | [Bibliotecas de Suporte à Ingestão Normativa: Extração de PDF e BM25](#adr-015-bibliotecas-de-suporte-à-ingestão-normativa-extração-de-pdf-e-bm25) | 2026-09-17 | Aceito |
 
 ---
 
@@ -327,3 +328,24 @@ Adotou-se a **Opção 3**. Partição por conta com seed `20260916` (mesma conve
 #### Trade-offs (Consequências)
 * 🟢 **Ganhos (Prós):** disjunção golden/desenvolvimento garantida por construção (partição de conta), não por teste que poderia falhar silenciosamente com um dataset diferente; reaproveita o gerador de alertas legado já validado (T0.8), sem segunda fonte de verdade; a regra de água-viva para os normais se adapta a qualquer disponibilidade real, incluindo o caso extremo de `Normal_Cash_Deposits` com só 1 alerta disponível na pool golden; hash de manifesto permite congelar o golden set no git sem versionar dado pessoal (mesmo que sintético).
 * 🔴 **Perdas/Riscos (Contras):** `Normal_Cash_Deposits` fica sub-representado no golden set (1 de 210, não ~19) — o mais raro dos 11 normais na pool golden particionada por conta, não o total do rótulo no `core_sintetico` inteiro; qualquer métrica agregada sobre "normais" tem menos evidência para esse rótulo específico; as frações 50%/30% do split são provisórias e não recalibradas por poder estatístico formal; um alerta misto (hipoteticamente possível em dataset futuro) é descartado silenciosamente da pool golden, o que reduz a disponibilidade de uma tipologia sem alertar o operador além do `GoldenSetError` de quota insuficiente.
+
+---
+
+### ADR-015: Bibliotecas de Suporte à Ingestão Normativa: Extração de PDF e BM25
+- **Data:** 2026-09-17
+- **Status:** Aceito
+
+#### Contexto e Problema
+O RF-14 exige baixar o texto das fontes primárias (Circ. BCB 3.978/2020, CC BCB 4.001/2020) e fazer o chunking por dispositivo. As URLs de metadado do `SPEC.md` §3.1/§3.2 devolvem só o cadastro do normativo (título, datas, `Id`); o texto integral só existe nos PDFs consolidados hospedados em `normativos.bcb.gov.br`. O `SPEC.md` §6 não lista biblioteca de extração de PDF nem de BM25, e o RF-06 exige desempate por fusão de ranks (RRF) entre similaridade vetorial e BM25 sobre os trechos recuperados.
+
+#### Alternativas Consideradas
+* **Opção 1 (Sem PDF, só a API de metadado):** inviável — a API de metadado não contém o texto dos dispositivos, só o cadastro do normativo.
+* **Opção 2 (Extração de PDF com dependência pesada):** `pymupdf`/`pdfplumber`, com mais funcionalidade (layout, tabelas) do que o necessário para texto corrido de norma.
+* **Opção 3 (`pypdf` para extração + `rank-bm25` para o desempate):** bibliotecas puras Python, leves, sem dependência de binário nativo adicional, mantidas ativamente, sem SDK de nuvem proprietário (não violam a lista proibida do `SPEC.md` §6).
+
+#### Decisão Selecionada
+Adotou-se a **Opção 3**. `pypdf` extrai o texto de cada página dos PDFs consolidados baixados de `normativos.bcb.gov.br` (`aml_guardian.norms.pdf_extract`); o rodapé de paginação repetido do BCB é removido antes do chunking por dispositivo. `rank-bm25` calcula o score léxico sobre os trechos já recuperados pelo MCP-03 (vetorial), fundido por RRF na Seleção (T1.8, RF-06). Ambas isoladas em módulo próprio para trocar de biblioteca sem espalhar a dependência pelo código.
+
+#### Trade-offs (Consequências)
+* 🟢 **Ganhos (Prós):** dependências leves e sem binário nativo extra (`pypdf` é puro Python sobre bytes de PDF); instalação idêntica em Windows/Linux; escopo mínimo suficiente para texto corrido de norma, sem parsing de layout complexo.
+* 🔴 **Perdas/Riscos (Contras):** `pypdf` não reconhece estrutura de coluna/tabela (não há tabela nos dois normativos-fonte atuais, mas limitaria a ingestão de normas com layout tabular); o PDF consolidado mais recente (`v5_P`/`v4_P`) é referenciado pelo nome de arquivo específico no `downloader.py` — uma nova versão do normativo exige atualizar o nome do arquivo, não é resolvido automaticamente pela API de metadado.
