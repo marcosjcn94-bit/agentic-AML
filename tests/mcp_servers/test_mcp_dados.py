@@ -1,7 +1,14 @@
 """Tests for MCP data servers (MCP-01, MCP-02, RF-02, SPEC.md §9.2)."""
 
+import random
+
 from aml_guardian.mcp_servers.client import MCPClient, MCPError
 from aml_guardian.mcp_servers.server import check_restriction_lists, get_customer_history
+from aml_guardian.sourcedata.documentos import gera_cnpj
+
+# CNPJ sintético de DV válido gerado em tempo de execução (guarda de versionamento em
+# tests/sourcedata/test_camada_br_documentos.py proíbe literais com DV válido no repo).
+VALID_CNPJ = gera_cnpj(random.Random(20260917))
 
 
 class TestMCP01GetCustomerHistory:
@@ -80,7 +87,7 @@ class TestMCP02CheckRestrictionLists:
 
         # Should not contain typical CPF/CNPJ patterns
         assert "12345678901" not in result_str  # CPF pattern
-        assert "11222333000181" not in result_str  # CNPJ pattern
+        assert VALID_CNPJ not in result_str  # CNPJ pattern
 
 
 class TestMCPClient:

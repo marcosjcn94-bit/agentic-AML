@@ -1,5 +1,6 @@
 """Tests for sanitizer and vault (DT-04, RF-02, ADR-003, ADR-012)."""
 
+import random
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from uuid import uuid4
@@ -16,6 +17,15 @@ from aml_guardian.contracts.ingestion import (
 )
 from aml_guardian.sanitizer.sanitizer import SANITIZER_VERSION, Sanitizer
 from aml_guardian.sanitizer.vault import KeyProvider, Vault
+from aml_guardian.sourcedata.documentos import gera_cnpj, gera_cpf
+
+# Documentos sintéticos de DV válido gerados em tempo de execução (guarda de versionamento
+# em tests/sourcedata/test_camada_br_documentos.py proíbe literais com DV válido no repo).
+VALID_CPF = gera_cpf(random.Random(20260917))
+VALID_CPF_FORMATTED = f"{VALID_CPF[:3]}.{VALID_CPF[3:6]}.{VALID_CPF[6:9]}-{VALID_CPF[9:]}"
+INVALID_CPF_CHECK_DIGIT = VALID_CPF[:-1] + str((int(VALID_CPF[-1]) + 1) % 10)
+VALID_CNPJ = gera_cnpj(random.Random(20260918))
+VALID_CNPJ_FORMATTED = f"{VALID_CNPJ[:2]}.{VALID_CNPJ[2:5]}.{VALID_CNPJ[5:8]}/{VALID_CNPJ[8:12]}-{VALID_CNPJ[12:]}"
 
 
 @pytest.fixture
@@ -117,15 +127,15 @@ class TestSanitizer:
     def test_cpf_validation_valid(self):
         """Test valid CPF validation."""
         sanitizer = Sanitizer()
-        # This is a synthetically generated valid CPF (11.144.477-35)
-        assert sanitizer._validate_cpf("11144477735") is True
-        assert sanitizer._validate_cpf("111.444.777-35") is True
+        # CPF sintético de DV válido gerado em tempo de execução (VALID_CPF, topo do arquivo)
+        assert sanitizer._validate_cpf(VALID_CPF) is True
+        assert sanitizer._validate_cpf(VALID_CPF_FORMATTED) is True
 
     def test_cpf_validation_invalid_check_digit(self):
         """Test invalid CPF with wrong check digit."""
         sanitizer = Sanitizer()
         # Same number but with invalid check digit
-        assert sanitizer._validate_cpf("11144477736") is False
+        assert sanitizer._validate_cpf(INVALID_CPF_CHECK_DIGIT) is False
 
     def test_cpf_validation_all_same_digits(self):
         """Test CPF with all same digits (invalid)."""
@@ -135,10 +145,9 @@ class TestSanitizer:
     def test_cnpj_validation_valid(self):
         """Test that valid CNPJs pass validation."""
         sanitizer = Sanitizer()
-        # Test with a known valid CNPJ format (simpler check)
-        # A valid CNPJ needs 14 digits and correct check digits
-        # For testing, we verify that the validation doesn't crash
-        assert sanitizer._validate_cnpj("34.028.014/0001-86") is True
+        # CNPJ sintético de DV válido gerado em tempo de execução (VALID_CNPJ, topo do arquivo)
+        assert sanitizer._validate_cnpj(VALID_CNPJ) is True
+        assert sanitizer._validate_cnpj(VALID_CNPJ_FORMATTED) is True
 
     def test_cnpj_validation_invalid(self):
         """Test invalid CNPJ."""
@@ -155,7 +164,7 @@ class TestSanitizer:
     def test_sanitize_alert_valid(self, sample_alert):
         """Test sanitizing alert with valid CPF."""
         # Fix the CPF to be valid
-        sample_alert.sender_customer.cpf_cnpj = "11144477735"
+        sample_alert.sender_customer.cpf_cnpj = VALID_CPF
 
         sanitizer = Sanitizer()
         result = sanitizer.sanitize(sample_alert)
@@ -166,7 +175,7 @@ class TestSanitizer:
 
     def test_token_uniqueness_within_alert(self, sample_alert):
         """Test that same PII value gets same token within alert."""
-        sample_alert.sender_customer.cpf_cnpj = "11144477735"
+        sample_alert.sender_customer.cpf_cnpj = VALID_CPF
 
         sanitizer = Sanitizer()
         result = sanitizer.sanitize(sample_alert)
@@ -181,7 +190,7 @@ class TestSanitizer:
 
     def test_token_format(self, sample_alert):
         """Test that tokens follow format <TYPE>_<NN>."""
-        sample_alert.sender_customer.cpf_cnpj = "11144477735"
+        sample_alert.sender_customer.cpf_cnpj = VALID_CPF
 
         sanitizer = Sanitizer()
         result = sanitizer.sanitize(sample_alert)
@@ -195,7 +204,7 @@ class TestSanitizer:
 
     def test_pii_token_count(self, sample_alert):
         """Test that PII token count is tracked."""
-        sample_alert.sender_customer.cpf_cnpj = "11144477735"
+        sample_alert.sender_customer.cpf_cnpj = VALID_CPF
 
         sanitizer = Sanitizer()
         result = sanitizer.sanitize(sample_alert)
@@ -206,7 +215,7 @@ class TestSanitizer:
 
     def test_vault_integration(self, sample_alert):
         """Test that sanitizer stores values in vault."""
-        sample_alert.sender_customer.cpf_cnpj = "11144477735"
+        sample_alert.sender_customer.cpf_cnpj = VALID_CPF
 
         vault = Vault()
         sanitizer = Sanitizer(vault=vault)
@@ -222,11 +231,11 @@ class TestSanitizer:
         # Check CPF is stored
         cpf_token = result.sender_customer.cpf_cnpj
         retrieved_cpf = vault.retrieve(cpf_token)
-        assert retrieved_cpf == "11144477735"
+        assert retrieved_cpf == VALID_CPF
 
     def test_no_raw_pii_in_output(self, sample_alert):
         """Test that output contains no raw PII."""
-        sample_alert.sender_customer.cpf_cnpj = "11144477735"
+        sample_alert.sender_customer.cpf_cnpj = VALID_CPF
 
         sanitizer = Sanitizer()
         result = sanitizer.sanitize(sample_alert)
@@ -238,7 +247,7 @@ class TestSanitizer:
 
         # Original values should not appear
         assert "João da Silva" not in result_str
-        assert "11144477735" not in result_str
+        assert VALID_CPF not in result_str
         assert "1234567890" not in result_str
 
 
@@ -247,7 +256,7 @@ class TestSanitizationErrorHandling:
 
     def test_sanitization_with_missing_transaction(self, sample_alert):
         """Test handling of incomplete transaction data."""
-        sample_alert.sender_customer.cpf_cnpj = "11144477735"
+        sample_alert.sender_customer.cpf_cnpj = VALID_CPF
         sample_alert.transactions[0].transaction_id = None  # This will cause validation error
 
         # Pydantic validation will catch this before sanitizer runs
@@ -256,7 +265,7 @@ class TestSanitizationErrorHandling:
 
     def test_exception_handling(self, sample_alert):
         """Test that exceptions during sanitization return NEEDS_HUMAN."""
-        sample_alert.sender_customer.cpf_cnpj = "11144477735"
+        sample_alert.sender_customer.cpf_cnpj = VALID_CPF
 
         sanitizer = Sanitizer()
 
