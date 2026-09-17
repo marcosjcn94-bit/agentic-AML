@@ -7,6 +7,7 @@ de auditoria, tratada como best-effort pelos nós (mesmo padrão de `investigati
 
 from __future__ import annotations
 
+from pathlib import Path
 from uuid import UUID
 
 from aml_guardian.audit.chain import add_event
@@ -21,8 +22,13 @@ def record_node_event(
     event_type: str,
     state_from: AlertState | None = None,
     state_to: AlertState | None = None,
+    db_path: Path | None = None,
 ) -> None:
-    """Registra o evento do nó; falha de auditoria nunca interrompe o grafo (mesmo padrão da T1.6)."""
+    """Registra o evento do nó; falha de auditoria nunca interrompe o grafo (mesmo padrão da T1.6).
+
+    `db_path` vem de `GraphDeps.db_path` (T1.12): sem ele, todo evento cairia sempre no `data/app.sqlite`
+    de produção, inclusive durante teste — o mesmo db_path que `AppState`/`save_alert_record` já usam (T1.11).
+    """
     try:
         add_event(
             alert_id=str(alert_id),
@@ -31,6 +37,7 @@ def record_node_event(
             actor=Role.SISTEMA,
             state_from=state_from,
             state_to=state_to,
+            db_path=db_path,
         )
     except Exception:  # noqa: BLE001 - auditoria é best-effort (mesmo padrão de investigation/runner.py)
         pass

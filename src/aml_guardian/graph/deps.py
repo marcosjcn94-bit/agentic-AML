@@ -9,6 +9,7 @@ padrão, exatamente como já fazem `run_triage`, `run_investigation` e `select_c
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from aml_guardian.config.litellm import LiteLLMConfig
 from aml_guardian.config.retrieval import RetrievalConfig
@@ -28,6 +29,7 @@ class GraphDeps:
     """Feixe de dependências repassado aos nós; só `corpus_version` é obrigatório."""
 
     corpus_version: str
+    db_path: Path | None = None
     triage_rules: TriageRulesConfig | None = None
     litellm_config: LiteLLMConfig | None = None
     saml_mapping: SamlDMapping | None = None

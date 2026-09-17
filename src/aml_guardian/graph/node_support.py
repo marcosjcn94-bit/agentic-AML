@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from aml_guardian.contracts.envelope import Node
 from aml_guardian.contracts.ingestion import AlertState
 from aml_guardian.contracts.runtime import InvestigationState
@@ -18,7 +20,12 @@ def attempts_update(state: InvestigationState, node: Node, attempt: int) -> dict
 
 
 def handle_failure(
-    state: InvestigationState, node: Node, attempt: int, reason: str, **extra: object
+    state: InvestigationState,
+    node: Node,
+    attempt: int,
+    reason: str,
+    db_path: Path | None = None,
+    **extra: object,
 ) -> dict[str, object]:
     """`NEEDS_HUMAN` preservando `extra` (produção parcial já calculada pelo próprio nó, AGENTS.md §2.8)."""
     try:
@@ -28,7 +35,13 @@ def handle_failure(
     except Exception:  # noqa: BLE001 - o handoff acontece mesmo se o envelope de erro for irregular
         pass
     record_node_event(
-        state.alert_id, node, attempt, f"{node.value.upper()}_FAILED", state.state, AlertState.NEEDS_HUMAN
+        state.alert_id,
+        node,
+        attempt,
+        f"{node.value.upper()}_FAILED",
+        state.state,
+        AlertState.NEEDS_HUMAN,
+        db_path=db_path,
     )
     return {
         "state": AlertState.NEEDS_HUMAN,

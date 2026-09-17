@@ -45,12 +45,20 @@ def make_dossier_node(deps: GraphDeps):
                     model_id=model_id,
                 )
         except Exception as exc:  # noqa: BLE001 - qualquer falha do nó é fail-closed
-            return handle_failure(state, Node.DOSSIER, attempt, f"Dossiê falhou: {exc}")
+            return handle_failure(state, Node.DOSSIER, attempt, f"Dossiê falhou: {exc}", db_path=deps.db_path)
 
         if resultado.state is AlertState.NEEDS_HUMAN:
-            return handle_failure(state, Node.DOSSIER, attempt, resultado.failure_reason)
+            return handle_failure(state, Node.DOSSIER, attempt, resultado.failure_reason, db_path=deps.db_path)
 
-        record_node_event(state.alert_id, Node.DOSSIER, attempt, "DOSSIER_READY", state.state, AlertState.DRAFT_READY)
+        record_node_event(
+            state.alert_id,
+            Node.DOSSIER,
+            attempt,
+            "DOSSIER_READY",
+            state.state,
+            AlertState.DRAFT_READY,
+            db_path=deps.db_path,
+        )
         return {
             "state": AlertState.DRAFT_READY,
             "dossier": resultado.dossier,
@@ -60,13 +68,19 @@ def make_dossier_node(deps: GraphDeps):
     return _node
 
 
-def make_human_handoff_node(deps: GraphDeps):  # noqa: ARG001 - assinatura uniforme com os demais nós
+def make_human_handoff_node(deps: GraphDeps):
     """Estado terminal de falha (RF-10, ADR-011): não altera `state`/`failure_reason`, só registra o handoff."""
 
     def _node(state: InvestigationState) -> dict[str, object]:
         attempt = attempt_for(state, Node.HUMAN_HANDOFF)
         record_node_event(
-            state.alert_id, Node.HUMAN_HANDOFF, attempt, "HUMAN_HANDOFF", state.state, AlertState.NEEDS_HUMAN
+            state.alert_id,
+            Node.HUMAN_HANDOFF,
+            attempt,
+            "HUMAN_HANDOFF",
+            state.state,
+            AlertState.NEEDS_HUMAN,
+            db_path=deps.db_path,
         )
         return {"attempts": attempts_update(state, Node.HUMAN_HANDOFF, attempt)}
 

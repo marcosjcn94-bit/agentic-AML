@@ -30,8 +30,14 @@ def create_app(state: AppState | None = None) -> FastAPI:
     Produção usa `uvicorn aml_guardian.api.app:create_app --factory` — nunca um `app` de módulo nível superior,
     para que importar este arquivo em teste não crie `data/app.sqlite` nem GraphDeps reais como efeito colateral.
     """
+    resolved_state = state or _default_app_state()
+    if resolved_state.graph_deps.db_path is None and resolved_state.db_path is not None:
+        # Sem isto, a auditoria dos nós do grafo (T1.10) sempre cairia em `data/app.sqlite` de produção,
+        # mesmo quando `AppState.db_path` aponta para um banco de teste (T1.12).
+        resolved_state.graph_deps.db_path = resolved_state.db_path
+
     app = FastAPI(title="AML Guardian API")
-    app.state.aml = state or _default_app_state()
+    app.state.aml = resolved_state
     register_exception_handlers(app)
     app.include_router(router)
     return app

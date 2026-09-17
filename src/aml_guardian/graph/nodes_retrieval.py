@@ -42,9 +42,9 @@ def make_retrieval_node(deps: GraphDeps):
                 payload=payload,
             )
         except NormSearchError as exc:
-            return handle_failure(state, Node.RETRIEVAL, attempt, f"MCP-03 indisponível: {exc}")
+            return handle_failure(state, Node.RETRIEVAL, attempt, f"MCP-03 indisponível: {exc}", db_path=deps.db_path)
         except Exception as exc:  # noqa: BLE001 - qualquer outra falha do nó é fail-closed
-            return handle_failure(state, Node.RETRIEVAL, attempt, f"Recuperação falhou: {exc}")
+            return handle_failure(state, Node.RETRIEVAL, attempt, f"Recuperação falhou: {exc}", db_path=deps.db_path)
 
         record_node_event(
             state.alert_id,
@@ -53,6 +53,7 @@ def make_retrieval_node(deps: GraphDeps):
             "RETRIEVAL_COMPLETED",
             AlertState.INVESTIGATING,
             AlertState.RESEARCHING,
+            db_path=deps.db_path,
         )
         return {
             "state": AlertState.RESEARCHING,
@@ -92,12 +93,20 @@ def make_selection_node(deps: GraphDeps):
                 payload=payload,
             )
         except (NormSearchError, NormPassageError) as exc:
-            return handle_failure(state, Node.SELECTION, attempt, f"MCP indisponível na seleção: {exc}")
+            return handle_failure(
+                state, Node.SELECTION, attempt, f"MCP indisponível na seleção: {exc}", db_path=deps.db_path
+            )
         except Exception as exc:  # noqa: BLE001 - qualquer outra falha do nó é fail-closed
-            return handle_failure(state, Node.SELECTION, attempt, f"Seleção falhou: {exc}")
+            return handle_failure(state, Node.SELECTION, attempt, f"Seleção falhou: {exc}", db_path=deps.db_path)
 
         record_node_event(
-            state.alert_id, Node.SELECTION, attempt, "SELECTION_COMPLETED", AlertState.RESEARCHING, AlertState.REVIEWING
+            state.alert_id,
+            Node.SELECTION,
+            attempt,
+            "SELECTION_COMPLETED",
+            AlertState.RESEARCHING,
+            AlertState.REVIEWING,
+            db_path=deps.db_path,
         )
         return {
             "state": AlertState.REVIEWING,
@@ -118,7 +127,7 @@ def make_reviewer_node(deps: GraphDeps):
                 state.citations, state.retrieved_chunk_ids, deps.corpus_version, deps.passage_getter
             )
         except Exception as exc:  # noqa: BLE001 - falha do nó é fail-closed
-            return handle_failure(state, Node.REVIEWER, attempt, f"Revisor falhou: {exc}")
+            return handle_failure(state, Node.REVIEWER, attempt, f"Revisor falhou: {exc}", db_path=deps.db_path)
 
         try:
             build_envelope(
@@ -129,10 +138,18 @@ def make_reviewer_node(deps: GraphDeps):
                 payload=veredito,
             )
         except Exception as exc:  # noqa: BLE001 - envelope inválido é a mesma falha fail-closed
-            return handle_failure(state, Node.REVIEWER, attempt, f"Envelope reviewer→dossier inválido: {exc}")
+            return handle_failure(
+                state, Node.REVIEWER, attempt, f"Envelope reviewer→dossier inválido: {exc}", db_path=deps.db_path
+            )
 
         record_node_event(
-            state.alert_id, Node.REVIEWER, attempt, "REVIEW_COMPLETED", AlertState.REVIEWING, AlertState.REVIEWING
+            state.alert_id,
+            Node.REVIEWER,
+            attempt,
+            "REVIEW_COMPLETED",
+            AlertState.REVIEWING,
+            AlertState.REVIEWING,
+            db_path=deps.db_path,
         )
         return {"review": veredito, "attempts": attempts_update(state, Node.REVIEWER, attempt)}
 

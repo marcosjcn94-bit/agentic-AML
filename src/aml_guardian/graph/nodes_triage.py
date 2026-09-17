@@ -25,9 +25,9 @@ def make_triage_node(deps: GraphDeps):
                 state.sanitized_alert, rules=deps.triage_rules, restriction_checker=deps.restriction_checker
             )
         except Exception as exc:  # noqa: BLE001 - qualquer falha do nó é fail-closed
-            return handle_failure(state, Node.TRIAGE, attempt, f"Triagem falhou: {exc}")
+            return handle_failure(state, Node.TRIAGE, attempt, f"Triagem falhou: {exc}", db_path=deps.db_path)
         if resultado.state is AlertState.NEEDS_HUMAN:
-            return handle_failure(state, Node.TRIAGE, attempt, resultado.failure_reason)
+            return handle_failure(state, Node.TRIAGE, attempt, resultado.failure_reason, db_path=deps.db_path)
 
         to_node = Node.INVESTIGATION if resultado.decision.level is TriageLevel.INVESTIGAR else Node.DOSSIER
         try:
@@ -44,10 +44,18 @@ def make_triage_node(deps: GraphDeps):
                 payload=payload,
             )
         except Exception as exc:  # noqa: BLE001 - payload/envelope inválido é a mesma falha fail-closed
-            return handle_failure(state, Node.TRIAGE, attempt, f"Envelope triagem→{to_node.value} inválido: {exc}")
+            return handle_failure(
+                state, Node.TRIAGE, attempt, f"Envelope triagem→{to_node.value} inválido: {exc}", db_path=deps.db_path
+            )
 
         record_node_event(
-            state.alert_id, Node.TRIAGE, attempt, "TRIAGE_DECIDED", AlertState.SANITIZED, AlertState.TRIAGED
+            state.alert_id,
+            Node.TRIAGE,
+            attempt,
+            "TRIAGE_DECIDED",
+            AlertState.SANITIZED,
+            AlertState.TRIAGED,
+            db_path=deps.db_path,
         )
         return {
             "state": AlertState.TRIAGED,
@@ -73,10 +81,13 @@ def make_investigation_node(deps: GraphDeps):
                 history_fetcher=deps.history_fetcher,
                 restriction_checker=deps.restriction_checker,
                 contador=deps.contador or ContadorChamadas(),
+                db_path=deps.db_path,
                 **deps.model_overrides,
             )
         except Exception as exc:  # noqa: BLE001 - falha do nó é fail-closed
-            return handle_failure(state, Node.INVESTIGATION, attempt, f"Investigação falhou: {exc}")
+            return handle_failure(
+                state, Node.INVESTIGATION, attempt, f"Investigação falhou: {exc}", db_path=deps.db_path
+            )
 
         extra: dict[str, object] = {}
         if resultado.features is not None:
@@ -84,7 +95,9 @@ def make_investigation_node(deps: GraphDeps):
         if resultado.investigation is not None:
             extra["investigation"] = resultado.investigation
         if resultado.state is AlertState.NEEDS_HUMAN:
-            return handle_failure(state, Node.INVESTIGATION, attempt, resultado.failure_reason, **extra)
+            return handle_failure(
+                state, Node.INVESTIGATION, attempt, resultado.failure_reason, db_path=deps.db_path, **extra
+            )
 
         try:
             payload = EnvInvestigationResult(features=resultado.features, investigation=resultado.investigation)
@@ -97,7 +110,12 @@ def make_investigation_node(deps: GraphDeps):
             )
         except Exception as exc:  # noqa: BLE001 - payload/envelope inválido é a mesma falha fail-closed
             return handle_failure(
-                state, Node.INVESTIGATION, attempt, f"Envelope investigação→retrieval inválido: {exc}", **extra
+                state,
+                Node.INVESTIGATION,
+                attempt,
+                f"Envelope investigação→retrieval inválido: {exc}",
+                db_path=deps.db_path,
+                **extra,
             )
 
         record_node_event(
@@ -107,6 +125,7 @@ def make_investigation_node(deps: GraphDeps):
             "INVESTIGATION_COMPLETED",
             AlertState.TRIAGED,
             AlertState.INVESTIGATING,
+            db_path=deps.db_path,
         )
         return {
             "state": AlertState.INVESTIGATING,

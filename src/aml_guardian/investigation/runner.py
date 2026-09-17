@@ -8,6 +8,7 @@ levam a `NEEDS_HUMAN` (RF-05, RF-10), preservando o que já foi calculado (AGENT
 from __future__ import annotations
 
 import hashlib
+from pathlib import Path
 from typing import Self
 from uuid import UUID
 
@@ -64,8 +65,14 @@ def _needs_human(alert_id: UUID, motivo: str, features: InvestigationFeatures | 
     )
 
 
-def _registrar_evento(alert_id: UUID, prompt_sha256: str, resposta: RespostaModelo, tentativa: int) -> None:
-    """`TOOL_CALLED`/evento de modelo (RF-11): nunca grava prompt nem resposta, só o hash. Best-effort (T1.1)."""
+def _registrar_evento(
+    alert_id: UUID, prompt_sha256: str, resposta: RespostaModelo, tentativa: int, db_path: Path | None = None
+) -> None:
+    """`TOOL_CALLED`/evento de modelo (RF-11): nunca grava prompt nem resposta, só o hash. Best-effort (T1.1).
+
+    `db_path` vem de `GraphDeps.db_path` via o nó Investigação (T1.12) — sem ele, o evento cairia sempre no
+    `data/app.sqlite` de produção, inclusive em teste.
+    """
     try:
         add_event(
             alert_id=str(alert_id),
@@ -78,6 +85,7 @@ def _registrar_evento(alert_id: UUID, prompt_sha256: str, resposta: RespostaMode
             tokens_in=resposta.tokens_in,
             tokens_out=resposta.tokens_out,
             latency_ms=resposta.latency_ms,
+            db_path=db_path,
         )
     except Exception:  # noqa: BLE001 - falha de auditoria não bloqueia a investigação (mesmo padrão do T1.3)
         pass
@@ -93,6 +101,7 @@ def run_investigation(
     history_fetcher: HistoryFetcher = get_customer_history,
     restriction_checker: RestrictionChecker = check_restriction_lists,
     contador: ContadorChamadas | None = None,
+    db_path: Path | None = None,
     **model_overrides: object,
 ) -> InvestigationResult:
     """Executa o pré-passo (DT-16) e a chamada LLM (DT-07) de um alerta com `TriageLevel.INVESTIGAR`."""
@@ -128,7 +137,7 @@ def run_investigation(
     for tentativa in range(1, MAX_RETRIES + 2):
         resposta = chamar_modelo(params, prompt.texto, schema, contador, **model_overrides)
         saida = validar_saida(resposta.texto)
-        _registrar_evento(sanitized_alert.alert_id, prompt_sha256, resposta, tentativa)
+        _registrar_evento(sanitized_alert.alert_id, prompt_sha256, resposta, tentativa, db_path=db_path)
         if saida is not None:
             break
     if saida is None:
