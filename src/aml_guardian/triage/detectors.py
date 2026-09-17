@@ -39,22 +39,23 @@ def detect_fragmentacao(alert: SanitizedAlert, cfg: Fragmentacao) -> FiredRule |
 
 
 def contrapartes(
-    alert: SanitizedAlert, janela_dias: int
+    alert: SanitizedAlert, janela_dias: int | None = None
 ) -> tuple[dict[str, list[SanitizedTransaction]], dict[str, list[SanitizedTransaction]]]:
-    """Transações de entrada e saída do titular por contraparte, na janela mais recente de `janela_dias`.
+    """Transações de entrada e saída do titular por contraparte.
 
-    "Titular" é `alert.sender_account` (DT-04); a janela ancora no timestamp mais recente do alerta, já que o
-    alerta chega recortado por `occurrence_window` (DT-01).
+    "Titular" é `alert.sender_account` (DT-04). Com `janela_dias`, restringe à janela mais recente do alerta
+    (usado pelo detector de camadas); sem `janela_dias`, cobre todo o alerta (F06, F07 e F14+, AGENTS.md §4.3,
+    já que o alerta chega recortado por `occurrence_window`, DT-01).
     """
     if not alert.transactions:
         return {}, {}
     titular = alert.sender_account
-    referencia = max(t.timestamp for t in alert.transactions)
-    limite = timedelta(days=janela_dias)
+    referencia = max(t.timestamp for t in alert.transactions) if janela_dias is not None else None
+    limite = timedelta(days=janela_dias) if janela_dias is not None else None
     entrada: dict[str, list[SanitizedTransaction]] = defaultdict(list)
     saida: dict[str, list[SanitizedTransaction]] = defaultdict(list)
     for t in alert.transactions:
-        if referencia - t.timestamp > limite:
+        if limite is not None and referencia - t.timestamp > limite:
             continue
         if t.receiver_account == titular and t.sender_account != titular:
             entrada[t.sender_account].append(t)
