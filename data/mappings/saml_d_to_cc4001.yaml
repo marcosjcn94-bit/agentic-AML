@@ -7,9 +7,12 @@
 # grafia é dado versionado aqui, nunca conversão implícita em código (T0.6, Ask First).
 #
 # `article_ref` (dispositivos preferenciais) e `applicability` (texto curado) alimentam a seleção determinística de
-# trechos do RF-06/ADR-013 e ficam vazios até T1.8/M4 — vazio explícito (`[]` e `null`), nunca chave omitida.
-# Mudança de enquadramento, de rótulo ou de criticidade incrementa `mapping_version` (gravado em cada dossiê).
-mapping_version: 1
+# trechos do RF-06/ADR-013; ficam vazios (`[]` e `null`) até serem curados. A partir da mapping_version 2 (T1.8), a
+# tipologia do alerta E2E (`Structuring`, lote3-brief.md Ask First) tem os dois campos preenchidos; as demais
+# permanecem vazias até M4 — vazio explícito, nunca chave omitida.
+# Mudança de enquadramento, de rótulo, de criticidade ou dos campos curados (article_ref/applicability) incrementa
+# `mapping_version` (gravado em cada dossiê).
+mapping_version: 2
 
 fonte:
   referencia: "Carta Circular BCB 4.001, de 29 de janeiro de 2020, art. 1º"
@@ -17,9 +20,13 @@ fonte:
 
 aprovacao:
   por: marcosjcn94@gmail.com
-  em: 2026-09-16
+  em: 2026-09-17
   situacao: provisorio
-  referencia: "T0.6 Ask First: chave pelo rótulo bruto do SAML-D e bloco `normais`; incisos e crítica conforme SPEC.md §3.2"
+  referencia: >-
+    T0.6 Ask First: chave pelo rótulo bruto do SAML-D e bloco `normais`; incisos e crítica conforme SPEC.md §3.2.
+    T1.8 Ask First (lote3-brief.md): tipologia do alerta E2E = Structuring (golden set, T0.9); article_ref e
+    applicability curados só para Structuring nesta versão (CC4001/art1/i1/d, /i1/e, /i1/k, /i4, pelo article_ref
+    do chunker do T1.7); demais tipologias seguem vazias até M4.
 
 # 17 rótulos suspeitos do SAML-D, na ordem da tabela do SPEC.md §3.2. As 6 primeiras são as críticas.
 tipologias:
@@ -36,8 +43,13 @@ tipologias:
     incisos: ["I", "IV"]     # espécie — fragmentação de depósitos/saques
     alineas: ["d", "e", "k"]
     critica: true
-    article_ref: []
-    applicability: null
+    # article_ref no formato do chunker do T1.7 (Circ3978/CC4001 + art/inciso/alínea); conferidos contra o texto
+    # oficial da CC 4.001/2020 baixado em T1.7 (alínea d = fragmentação de depósitos; e = fragmentação de saques;
+    # k = saques fracionados abaixo do limite para dissimular o total; IV = movimentação de contas incompatível).
+    article_ref: ["CC4001/art1/i1/d", "CC4001/art1/i1/e", "CC4001/art1/i1/k", "CC4001/art1/i4"]
+    applicability: >-
+      Fragmentação de depósitos, saques ou movimentações em espécie, ou de operações em conta, para dissimular o
+      valor total ou driblar limites de comunicação de operações (CC 4.001/2020, art. 1º, I, alíneas d, e, k, e IV).
 
   Smurfing:
     typology: "Smurfing"
