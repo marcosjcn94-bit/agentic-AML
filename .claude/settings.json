@@ -27,6 +27,9 @@
     ]
   },
   "env": {
-    "ENABLE_TOOL_SEARCH": "true"
+    "ENABLE_TOOL_SEARCH": "true",
+    "TRACE_TO_LANGSMITH": "true",
+    "CC_LANGSMITH_API_KEY": "${CC_LANGSMITH_API_KEY}",
+    "CC_LANGSMITH_PROJECT": "meu-projeto-claude-code"
   }
 }
