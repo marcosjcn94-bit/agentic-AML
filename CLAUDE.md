@@ -22,7 +22,7 @@ Não envia dados bancários não anonimizados para provedores externos de LLM.
 ## Economia Máxima de Tokens (aplicar sempre)
 - **Busca cirúrgica:** `Grep`/`Glob` com limites; nunca ler arquivo inteiro para achar um símbolo.
 - **Edição atômica:** `Edit` pontual; nunca reescrever arquivo inteiro.
-- **Delegar exploração** ampla (docs densos, logs longos, análise de codebase) a subagentes — receber só o resumo.
+- **Delegar exploração** ampla (docs densos, logs longos, análise de codebase) a subagentes (haiku) — receber só o resumo.
 - **Escopo por paths:** regras de módulo em `.claude/rules/*.md` (com `paths:`); rotinas multi-etapas em `.claude/skills/<nome>/SKILL.md`.
 - **Hooks, não LLM:** formatar/lintar via hooks (PostToolUse), custo zero de token.
 - **Reusar contexto:** não recolar texto já presente na conversa; referenciar por `arquivo:linha`.
@@ -38,6 +38,7 @@ Não envia dados bancários não anonimizados para provedores externos de LLM.
 - Revisão Python: usar o agente do projeto `python-reviewer` (`.claude/agents/python-reviewer.md`), não `ecc:python-reviewer`.
 - Foco exclusivo: lógica, segurança, performance. Formatação/PEP 8 ficam com o ruff — não reportar.
 - Todo revisor (agentes, `/code-review`, pr-review-toolkit) exclui os paths de `.reviewignore` do diff e da leitura.
+- Revisor acionado apenas no final de cada milestone (M2, M3...)
 
 ## ADR — Regras de Atualização
 - Toda decisão estrutural (lib, banco, padrão, contrato, infra, FinOps) vira entrada nova em `docs/ADR.md`.

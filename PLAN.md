@@ -300,15 +300,18 @@ flowchart LR
 
 ## 5. Decisões pendentes (Ask First)
 
+Ask First cobre só decisão estrutural que vira ADR (`SOUL.md` §4). Decisão não estrutural (limiar, `rules_version`, `selection.min_score`,
+`cache.threshold` = 0,92) é tomada com evidência do conjunto de desenvolvimento e registrada no `MEMORY.md`, sem bloquear o marco.
+
 | Decisão | Marco | Forma |
 | :--- | :--- | :--- |
-| Inclusão das dependências da stack do `SPEC.md` §6 | M0 | Aceite do autor |
-| Limiares dos detectores e cada nova `rules_version` | M3 | Aceite do autor, com evidência do conjunto de desenvolvimento |
+| Inclusão das dependências da stack do `SPEC.md` §6 | M0 | Aceite do autor (já concedido; novas dependências continuam Ask First) |
+| Limiares dos detectores e cada nova `rules_version` | M3 | Decisão com evidência do conjunto de desenvolvimento, registrada no `MEMORY.md` |
 | Modelo de embedding (recall@5, ADR-009) | M4 | Novo ADR antes do código |
-| `selection.min_score` e qualquer `cache.threshold` diferente de 0,92 | M4 | Aceite do autor |
+| `selection.min_score` e qualquer `cache.threshold` diferente de 0,92 | M4 | Decisão com evidência do conjunto de desenvolvimento, registrada no `MEMORY.md` |
 | Segundo provedor do RNF-10 | M7 | Aceite do autor; decisão estrutural → ADR |
 | Validação de `tempo_manual_min` e `tempo_revisao_min` | M7 | Especialista de compliance (`SPEC.md` §12) |
-| Commit, push ou branch | Todos | Aceite do autor (`SOUL.md` §4) |
+| Push | Todos | Aceite do autor (`SOUL.md` §4); commit e branch são automáticos |
 
 ---
 

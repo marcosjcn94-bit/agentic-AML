@@ -243,7 +243,7 @@ Valem integralmente o `SOUL.md` §4 e o `CLAUDE.md`. Uma tarefa do `TASKS.md` = 
 | Revisor de RAG (`ecc:rag-pipeline-reviewer`) | Mudança em corpus, chunking, Recuperação, Seleção ou cache | Diff + métricas de grounding | Achados | Medir recall@5 e grounding bruto no conjunto de desenvolvimento | Usar o golden set para ajuste (SPEC §8.3) |
 | Avaliador | Fim de marco do `PLAN.md` | `scripts/evaluate.py --golden data/golden/v1` | `reports/eval-<data>.json` e `.md` com os gates do SPEC §10 | Rodar e reportar | Relaxar gate sem ADR; alterar regras após ver o golden set |
 
-- Todo commit e toda tarefa citam o ID tocado (`RF`, `RNF`, `API`, `MCP`, `DT`). Commit, push e branch são Ask First (SOUL §4).
+- Todo commit e toda tarefa citam o ID tocado (`RF`, `RNF`, `API`, `MCP`, `DT`). Commit e branch são automáticos; push é Ask First (SOUL §4).
 - Dados de teste são sintéticos e gerados em tempo de execução; documento de identificação aparece só como token.
 
 ---
@@ -251,7 +251,8 @@ Valem integralmente o `SOUL.md` §4 e o `CLAUDE.md`. Uma tarefa do `TASKS.md` = 
 ## 7. Governança deste documento
 
 - **Precedência:** `SOUL.md` §5. Este documento não pode afrouxar nenhum limite do `SOUL.md` ou do `SPEC.md`.
-- **Ask First:** alterar prompt, schema de geração, catálogo de indicadores, matriz de tools, envelope ou orçamento de nó.
+- **Ask First:** apenas quando a mudança em prompt, schema de geração, catálogo de indicadores, matriz de tools, envelope ou orçamento de nó
+  for decisão estrutural (vira ADR, SOUL §4); caso contrário, decidir com evidência do conjunto de desenvolvimento e registrar em `MEMORY.md`.
 - **Versionamento:** mudança no prompt incrementa `prompt_version`; mudança no catálogo incrementa `features_version`.
   Toda mudança incrementa a versão deste documento. Decisão estrutural gera ADR novo antes do código.
 - **Reavaliação:** mudar prompt, catálogo ou modelo exige nova rodada do benchmark de latência (RNF-03) e dos gates do SPEC §10.
