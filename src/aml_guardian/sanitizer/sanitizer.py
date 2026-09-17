@@ -7,6 +7,7 @@ from presidio_anonymizer import AnonymizerEngine
 
 from aml_guardian.contracts.ingestion import Alert, SanitizedAlert, SanitizedCustomer, SanitizedTransaction
 from aml_guardian.contracts.runtime import AlertState
+from aml_guardian.sourcedata.documentos import cnpj_valido
 
 from .vault import KeyProvider, Vault
 
@@ -77,31 +78,9 @@ class Sanitizer:
         return True
 
     def _validate_cnpj(self, cnpj: str) -> bool:
-        """Validate CNPJ check digit."""
-        # Remove mask
+        """Validate CNPJ check digit (delegates to the canonical mod-11 implementation)."""
         cnpj_digits = re.sub(r"\D", "", cnpj)
-        if len(cnpj_digits) != 14:
-            return False
-
-        # Check if all digits are the same
-        if len(set(cnpj_digits)) == 1:
-            return False
-
-        # Validate first check digit
-        sum1 = sum(int(cnpj_digits[i]) * (5 - (i % 4) if i < 8 else (15 - (i % 4))) for i in range(12))
-        digit1 = (sum1 * 10) % 11
-        if digit1 == 10:
-            digit1 = 0
-        if digit1 != int(cnpj_digits[12]):
-            return False
-
-        # Validate second check digit
-        sum2 = sum(int(cnpj_digits[i]) * (6 - (i % 5) if i < 12 else (16 - (i % 5))) for i in range(13))
-        digit2 = (sum2 * 10) % 11
-        if digit2 == 10:
-            digit2 = 0
-        if digit2 != int(cnpj_digits[13]):
-            return False
+        return cnpj_valido(cnpj_digits)
 
         return True
 
