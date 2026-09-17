@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from uuid import UUID
 
-from aml_guardian.contracts.runtime import AuditEvent, Role
+from aml_guardian.contracts.runtime import AlertState, AuditEvent, Role, VersionNumber
 from aml_guardian.persistence.db import get_connection, get_db_path
 
 
@@ -23,14 +23,14 @@ class AuditChain:
         event_type: str,
         event_key: str,
         actor: Role,
-        state_from: str | None = None,
-        state_to: str | None = None,
+        state_from: AlertState | None = None,
+        state_to: AlertState | None = None,
         model_id: str | None = None,
         prompt_sha256: str | None = None,
         prompt_version: str | None = None,
-        rules_version: str | None = None,
+        rules_version: VersionNumber | None = None,
         corpus_version: str | None = None,
-        mapping_version: str | None = None,
+        mapping_version: VersionNumber | None = None,
         tokens_in: int = 0,
         tokens_out: int = 0,
         latency_ms: int = 0,
@@ -45,190 +45,196 @@ class AuditChain:
         alert_id_str = str(alert_id_uuid)
 
         conn = get_connection(self.db_path)
-        cursor = conn.cursor()
+        try:
+            cursor = conn.cursor()
 
-        # Get the latest event to compute prev_hash
-        cursor.execute("SELECT seq, hash FROM audit_events ORDER BY seq DESC LIMIT 1")
-        last_event = cursor.fetchone()
-        seq = (last_event[0] + 1) if last_event else 1
-        prev_hash = last_event[1] if last_event else None
+            # Get the latest event to compute prev_hash
+            cursor.execute("SELECT seq, hash FROM audit_events ORDER BY seq DESC LIMIT 1")
+            last_event = cursor.fetchone()
+            seq = (last_event[0] + 1) if last_event else 1
+            prev_hash = last_event[1] if last_event else None
 
-        occurred_at = datetime.now(UTC)
-        now_str = occurred_at.isoformat()
+            occurred_at = datetime.now(UTC)
+            now_str = occurred_at.isoformat()
 
-        # Create the event data for hashing (exclude hash field itself)
-        event_data = {
-            "seq": seq,
-            "event_key": event_key,
-            "occurred_at": occurred_at.isoformat(),
-            "alert_id": alert_id_str,
-            "event_type": event_type,
-            "actor": actor.value,
-            "state_from": state_from,
-            "state_to": state_to,
-            "model_id": model_id,
-            "prompt_sha256": prompt_sha256,
-            "rules_version": rules_version,
-            "corpus_version": corpus_version,
-            "mapping_version": mapping_version,
-            "prompt_version": prompt_version,
-            "tokens_in": tokens_in,
-            "tokens_out": tokens_out,
-            "latency_ms": latency_ms,
-            "prev_hash": prev_hash,
-        }
+            # Create the event data for hashing (exclude hash field itself)
+            event_data = {
+                "seq": seq,
+                "event_key": event_key,
+                "occurred_at": occurred_at.isoformat(),
+                "alert_id": alert_id_str,
+                "event_type": event_type,
+                "actor": actor.value,
+                "state_from": state_from.value if state_from else None,
+                "state_to": state_to.value if state_to else None,
+                "model_id": model_id,
+                "prompt_sha256": prompt_sha256,
+                "rules_version": rules_version,
+                "corpus_version": corpus_version,
+                "mapping_version": mapping_version,
+                "prompt_version": prompt_version,
+                "tokens_in": tokens_in,
+                "tokens_out": tokens_out,
+                "latency_ms": latency_ms,
+                "prev_hash": prev_hash,
+            }
 
-        # Canonical JSON for hashing (sorted keys, no whitespace)
-        json_str = json.dumps(event_data, sort_keys=True, separators=(",", ":"))
-        event_hash = hashlib.sha256(json_str.encode()).hexdigest()
+            # Canonical JSON for hashing (sorted keys, no whitespace)
+            json_str = json.dumps(event_data, sort_keys=True, separators=(",", ":"))
+            event_hash = hashlib.sha256(json_str.encode()).hexdigest()
 
-        # Insert into database
-        cursor.execute(
-            """
-            INSERT INTO audit_events (
-                seq, event_key, occurred_at, alert_id, event_type, actor,
-                state_from, state_to, model_id, prompt_sha256, rules_version,
-                corpus_version, mapping_version, prompt_version,
-                tokens_in, tokens_out, latency_ms, prev_hash, hash, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                seq,
-                event_key,
-                now_str,
-                alert_id_str,
-                event_type,
-                actor.value,
-                state_from,
-                state_to,
-                model_id,
-                prompt_sha256,
-                rules_version,
-                corpus_version,
-                mapping_version,
-                prompt_version,
-                tokens_in,
-                tokens_out,
-                latency_ms,
-                prev_hash,
-                event_hash,
-                now_str,
-            ),
-        )
-        conn.commit()
-        conn.close()
+            # Insert into database
+            cursor.execute(
+                """
+                INSERT INTO audit_events (
+                    seq, event_key, occurred_at, alert_id, event_type, actor,
+                    state_from, state_to, model_id, prompt_sha256, rules_version,
+                    corpus_version, mapping_version, prompt_version,
+                    tokens_in, tokens_out, latency_ms, prev_hash, hash, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    seq,
+                    event_key,
+                    now_str,
+                    alert_id_str,
+                    event_type,
+                    actor.value,
+                    state_from.value if state_from else None,
+                    state_to.value if state_to else None,
+                    model_id,
+                    prompt_sha256,
+                    rules_version,
+                    corpus_version,
+                    mapping_version,
+                    prompt_version,
+                    tokens_in,
+                    tokens_out,
+                    latency_ms,
+                    prev_hash,
+                    event_hash,
+                    now_str,
+                ),
+            )
+            conn.commit()
 
-        # Return as AuditEvent contract
-        return AuditEvent(
-            seq=seq,
-            event_key=event_key,
-            occurred_at=occurred_at,
-            alert_id=alert_id_uuid,
-            event_type=event_type,
-            actor=actor,
-            state_from=state_from,
-            state_to=state_to,
-            model_id=model_id,
-            prompt_sha256=prompt_sha256,
-            rules_version=rules_version,
-            corpus_version=corpus_version,
-            mapping_version=mapping_version,
-            prompt_version=prompt_version,
-            tokens_in=tokens_in,
-            tokens_out=tokens_out,
-            latency_ms=latency_ms,
-            prev_hash=prev_hash,
-            hash=event_hash,
-        )
+            # Return as AuditEvent contract
+            return AuditEvent(
+                seq=seq,
+                event_key=event_key,
+                occurred_at=occurred_at,
+                alert_id=alert_id_uuid,
+                event_type=event_type,
+                actor=actor,
+                state_from=state_from,
+                state_to=state_to,
+                model_id=model_id,
+                prompt_sha256=prompt_sha256,
+                rules_version=rules_version,
+                corpus_version=corpus_version,
+                mapping_version=mapping_version,
+                prompt_version=prompt_version,
+                tokens_in=tokens_in,
+                tokens_out=tokens_out,
+                latency_ms=latency_ms,
+                prev_hash=prev_hash,
+                hash=event_hash,
+            )
+        finally:
+            conn.close()
 
     def get_events(self, alert_id: str | None = None) -> list[AuditEvent]:
         """Retrieve events from the audit trail, optionally filtered by alert_id."""
         conn = get_connection(self.db_path)
-        cursor = conn.cursor()
+        try:
+            cursor = conn.cursor()
 
-        if alert_id:
-            cursor.execute("SELECT * FROM audit_events WHERE alert_id = ? ORDER BY seq", (alert_id,))
-        else:
-            cursor.execute("SELECT * FROM audit_events ORDER BY seq")
+            if alert_id:
+                cursor.execute("SELECT * FROM audit_events WHERE alert_id = ? ORDER BY seq", (alert_id,))
+            else:
+                cursor.execute("SELECT * FROM audit_events ORDER BY seq")
 
-        rows = cursor.fetchall()
-        conn.close()
+            rows = cursor.fetchall()
 
-        events = []
-        for row in rows:
-            events.append(
-                AuditEvent(
-                    seq=row[0],
-                    event_key=row[1],
-                    occurred_at=datetime.fromisoformat(row[2]).replace(tzinfo=UTC),
-                    alert_id=row[3],
-                    event_type=row[4],
-                    actor=Role(row[5]),
-                    state_from=row[6],
-                    state_to=row[7],
-                    model_id=row[8],
-                    prompt_sha256=row[9],
-                    rules_version=row[10],
-                    corpus_version=row[11],
-                    mapping_version=row[12],
-                    prompt_version=row[13],
-                    tokens_in=row[14],
-                    tokens_out=row[15],
-                    latency_ms=row[16],
-                    prev_hash=row[17],
-                    hash=row[18],
+            events = []
+            for row in rows:
+                events.append(
+                    AuditEvent(
+                        seq=row[0],
+                        event_key=row[1],
+                        occurred_at=datetime.fromisoformat(row[2]).replace(tzinfo=UTC),
+                        alert_id=row[3],
+                        event_type=row[4],
+                        actor=Role(row[5]),
+                        state_from=AlertState(row[6]) if row[6] else None,
+                        state_to=AlertState(row[7]) if row[7] else None,
+                        model_id=row[8],
+                        prompt_sha256=row[9],
+                        rules_version=row[10],
+                        corpus_version=row[11],
+                        mapping_version=row[12],
+                        prompt_version=row[13],
+                        tokens_in=row[14],
+                        tokens_out=row[15],
+                        latency_ms=row[16],
+                        prev_hash=row[17],
+                        hash=row[18],
+                    )
                 )
-            )
-        return events
+            return events
+        finally:
+            conn.close()
 
     def verify_chain(self) -> bool:
         """Verify the integrity of the entire hash chain."""
         conn = get_connection(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM audit_events ORDER BY seq")
-        rows = cursor.fetchall()
-        conn.close()
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM audit_events ORDER BY seq")
+            rows = cursor.fetchall()
 
-        if not rows:
+            if not rows:
+                return True
+
+            for row in rows:
+                seq = row[0]
+                prev_hash = row[17]
+                stored_hash = row[18]
+
+                # First event must have prev_hash = None
+                if seq == 1 and prev_hash is not None:
+                    return False
+
+                # Recalculate hash
+                event_data = {
+                    "seq": seq,
+                    "event_key": row[1],
+                    "occurred_at": row[2],
+                    "alert_id": row[3],
+                    "event_type": row[4],
+                    "actor": row[5],
+                    "state_from": row[6],
+                    "state_to": row[7],
+                    "model_id": row[8],
+                    "prompt_sha256": row[9],
+                    "rules_version": row[10],
+                    "corpus_version": row[11],
+                    "mapping_version": row[12],
+                    "prompt_version": row[13],
+                    "tokens_in": row[14],
+                    "tokens_out": row[15],
+                    "latency_ms": row[16],
+                    "prev_hash": prev_hash,
+                }
+                json_str = json.dumps(event_data, sort_keys=True, separators=(",", ":"))
+                calculated_hash = hashlib.sha256(json_str.encode()).hexdigest()
+
+                if calculated_hash != stored_hash:
+                    return False
+
             return True
-
-        for row in rows:
-            seq = row[0]
-            prev_hash = row[17]
-            stored_hash = row[18]
-
-            # First event must have prev_hash = None
-            if seq == 1 and prev_hash is not None:
-                return False
-
-            # Recalculate hash
-            event_data = {
-                "seq": seq,
-                "event_key": row[1],
-                "occurred_at": row[2],
-                "alert_id": row[3],
-                "event_type": row[4],
-                "actor": row[5],
-                "state_from": row[6],
-                "state_to": row[7],
-                "model_id": row[8],
-                "prompt_sha256": row[9],
-                "rules_version": row[10],
-                "corpus_version": row[11],
-                "mapping_version": row[12],
-                "prompt_version": row[13],
-                "tokens_in": row[14],
-                "tokens_out": row[15],
-                "latency_ms": row[16],
-                "prev_hash": prev_hash,
-            }
-            json_str = json.dumps(event_data, sort_keys=True, separators=(",", ":"))
-            calculated_hash = hashlib.sha256(json_str.encode()).hexdigest()
-
-            if calculated_hash != stored_hash:
-                return False
-
-        return True
+        finally:
+            conn.close()
 
     def recalculate_chain(self) -> bool:
         """Recalculate the entire chain (should only be used if chain is verified first)."""
@@ -245,14 +251,14 @@ def add_event(
     event_type: str,
     event_key: str,
     actor: Role,
-    state_from: str | None = None,
-    state_to: str | None = None,
+    state_from: AlertState | None = None,
+    state_to: AlertState | None = None,
     model_id: str | None = None,
     prompt_sha256: str | None = None,
     prompt_version: str | None = None,
-    rules_version: str | None = None,
+    rules_version: VersionNumber | None = None,
     corpus_version: str | None = None,
-    mapping_version: str | None = None,
+    mapping_version: VersionNumber | None = None,
     tokens_in: int = 0,
     tokens_out: int = 0,
     latency_ms: int = 0,

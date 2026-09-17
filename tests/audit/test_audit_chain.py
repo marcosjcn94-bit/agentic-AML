@@ -8,6 +8,7 @@ from uuid import uuid4
 import pytest
 
 from aml_guardian.audit.chain import AuditChain, add_event, recalculate_chain
+from aml_guardian.contracts.ingestion import AlertState
 from aml_guardian.contracts.runtime import Role
 from aml_guardian.persistence.db import init_db
 
@@ -35,8 +36,8 @@ class TestAuditChain:
             event_type="ALERT_RECEIVED",
             event_key=event_key,
             actor=Role.SISTEMA,
-            state_from="RECEIVED",
-            state_to="SANITIZED",
+            state_from=AlertState.RECEIVED,
+            state_to=AlertState.SANITIZED,
         )
 
         assert event.seq == 1
@@ -118,14 +119,16 @@ class TestAuditChain:
         from aml_guardian.persistence.db import get_connection
 
         conn = get_connection(temp_db)
-        cursor = conn.cursor()
-        with pytest.raises(sqlite3.IntegrityError):
-            cursor.execute(
-                "UPDATE audit_events SET event_type = ? WHERE seq = 1",
-                ("MODIFIED",),
-            )
-            conn.commit()
-        conn.close()
+        try:
+            cursor = conn.cursor()
+            with pytest.raises(sqlite3.IntegrityError):
+                cursor.execute(
+                    "UPDATE audit_events SET event_type = ? WHERE seq = 1",
+                    ("MODIFIED",),
+                )
+                conn.commit()
+        finally:
+            conn.close()
 
     def test_no_delete_on_events(self, temp_db):
         """Test that DELETE is prevented by trigger."""
@@ -144,11 +147,13 @@ class TestAuditChain:
         from aml_guardian.persistence.db import get_connection
 
         conn = get_connection(temp_db)
-        cursor = conn.cursor()
-        with pytest.raises(sqlite3.IntegrityError):
-            cursor.execute("DELETE FROM audit_events WHERE seq = 1")
-            conn.commit()
-        conn.close()
+        try:
+            cursor = conn.cursor()
+            with pytest.raises(sqlite3.IntegrityError):
+                cursor.execute("DELETE FROM audit_events WHERE seq = 1")
+                conn.commit()
+        finally:
+            conn.close()
 
     def test_verify_chain(self, temp_db):
         """Test chain verification."""

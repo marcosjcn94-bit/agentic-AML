@@ -31,69 +31,71 @@ def init_db(db_path: Path | None = None) -> None:
         db_path = get_db_path()
 
     conn = get_connection(db_path)
-    cursor = conn.cursor()
+    try:
+        cursor = conn.cursor()
 
-    # Create audit events table (DT-12)
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS audit_events (
-            seq INTEGER PRIMARY KEY AUTOINCREMENT,
-            event_key TEXT NOT NULL UNIQUE,
-            occurred_at TEXT NOT NULL,
-            alert_id TEXT NOT NULL,
-            event_type TEXT NOT NULL,
-            actor TEXT NOT NULL,
-            state_from TEXT,
-            state_to TEXT,
-            model_id TEXT,
-            prompt_sha256 TEXT,
-            rules_version TEXT,
-            corpus_version TEXT,
-            mapping_version TEXT,
-            prompt_version TEXT,
-            tokens_in INTEGER NOT NULL DEFAULT 0,
-            tokens_out INTEGER NOT NULL DEFAULT 0,
-            latency_ms INTEGER NOT NULL DEFAULT 0,
-            prev_hash TEXT,
-            hash TEXT NOT NULL,
-            created_at TEXT NOT NULL
-        )
-    """)
+        # Create audit events table (DT-12)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS audit_events (
+                seq INTEGER PRIMARY KEY AUTOINCREMENT,
+                event_key TEXT NOT NULL UNIQUE,
+                occurred_at TEXT NOT NULL,
+                alert_id TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                actor TEXT NOT NULL,
+                state_from TEXT,
+                state_to TEXT,
+                model_id TEXT,
+                prompt_sha256 TEXT,
+                rules_version TEXT,
+                corpus_version TEXT,
+                mapping_version TEXT,
+                prompt_version TEXT,
+                tokens_in INTEGER NOT NULL DEFAULT 0,
+                tokens_out INTEGER NOT NULL DEFAULT 0,
+                latency_ms INTEGER NOT NULL DEFAULT 0,
+                prev_hash TEXT,
+                hash TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+        """)
 
-    # Create alert records table (DT-05)
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS alert_records (
-            alert_id TEXT PRIMARY KEY,
-            state TEXT NOT NULL,
-            triage_level TEXT,
-            selected_at TEXT NOT NULL,
-            prazo_interno TEXT,
-            prazo_regulatorio_analise TEXT,
-            failure_reason TEXT,
-            created_at TEXT NOT NULL,
-            updated_at TEXT NOT NULL
-        )
-    """)
+        # Create alert records table (DT-05)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS alert_records (
+                alert_id TEXT PRIMARY KEY,
+                state TEXT NOT NULL,
+                triage_level TEXT,
+                selected_at TEXT NOT NULL,
+                prazo_interno TEXT,
+                prazo_regulatorio_analise TEXT,
+                failure_reason TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
 
-    # Create trigger to prevent UPDATE on audit_events
-    cursor.execute("""
-        CREATE TRIGGER IF NOT EXISTS prevent_audit_update
-        BEFORE UPDATE ON audit_events
-        BEGIN
-            SELECT RAISE(ABORT, 'audit_events table is append-only');
-        END
-    """)
+        # Create trigger to prevent UPDATE on audit_events
+        cursor.execute("""
+            CREATE TRIGGER IF NOT EXISTS prevent_audit_update
+            BEFORE UPDATE ON audit_events
+            BEGIN
+                SELECT RAISE(ABORT, 'audit_events table is append-only');
+            END
+        """)
 
-    # Create trigger to prevent DELETE on audit_events
-    cursor.execute("""
-        CREATE TRIGGER IF NOT EXISTS prevent_audit_delete
-        BEFORE DELETE ON audit_events
-        BEGIN
-            SELECT RAISE(ABORT, 'audit_events table is append-only');
-        END
-    """)
+        # Create trigger to prevent DELETE on audit_events
+        cursor.execute("""
+            CREATE TRIGGER IF NOT EXISTS prevent_audit_delete
+            BEFORE DELETE ON audit_events
+            BEGIN
+                SELECT RAISE(ABORT, 'audit_events table is append-only');
+            END
+        """)
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def connect_db(db_path: Path | None = None) -> Generator[sqlite3.Connection, None, None]:
