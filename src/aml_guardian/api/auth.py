@@ -10,6 +10,7 @@ from __future__ import annotations
 import os
 import secrets
 from collections.abc import Callable
+from typing import NoReturn
 
 from fastapi import Header, HTTPException
 
@@ -22,7 +23,7 @@ _ENV_VAR_BY_ROLE = {
 }
 
 
-def _error(status_code: int, code: str, message: str) -> None:
+def _error(status_code: int, code: str, message: str) -> NoReturn:
     raise HTTPException(status_code=status_code, detail={"code": code, "message": message})
 
 
