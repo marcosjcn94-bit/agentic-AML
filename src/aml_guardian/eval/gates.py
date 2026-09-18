@@ -112,7 +112,7 @@ def _gate_privacidade() -> GateResultado:
     )
 
 
-def _gate_velocidade(latencia_media_min: float, baseline: BaselineConfig) -> GateResultado:
+def gate_velocidade(latencia_media_min: float, baseline: BaselineConfig) -> GateResultado:
     velocidade = baseline.tempo_manual_min / (latencia_media_min + baseline.tempo_revisao_min)
     return GateResultado(
         metrica="Velocidade",
@@ -126,7 +126,7 @@ def _gate_velocidade(latencia_media_min: float, baseline: BaselineConfig) -> Gat
     )
 
 
-def _gate_latencia(p95_ms: float) -> GateResultado:
+def gate_latencia(p95_ms: float) -> GateResultado:
     p95_s = p95_ms / 1000
     return GateResultado(
         metrica="Latência",
@@ -139,7 +139,7 @@ def _gate_latencia(p95_ms: float) -> GateResultado:
     )
 
 
-def _gate_auditoria(valido: bool) -> GateResultado:
+def gate_auditoria(valido: bool) -> GateResultado:
     return GateResultado(
         metrica="Integridade da auditoria",
         formula="API-08 após a execução",
@@ -165,10 +165,10 @@ def avalia_gates(latencias_ms: list[float], baseline: BaselineConfig, auditoria_
         _gate_recall(),
         _gate_grounding(),
         _gate_fp(),
-        _gate_velocidade(latencia_media_min, baseline),
+        gate_velocidade(latencia_media_min, baseline),
         _gate_tokens(),
-        _gate_latencia(p95_ms),
+        gate_latencia(p95_ms),
         _gate_prazo(),
         _gate_privacidade(),
-        _gate_auditoria(auditoria_valida),
+        gate_auditoria(auditoria_valida),
     ]
