@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FutureTimeout
 from dataclasses import dataclass
 from time import monotonic, sleep
 from typing import TypeVar
@@ -46,7 +48,15 @@ def execute_with_retry(
     for attempt in range(policy.max_retries + 1):
         started = clock()
         try:
-            result = operation()
+            executor = ThreadPoolExecutor(max_workers=1)
+            future = executor.submit(operation)
+            try:
+                result = future.result(timeout=policy.timeout_seconds)
+            except FutureTimeout as exc:
+                future.cancel()
+                raise NodeTimeoutError(f"timeout após {policy.timeout_seconds:.3f}s", retryable=True) from exc
+            finally:
+                executor.shutdown(wait=False, cancel_futures=True)
             elapsed = clock() - started
             if elapsed > policy.timeout_seconds:
                 raise NodeTimeoutError(f"timeout após {elapsed:.3f}s", retryable=True)
