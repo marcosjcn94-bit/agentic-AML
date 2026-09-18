@@ -30,11 +30,11 @@ import subprocess
 import sys
 import urllib.error
 import urllib.request
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from functools import partial
 from pathlib import Path
-from typing import Callable
 
 NS = 1_000_000_000
 
@@ -169,7 +169,7 @@ def investigation_schema(feature_ids: list[str]) -> dict:
             "t": {"type": "string", "enum": SUSPICIOUS_TYPOLOGIES + ["NENHUMA"]},
             "c": {"type": "number", "minimum": 0, "maximum": 1},
             "r": {"type": "string", "enum": RECOMMENDATIONS},
-            # Evidência como número da feature (F03 -> 3): na sonda de 2026-09-15, 46 tokens de saída contra 52 com texto.
+            # Evidência como número da feature (F03 -> 3); reduz tokens de saída.
             "e": {"type": "array", "items": {"type": "integer", "enum": [int(f[1:]) for f in feature_ids]},
                   "maxItems": MAX_EVIDENCE},
         },
@@ -231,7 +231,7 @@ def calibrate(host: str, spec: NodeSpec, builder: Builder, initial: int) -> int:
 def run_node(host: str, spec: NodeSpec, builder: Builder, size: int, runs: int, num_thread: int | None,
              nonce_offset: int = 0, verbose: bool = True) -> NodeReport:
     report = NodeReport(spec=spec, calibrated_size=size, num_thread=num_thread)
-    # Aquecimento descartado: carrega o modelo com o num_thread escolhido e, no modo de prefixo estável, prepara o cache.
+    # Aquecimento descartado: carrega o modelo e prepara o cache estável.
     warm_prompt, warm_ids = builder(size, 80_000 + nonce_offset)
     generate(host, spec.model, warm_prompt, spec.num_predict, investigation_schema(warm_ids), num_thread)
     for i in range(runs):
@@ -351,7 +351,7 @@ def write_reports(out_dir: Path, meta: dict, reports: list[NodeReport], sweep: l
     lines += [
         "## Resultado por nó",
         "",
-        "| Nó | Modelo (digest) | Tokens in / out (média) | Prompt tok/s | Geração tok/s | p50 (s) | p95 (s) | Orçamento p95 (s) | Schema válido | Veredito |",
+        "| Nó | Modelo | Tokens in/out | Prompt tok/s | Geração tok/s | p50 | p95 | Budget | Schema | Veredito |",
         "| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |",
     ]
     for r in reports:
@@ -366,7 +366,7 @@ def write_reports(out_dir: Path, meta: dict, reports: list[NodeReport], sweep: l
     lines += [
         "",
         "## Fluxo completo (estimado)",
-        f"- p95 do nó LLM (gate): {flow['llm_p95_sum_s']} s + etapas determinísticas orçadas {DETERMINISTIC_BUDGET_S} s "
+        f"- p95 LLM: {flow['llm_p95_sum_s']} s + etapas determinísticas {DETERMINISTIC_BUDGET_S} s "
         f"(inclui Seleção de chunks determinística, ADR-013) = **{flow['estimated_flow_p95_s']} s**",
         f"- Limite < {FLOW_LIMIT_S:g} s: **{ok(flow['passes_limit'])}** — com margem de {FLOW_MARGIN_S} s: "
         f"**{ok(flow['passes_with_margin'])}**",
@@ -429,7 +429,7 @@ def main() -> int:
         reports.append(run_node(args.host, spec, builder, size, args.runs, num_thread))
 
     meta = {
-        "date": datetime.now(timezone.utc).date().isoformat(),
+        "date": datetime.now(UTC).date().isoformat(),
         "tag": args.tag,
         "ollama_version": version,
         "model_digests": digests,
