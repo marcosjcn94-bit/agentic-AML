@@ -1,0 +1,108 @@
+{
+  "gerado_em": "2026-09-18T14:35:29.314884+00:00",
+  "golden_version": "v1",
+  "manifest_sha256": "43ec5d2321f5f5d28ad270b8acd8fd7f1fa7db5d8160e316e14ae2036956e1aa",
+  "amostra": {
+    "tamanho": 500,
+    "criticos": 180,
+    "normais": 210,
+    "nao_criticos_suspeitos": 110
+  },
+  "versoes": {
+    "rules_version": 1,
+    "mapping_version": 1,
+    "features_version": 1,
+    "prompt_version": "1"
+  },
+  "latencia_fluxo_investigar_ms": {
+    "p50": 2487.3066499712877,
+    "p95": 16874.66769002203
+  },
+  "baseline": {
+    "tempo_manual_min": 120.0,
+    "tempo_revisao_min": 15.0
+  },
+  "gates": [
+    {
+      "metrica": "Recall crítico",
+      "formula": "RNF-01",
+      "gate": "= 100%",
+      "status": "medida",
+      "valor": "18.33%",
+      "aprovado": false,
+      "nota": "33/180 alertas críticos do golden terminaram COS/NEEDS_HUMAN (nunca ARQUIVAMENTO). Cache semântico não está implementado nesta PoC (nenhum módulo de cache em src/), então a rodada já é 'cache desligado' por construção, como o RNF-01 exige."
+    },
+    {
+      "metrica": "Grounding",
+      "formula": "RNF-02",
+      "gate": "bruto ≥ 99% e final 0",
+      "status": "não medida",
+      "valor": null,
+      "aprovado": null,
+      "nota": "Nenhum alerta da amostra propôs citação (ver --limit ou cobertura do mapping)."
+    },
+    {
+      "metrica": "Redução de falsos positivos",
+      "formula": "1 − FP_pipeline / FP_baseline",
+      "gate": "≥ 65%",
+      "status": "medida",
+      "valor": "82.86%",
+      "aprovado": true,
+      "nota": "FP_pipeline = 36/210 alertas normais do golden terminaram COS/NEEDS_HUMAN (deveriam ser ARQUIVAMENTO); FP_baseline = 100% (legado T0.8 encaminha todo alerta que gera, SPEC.md §10, fórmula literal — não é escolha nova desta tarefa)."
+    },
+    {
+      "metrica": "Velocidade",
+      "formula": "tempo_manual_min / (latência_média_min + baseline.tempo_revisao_min)",
+      "gate": "≥ 3x",
+      "status": "medida",
+      "valor": "7.96x",
+      "aprovado": true,
+      "nota": "tempo_manual_min=120.0, tempo_revisao_min=15.0 (config/baseline.yaml, provisórios); latência_média_min do golden set real (500 alertas)."
+    },
+    {
+      "metrica": "Redução de tokens",
+      "formula": "SPEC.md §3.3: 1 − tokens_pipeline / tokens_baseline",
+      "gate": "> 70%",
+      "status": "medida",
+      "valor": "80.00%",
+      "aprovado": true,
+      "nota": "tokens_pipeline = soma real dos 100/500 alertas que chamaram o LLM (triagem evita chamada nos demais, `PROPOR_ARQUIVAMENTO`); tokens_baseline = média real por chamada × 500, o contrafactual '100% via agentes' do SPEC.md §3.3 sem rodar o golden set uma segunda vez com triagem desligada — decisão de menor custo (MEMORY.md), pois cache semântico não está implementado nesta PoC (já é 'cache desligado' em toda rodada) e a única variável restante é a triagem, cujo efeito é medido diretamente pela fração de alertas que evitou o LLM."
+    },
+    {
+      "metrica": "Latência",
+      "formula": "RNF-03",
+      "gate": "p95 < 20 s",
+      "status": "medida",
+      "valor": "16.87 s",
+      "aprovado": true,
+      "nota": "p95 do fluxo INVESTIGAR completo (grafo) sobre golden set real, 500 alertas (não amostra sintética)."
+    },
+    {
+      "metrica": "Prazo interno",
+      "formula": "SPEC.md §3.1",
+      "gate": "100% dentro",
+      "status": "medida",
+      "valor": "100.00%",
+      "aprovado": true,
+      "nota": "Proxy de cobertura: fração de dossiês com `prazo_interno`/`prazo_regulatorio_analise` (DT-11) calculados e em ordem cronológica com `selecao_em`. A métrica literal do SPEC §3.1 (chegada em DRAFT_READY dentro do prazo em relação ao tempo real decorrido) não se aplica a uma rodada em lote único executada em minutos/horas — mesma ressalva já registrada em `gates.py::_gate_prazo` (T1.13)."
+    },
+    {
+      "metrica": "Privacidade",
+      "formula": "RNF-05",
+      "gate": "0 ocorrências",
+      "status": "medida",
+      "valor": "0 ocorrência(s)",
+      "aprovado": true,
+      "nota": "Varredura de CPF/CNPJ sintético dos payloads golden efetivamente rodados sobre `audit_events` + `alert_records` desta execução (mesma técnica de `tests/privacy/test_canary.py`, T1.12). Prompt capturado do LiteLLM não repetido aqui (já coberto pelo canário unitário); terceiro destino (logs) continua não medido, como no T1.12 (sem infraestrutura de log formada)."
+    },
+    {
+      "metrica": "Integridade da auditoria",
+      "formula": "API-08 após a execução",
+      "gate": "valid = true",
+      "status": "medida",
+      "valor": "True",
+      "aprovado": true,
+      "nota": "Cadeia recalculada sobre o banco de auditoria da amostra desta execução."
+    }
+  ]
+}
