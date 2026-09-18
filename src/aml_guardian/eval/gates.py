@@ -112,7 +112,9 @@ def _gate_privacidade() -> GateResultado:
     )
 
 
-def gate_velocidade(latencia_media_min: float, baseline: BaselineConfig) -> GateResultado:
+def gate_velocidade(
+    latencia_media_min: float, baseline: BaselineConfig, origem: str = "amostra sintética"
+) -> GateResultado:
     velocidade = baseline.tempo_manual_min / (latencia_media_min + baseline.tempo_revisao_min)
     return GateResultado(
         metrica="Velocidade",
@@ -122,11 +124,11 @@ def gate_velocidade(latencia_media_min: float, baseline: BaselineConfig) -> Gate
         valor=f"{velocidade:.2f}x",
         aprovado=velocidade >= 3,
         nota=f"tempo_manual_min={baseline.tempo_manual_min}, tempo_revisao_min={baseline.tempo_revisao_min} "
-        f"(config/baseline.yaml, provisórios); latência_média_min da amostra sintética, não do golden set.",
+        f"(config/baseline.yaml, provisórios); latência_média_min da {origem}.",
     )
 
 
-def gate_latencia(p95_ms: float) -> GateResultado:
+def gate_latencia(p95_ms: float, origem: str = "amostra sintética, não o golden set inteiro") -> GateResultado:
     p95_s = p95_ms / 1000
     return GateResultado(
         metrica="Latência",
@@ -135,7 +137,7 @@ def gate_latencia(p95_ms: float) -> GateResultado:
         status=MEDIDA,
         valor=f"{p95_s:.2f} s",
         aprovado=p95_s < 20,
-        nota="p95 do fluxo INVESTIGAR completo (grafo) sobre amostra sintética, não o golden set inteiro.",
+        nota=f"p95 do fluxo INVESTIGAR completo (grafo) sobre {origem}.",
     )
 
 
