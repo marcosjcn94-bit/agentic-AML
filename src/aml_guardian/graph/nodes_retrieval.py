@@ -29,7 +29,11 @@ def make_retrieval_node(deps: GraphDeps):
             retrieved_chunk_ids: list[str] = []
             if enquadramento is not None:
                 candidatos = search_candidates(
-                    state.investigation.typology_hypothesis, enquadramento, deps.corpus_version, deps.searcher
+                    state.investigation.typology_hypothesis,
+                    enquadramento,
+                    deps.corpus_version,
+                    deps.searcher,
+                    cache=deps.norm_cache,
                 )
                 retrieved_chunk_ids = [candidato["chunk_id"] for candidato in candidatos]
 

@@ -24,20 +24,17 @@ def record_node_event(
     state_to: AlertState | None = None,
     db_path: Path | None = None,
 ) -> None:
-    """Registra o evento do nó; falha de auditoria nunca interrompe o grafo (mesmo padrão da T1.6).
+    """Registra evento regulatório; falha propaga e força o handoff seguro.
 
     `db_path` vem de `GraphDeps.db_path` (T1.12): sem ele, todo evento cairia sempre no `data/app.sqlite`
     de produção, inclusive durante teste — o mesmo db_path que `AppState`/`save_alert_record` já usam (T1.11).
     """
-    try:
-        add_event(
-            alert_id=str(alert_id),
-            event_type=event_type,
-            event_key=f"{alert_id}_{node.value}_{attempt}",
-            actor=Role.SISTEMA,
-            state_from=state_from,
-            state_to=state_to,
-            db_path=db_path,
-        )
-    except Exception:  # noqa: BLE001 - auditoria é best-effort (mesmo padrão de investigation/runner.py)
-        pass
+    add_event(
+        alert_id=str(alert_id),
+        event_type=event_type,
+        event_key=f"{alert_id}_{node.value}_{attempt}",
+        actor=Role.SISTEMA,
+        state_from=state_from,
+        state_to=state_to,
+        db_path=db_path,
+    )

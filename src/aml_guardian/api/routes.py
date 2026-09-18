@@ -122,16 +122,6 @@ def post_alert(
     return {"alert_id": str(alert.alert_id), "state": final_state.state.value}
 
 
-@router.get("/alerts")
-def list_alerts_before_detail(
-    request: Request,
-    state_filter: AlertState | None = Query(default=None, alias="state"),
-    em_risco: bool | None = None,
-    _role: Role = Depends(require_role(Role.ANALISTA, Role.COMPLIANCE_OFFICER)),
-) -> list[AlertRecord]:
-    return list_alert_records(state_filter, em_risco, date.today(), _app_state(request).db_path)
-
-
 @router.get("/alerts/{alert_id}")
 def get_alert(
     alert_id: UUID,
@@ -315,13 +305,6 @@ def get_health(request: Request) -> HealthResult:
     if result.status != "ok":
         raise HTTPException(status_code=503, detail=result.model_dump())
     return result
-
-
-@router.get("/audit/verify")
-def verify_audit_before_detail(
-    request: Request, _role: Role = Depends(require_role(Role.COMPLIANCE_OFFICER))
-) -> dict[str, bool | int | None]:
-    return AuditChain(_app_state(request).db_path).verify_details()
 
 
 @router.get("/audit/{alert_id}")

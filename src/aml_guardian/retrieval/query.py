@@ -36,10 +36,18 @@ def search_candidates(
     enquadramento: Tipologia,
     corpus_version: str,
     searcher: NormSearcher = search_norms,
+    cache: object | None = None,
 ) -> list[dict[str, object]]:
     """Consulta o MCP-03 (top_k = 8) e devolve os candidatos `{chunk_id, article_ref, score}` (RF-06)."""
     query = build_query(typology, enquadramento)
+    if cache is not None:
+        cached = cache.lookup(query, corpus_version)  # type: ignore[attr-defined]
+        if cached is not None:
+            return cached
     resultado = searcher(query=query, top_k=TOP_K, corpus_version=corpus_version)
     if not isinstance(resultado, dict) or resultado.get("status") != "success":
         raise NormSearchError(f"MCP-03 respondeu fora do formato esperado: {resultado!r}")
-    return resultado["results"]
+    candidates = resultado["results"]
+    if cache is not None:
+        cache.store(query, corpus_version, candidates)  # type: ignore[attr-defined]
+    return candidates

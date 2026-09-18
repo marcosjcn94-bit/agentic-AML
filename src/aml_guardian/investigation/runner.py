@@ -77,7 +77,7 @@ def _registrar_evento(
         add_event(
             alert_id=str(alert_id),
             event_type="MODEL_CALLED",
-            event_key=f"{alert_id}_investigation_{tentativa}",
+            event_key=f"{alert_id}_investigation_model_{tentativa}",
             actor=Role.SISTEMA,
             model_id=resposta.model_id,
             prompt_sha256=prompt_sha256,

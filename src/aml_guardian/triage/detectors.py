@@ -18,6 +18,10 @@ RULE_FRAGMENTACAO = "FRAGMENTACAO"
 RULE_CAMADAS = "CAMADAS"
 RULE_ESPECIE_EXTERIOR = "ESPECIE_DEPOIS_EXTERIOR"
 RULE_LISTA_RESTRICAO = "LISTA_RESTRICAO"
+RULE_SMURFING = "SMURFING"
+RULE_LAYERED_FAN_IN = "LAYERED_FAN_IN"
+RULE_LAYERED_FAN_OUT = "LAYERED_FAN_OUT"
+RULE_STACKED_BIPARTITE = "STACKED_BIPARTITE"
 
 
 def transacoes_abaixo_limiar(alert: SanitizedAlert, cfg: Fragmentacao) -> list[SanitizedTransaction]:
@@ -113,3 +117,33 @@ def detect_lista_restricao(resultado_mcp02: dict[str, object], cfg: ListaRestric
     if any(resultado_mcp02.get(lista) == "sim" for lista in cfg.listas):
         return FiredRule(rule_id=RULE_LISTA_RESTRICAO, description=cfg.descricao, critical=True)
     return None
+
+
+def detect_smurfing(alert: SanitizedAlert, cfg: Fragmentacao) -> FiredRule | None:
+    """Detecta fragmentação distribuída entre várias contrapartes, sem usar rótulo do alerta."""
+    abaixo = transacoes_abaixo_limiar(alert, cfg)
+    contrapartes_entrada = {t.sender_account for t in abaixo if t.receiver_account == alert.sender_account}
+    if len(abaixo) >= cfg.min_transacoes and len(contrapartes_entrada) >= 2:
+        return FiredRule(
+            rule_id=RULE_SMURFING, description="Fragmentação distribuída entre contrapartes", critical=True
+        )
+    return None
+
+
+def detect_network_shapes(alert: SanitizedAlert, cfg: Camadas) -> list[FiredRule]:
+    """Classifica fan-in/fan-out/bipartite por estrutura, de forma determinística."""
+    entrada, saida = contrapartes(alert, cfg.janela_dias)
+    rules: list[FiredRule] = []
+    if len(entrada) >= cfg.min_contrapartes:
+        rules.append(
+            FiredRule(rule_id=RULE_LAYERED_FAN_IN, description="Múltiplas entradas para o titular", critical=True)
+        )
+    if len(saida) >= cfg.min_contrapartes:
+        rules.append(
+            FiredRule(rule_id=RULE_LAYERED_FAN_OUT, description="Múltiplas saídas do titular", critical=True)
+        )
+    if len(entrada) >= 2 and len(saida) >= 2:
+        rules.append(
+            FiredRule(rule_id=RULE_STACKED_BIPARTITE, description="Entradas e saídas distribuídas", critical=True)
+        )
+    return rules

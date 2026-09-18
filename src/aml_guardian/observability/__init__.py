@@ -1,0 +1,1 @@
+"""Observabilidade sem dados pessoais."""

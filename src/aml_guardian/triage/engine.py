@@ -21,6 +21,8 @@ from aml_guardian.triage.detectors import (
     detect_especie_depois_exterior,
     detect_fragmentacao,
     detect_lista_restricao,
+    detect_network_shapes,
+    detect_smurfing,
 )
 
 
@@ -85,9 +87,11 @@ def run_triage(
             detect_camadas(sanitized_alert, detectores.camadas),
             detect_especie_depois_exterior(sanitized_alert, detectores.especie_depois_exterior),
             detect_lista_restricao(resultado_mcp02, detectores.lista_restricao),
+            detect_smurfing(sanitized_alert, detectores.fragmentacao),
         )
         if rule is not None
     ]
+    fired_rules.extend(detect_network_shapes(sanitized_alert, detectores.camadas))
     level = TriageLevel.INVESTIGAR if fired_rules else TriageLevel.PROPOR_ARQUIVAMENTO
     decision = TriageDecision(
         alert_id=sanitized_alert.alert_id,

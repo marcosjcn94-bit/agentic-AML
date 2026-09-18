@@ -18,6 +18,7 @@ from aml_guardian.features.catalog import HistoryFetcher
 from aml_guardian.investigation.litellm_client import ContadorChamadas
 from aml_guardian.mcp_servers.server import check_restriction_lists, get_customer_history
 from aml_guardian.norms.server import get_norm_passage, search_norms
+from aml_guardian.retrieval.cache import SemanticNormCache
 from aml_guardian.retrieval.query import NormSearcher
 from aml_guardian.retrieval.selection import NormPassageGetter
 from aml_guardian.sourcedata.mapping import SamlDMapping
@@ -40,3 +41,4 @@ class GraphDeps:
     passage_getter: NormPassageGetter = get_norm_passage
     contador: ContadorChamadas | None = None
     model_overrides: dict[str, object] = field(default_factory=dict)
+    norm_cache: SemanticNormCache | None = None

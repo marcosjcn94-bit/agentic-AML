@@ -7,7 +7,7 @@ from pathlib import Path
 from uuid import UUID
 
 from aml_guardian.contracts.runtime import AlertState, AuditEvent, Role, VersionNumber
-from aml_guardian.persistence.db import get_connection, get_db_path
+from aml_guardian.persistence.db import get_connection, get_db_path, init_db
 
 
 class AuditChain:
@@ -16,6 +16,7 @@ class AuditChain:
     def __init__(self, db_path: Path | None = None):
         """Initialize audit chain with database path."""
         self.db_path = db_path or get_db_path()
+        init_db(self.db_path)
 
     def add_event(
         self,

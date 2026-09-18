@@ -13,6 +13,7 @@ from aml_guardian.api.health import HealthDeps
 from aml_guardian.api.routes import router
 from aml_guardian.api.state import AppState
 from aml_guardian.graph.deps import GraphDeps
+from aml_guardian.observability.logging import configure_logging
 from aml_guardian.persistence.db import init_db
 
 
@@ -30,6 +31,7 @@ def create_app(state: AppState | None = None) -> FastAPI:
     Produção usa `uvicorn aml_guardian.api.app:create_app --factory` — nunca um `app` de módulo nível superior,
     para que importar este arquivo em teste não crie `data/app.sqlite` nem GraphDeps reais como efeito colateral.
     """
+    configure_logging()
     resolved_state = state or _default_app_state()
     if resolved_state.graph_deps.db_path is None and resolved_state.db_path is not None:
         # Sem isto, a auditoria dos nós do grafo (T1.10) sempre cairia em `data/app.sqlite` de produção,
