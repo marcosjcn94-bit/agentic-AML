@@ -1,0 +1,49 @@
+{# Template do Arquivamento — T1.9, RF-08. Cobre os dois caminhos do RF-10: triagem (sem investigação, sem #}
+{# LLM) e investigado (recomendação ARQUIVAR); o campo `dossier.typology` distingue os dois casos. #}
+# Arquivamento
+
+**Alerta:** {{ dossier.alert_id }}
+**Dossiê:** {{ dossier.dossier_id }}
+**Status:** {{ dossier.status.value }}
+
+## Resumo
+{{ dossier.summary }}
+
+{% if dossier.typology %}
+## Tipologia (gerado por IA)
+{{ dossier.typology.value }}
+
+## Enquadramento CC 4.001/2020
+Incisos: {{ dossier.cc4001_incisos | join(', ') }}
+
+## Evidências
+{% for item in dossier.evidence %}
+- {{ item.feature_id }} ({{ item.name }}): {{ item.value }}
+{% endfor %}
+
+## Citações normativas verificadas
+{% for citation in dossier.citations %}
+- **{{ citation.article_ref }}**: "{{ citation.quoted_text }}"
+{% endfor %}
+
+## Recomendação (gerado por IA)
+{{ dossier.recommendation.value }}
+{% else %}
+## Origem
+Arquivamento proposto pela triagem determinística, sem investigação (RF-03): nenhum detector crítico disparado.
+{% endif %}
+
+## Prazos
+- Seleção: {{ dossier.deadlines.selecao_em.isoformat() }}
+- Prazo interno: {{ dossier.deadlines.prazo_interno.isoformat() }}
+- Prazo regulatório de análise: {{ dossier.deadlines.prazo_regulatorio_analise.isoformat() }}
+
+## Versões
+- Regras: {{ dossier.versions.rules }}
+{% if dossier.versions.corpus %}
+- Corpus normativo: {{ dossier.versions.corpus }}
+- Mapeamento: {{ dossier.versions.mapping }}
+- Indicadores: {{ dossier.versions.features }}
+- Prompt: {{ dossier.versions.prompt }}
+- Modelo: {{ dossier.versions.model }}
+{% endif %}

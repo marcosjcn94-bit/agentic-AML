@@ -121,12 +121,11 @@ Complementa o `CLAUDE.md` (guardrails, economia de tokens, segurança), que cont
 - Registrar no `MEMORY.md` aprendizado, bug persistente e decisão tomada no meio do caminho.
 
 ### Ask First
-- Adicionar ou atualizar dependência.
-- Alterar contrato: rota ou payload de API, schema de tool MCP, entidade DT, envelope A2A ou estado do grafo (SPEC §8, §9).
-- Alterar regras de triagem, mapeamento de tipologias, limiares (`cache.threshold`, `selection.min_score`), orçamentos, prompt ou modelo.
-- Alterar a máquina de estados (RF-10).
-- Qualquer decisão estrutural — vira ADR novo antes do código (ADR-001 a ADR-013 como base).
-- Criar commit, push ou branch.
+- Qualquer decisão estrutural (lib, banco, padrão, contrato, infra, FinOps) — vira ADR novo antes do código (ADR-001 a ADR-013 como base).
+  Inclui: adicionar/atualizar dependência; alterar contrato (rota/payload de API, schema de tool MCP, entidade DT, envelope A2A, estado do grafo);
+  alterar a máquina de estados (RF-10); escolha de modelo de embedding, segundo provedor ou qualquer decisão sem evidência do conjunto de desenvolvimento.
+- Push. Commit e branch são automáticos (ver `MEMORY.md` para decisões não estruturais registradas, como limiares, `rules_version`, `selection.min_score`
+  e `cache.threshold` ajustados com evidência do conjunto de desenvolvimento).
 
 ### Never
 - Relaxar meta ou gate de avaliação sem ADR com causa e plano (SPEC §5, §10).

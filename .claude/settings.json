@@ -1,5 +1,17 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py=\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\"; [ -x \"$py\" ] || py=\"$CLAUDE_PROJECT_DIR/.venv/bin/python\"; \"$py\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/bash_trim.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
@@ -7,11 +19,12 @@
           {
             "type": "command",
             "command": "py=\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\"; [ -x \"$py\" ] || py=\"$CLAUDE_PROJECT_DIR/.venv/bin/python\"; \"$py\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/ruff_fix.py\"",
-            "timeout": 30,
+            "timeout": 15,
             "statusMessage": "ruff format + fix"
           }
         ]
       }
     ]
-  }
+  },
+  "env": {}
 }

@@ -12,10 +12,11 @@ import sys
 from pathlib import Path
 
 RUFF = Path(sys.executable).with_name("ruff.exe" if sys.platform == "win32" else "ruff")
+MAX_ERRORS = 5  # não devolver mais que N violações — economiza tokens no contexto
 
 
 def _ruff(*args: str) -> subprocess.CompletedProcess[str]:
-    return subprocess.run([str(RUFF), *args], capture_output=True, text=True, check=False)
+    return subprocess.run([str(RUFF), *args], capture_output=True, text=True, check=False, timeout=8)
 
 
 def main() -> int:
@@ -33,10 +34,9 @@ def main() -> int:
     _ruff("format", "--quiet", "--force-exclude", path)
     remaining = result.stdout.strip().replace(path, target.name)
     if result.returncode != 0 and remaining:
+        short = "\n".join(remaining.splitlines()[:MAX_ERRORS])
         print(
-            json.dumps(
-                {"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": f"ruff:\n{remaining}"}}
-            )
+            json.dumps({"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": f"ruff:\n{short}"}})
         )
     return 0
 

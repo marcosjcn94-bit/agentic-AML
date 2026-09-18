@@ -25,6 +25,9 @@ dependencies = [
     # Embeddings, base vetorial e cache
     "fastembed>=0.4",
     "chromadb>=0.5",
+    # Extração de texto de PDF normativo (T1.7, RF-14) e BM25 para o desempate RRF (T1.8, RF-06) — ADR-015
+    "pypdf>=5.0",
+    "rank-bm25>=0.2",
     # Cifra do Vault
     "cryptography>=43",
     # API, UI e templates
@@ -72,3 +75,7 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# FastAPI Depends() em default de argumento é o padrão idiomático do framework (T1.11).
+"src/aml_guardian/api/*.py" = ["B008"]

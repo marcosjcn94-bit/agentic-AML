@@ -19,6 +19,10 @@ Este documento centraliza todas as decisões técnicas, escolhas de design e tra
 | ADR-011 | [Recuperação de Falhas com Máquina de Estados e Checkpoint](#adr-011-recuperação-de-falhas-com-máquina-de-estados-e-checkpoint) | 2026-09-15 | Aceito |
 | ADR-012 | [Gestão de Chaves, Reidentificação e Observabilidade sem PII](#adr-012-gestão-de-chaves-reidentificação-e-observabilidade-sem-pii) | 2026-09-15 | Aceito |
 | ADR-013 | [Reorçamento de Latência: Seleção de Chunks Determinística e Investigação Compacta com SLM 1,5B](#adr-013-reorçamento-de-latência-seleção-de-chunks-determinística-e-investigação-compacta-com-slm-15b) | 2026-09-15 | Aceito |
+| ADR-014 | [Formato do Golden Set v1: Partição por Conta, Estrato pela Tipologia Real e Manifesto com Hash](#adr-014-formato-do-golden-set-v1-partição-por-conta-estrato-pela-tipologia-real-e-manifesto-com-hash) | 2026-09-16 | Aceito |
+| ADR-015 | [Bibliotecas de Suporte à Ingestão Normativa: Extração de PDF e BM25](#adr-015-bibliotecas-de-suporte-à-ingestão-normativa-extração-de-pdf-e-bm25) | 2026-09-17 | Aceito |
+| ADR-016 | [Modelo de Embedding Definitivo do M4](#adr-016-modelo-de-embedding-definitivo-do-m4) | 2026-09-18 | Aceito |
+| ADR-017 | [Segundo Provedor de Inferência (RNF-10)](#adr-017-segundo-provedor-de-inferência-rnf-10) | 2026-09-18 | Aceito |
 
 ---
 
@@ -305,3 +309,85 @@ Adotou-se a **Opção 3**, com a Opção 2 mantida apenas como saída caso uma r
 #### Trade-offs (Consequências)
 * 🟢 **Ganhos (Prós):** fluxo estimado cai de 92,2 s para 15,0 s no mesmo hardware; 100% de saídas válidas no schema; grounding bruto passa a ser determinístico, sem risco de o LLM propor citação fora do recuperado; menos tokens por alerta, favorecendo a meta FinOps; dossiê sem texto livre gerado por IA, simplificando a revisão.
 * 🔴 **Perdas/Riscos (Contras):** a qualidade de hipótese do 1,5B não está comprovada (nas sondas com indicadores aleatórios respondeu `NENHUMA` com as primeiras features) e precisa passar nos gates de recall, FP e grounding do golden set, sob pena de novo ADR; o modelo só enxerga os indicadores definidos no DT-16, então tipologias novas exigem novos indicadores; o mapeamento curado de aplicabilidade exige manutenção por especialista; `num_thread = 8` é específico deste hardware e a varredura usou amostra pequena; os 3,5 s das etapas determinísticas são orçados, ainda não medidos.
+
+---
+
+### ADR-014: Formato do Golden Set v1: Partição por Conta, Estrato pela Tipologia Real e Manifesto com Hash
+- **Data:** 2026-09-16
+- **Status:** Aceito
+
+#### Contexto e Problema
+O `SPEC.md` §8.3 define o golden set (`data/golden/v1`) como 500 alertas estratificados — 30 por tipologia crítica (180), 10 por suspeita não crítica (110), 210 normais cobrindo as 11 tipologias normais — congelado por hash e nunca usado para calibrar regras de triagem (uso reservado a um conjunto de desenvolvimento disjunto). O gerador de alertas legado (T0.8) aplica regras ingênuas de limiar/velocidade por conta remetente sobre `core_sintetico`, sem qualquer filtro por tipologia: um alerta pode misturar transações suspeitas e normais, e a mesma transação pode entrar em mais de um alerta da mesma conta (confirmado nos dados reais: ~201 mil casos). Faltava decidir como garantir a separação golden/desenvolvimento sem vazar transação entre os dois, como atribuir a um alerta legado um "estrato" de tipologia, e como distribuir os 210 normais quando um rótulo (`Normal_Cash_Deposits`) tem apenas 1 alerta disponível na pool golden.
+
+#### Alternativas Consideradas
+* **Opção 1 (Separar por alerta):** sortear diretamente entre os 42.440 alertas gerados. Mais simples, mas não garante ausência de sobreposição de transação: a mesma transação pode aparecer em dois alertas diferentes da mesma conta (uma pela regra de valor, outra pela de velocidade), então dois alertas de contas diferentes nunca colidem, mas dois alertas da MESMA conta podem — exigiria checagem de conjunto por alerta, com risco de descartar alertas em cascata.
+* **Opção 2 (Gerar alertas golden do zero, fora do T0.8):** construir um gerador dedicado que já filtra por tipologia. Reintroduziria uma segunda fonte de alertas divergente do monitoramento legado que o resto do projeto usa como entrada, e perderia a taxa de falso positivo realista (90–95%) que a T0.8 já validou.
+* **Opção 3 (Partição por conta remetente + estrato pela tipologia real + água-viva nos normais):** particionar TODAS as contas (nunca os alertas) em pool golden/desenvolvimento por amostra com seed; classificar cada alerta golden pelo rótulo real do SAML-D das suas transações (não pela regra que o disparou); distribuir os 210 normais por partilha máx-mín quando a disponibilidade de um rótulo for menor que a cota igualitária.
+
+#### Decisão Selecionada
+Adotou-se a **Opção 3**. Partição por conta com seed `20260916` (mesma convenção da T0.7): 50% das contas com pelo menos um alerta de transação suspeita e 30% das contas só-normais vão para o pool golden; as contas do pool golden ficam inteiramente fora do desenvolvimento, mesmo os alertas delas não sorteados — a interseção de transação fica vazia por construção (contas nunca compartilham transação entre si), não por checagem em runtime. O estrato de um alerta é a única tipologia suspeita presente nas suas transações (confirmado empiricamente: nenhum alerta do gerador legado mistura duas tipologias suspeitas distintas nos dados reais) ou, na ausência de qualquer transação suspeita, o rótulo normal dominante (maior contagem, desempate alfabético); um alerta que viole essa premissa (2+ tipologias suspeitas) é tratado defensivamente como `None` e descartado da pool, nunca presumido impossível. Os 210 normais são distribuídos por partilha máx-mín (água-viva): rótulos com disponibilidade abaixo da cota igualitária ficam travados na própria disponibilidade e o resto é redistribuído entre os demais, com a sobra indivisível indo para os primeiros em ordem alfabética — determinístico e sem depender de números fixos por rótulo, então continua válido se o dataset mudar. A seleção dentro de cada estrato usa `random.Random(seed).sample` sobre lista ordenada por `alert_id`, nunca por ordem de dict/set. O manifesto (`data/golden/v1/manifest.json`, versionado no git) grava seed, hash de conteúdo do `core_sintetico` (reaproveitando `core_db.conteudo_sha256`), versões de regras e mapeamento, contagem por estrato e, por alerta, `alert_id`, `estrato` e `payload_sha256`, mais um `manifest_sha256` sobre tudo isso — a regeneração com a mesma seed e o mesmo `core_sintetico` reproduz esse hash. Os payloads DT-01 completos (dado pessoal sintético) ficam em `data/golden/v1/payloads/`, fora do git, regenerados deterministicamente a partir do manifesto.
+
+#### Trade-offs (Consequências)
+* 🟢 **Ganhos (Prós):** disjunção golden/desenvolvimento garantida por construção (partição de conta), não por teste que poderia falhar silenciosamente com um dataset diferente; reaproveita o gerador de alertas legado já validado (T0.8), sem segunda fonte de verdade; a regra de água-viva para os normais se adapta a qualquer disponibilidade real, incluindo o caso extremo de `Normal_Cash_Deposits` com só 1 alerta disponível na pool golden; hash de manifesto permite congelar o golden set no git sem versionar dado pessoal (mesmo que sintético).
+* 🔴 **Perdas/Riscos (Contras):** `Normal_Cash_Deposits` fica sub-representado no golden set (1 de 210, não ~19) — o mais raro dos 11 normais na pool golden particionada por conta, não o total do rótulo no `core_sintetico` inteiro; qualquer métrica agregada sobre "normais" tem menos evidência para esse rótulo específico; as frações 50%/30% do split são provisórias e não recalibradas por poder estatístico formal; um alerta misto (hipoteticamente possível em dataset futuro) é descartado silenciosamente da pool golden, o que reduz a disponibilidade de uma tipologia sem alertar o operador além do `GoldenSetError` de quota insuficiente.
+
+---
+
+### ADR-015: Bibliotecas de Suporte à Ingestão Normativa: Extração de PDF e BM25
+- **Data:** 2026-09-17
+- **Status:** Aceito
+
+#### Contexto e Problema
+O RF-14 exige baixar o texto das fontes primárias (Circ. BCB 3.978/2020, CC BCB 4.001/2020) e fazer o chunking por dispositivo. As URLs de metadado do `SPEC.md` §3.1/§3.2 devolvem só o cadastro do normativo (título, datas, `Id`); o texto integral só existe nos PDFs consolidados hospedados em `normativos.bcb.gov.br`. O `SPEC.md` §6 não lista biblioteca de extração de PDF nem de BM25, e o RF-06 exige desempate por fusão de ranks (RRF) entre similaridade vetorial e BM25 sobre os trechos recuperados.
+
+#### Alternativas Consideradas
+* **Opção 1 (Sem PDF, só a API de metadado):** inviável — a API de metadado não contém o texto dos dispositivos, só o cadastro do normativo.
+* **Opção 2 (Extração de PDF com dependência pesada):** `pymupdf`/`pdfplumber`, com mais funcionalidade (layout, tabelas) do que o necessário para texto corrido de norma.
+* **Opção 3 (`pypdf` para extração + `rank-bm25` para o desempate):** bibliotecas puras Python, leves, sem dependência de binário nativo adicional, mantidas ativamente, sem SDK de nuvem proprietário (não violam a lista proibida do `SPEC.md` §6).
+
+#### Decisão Selecionada
+Adotou-se a **Opção 3**. `pypdf` extrai o texto de cada página dos PDFs consolidados baixados de `normativos.bcb.gov.br` (`aml_guardian.norms.pdf_extract`); o rodapé de paginação repetido do BCB é removido antes do chunking por dispositivo. `rank-bm25` calcula o score léxico sobre os trechos já recuperados pelo MCP-03 (vetorial), fundido por RRF na Seleção (T1.8, RF-06). Ambas isoladas em módulo próprio para trocar de biblioteca sem espalhar a dependência pelo código.
+
+#### Trade-offs (Consequências)
+* 🟢 **Ganhos (Prós):** dependências leves e sem binário nativo extra (`pypdf` é puro Python sobre bytes de PDF); instalação idêntica em Windows/Linux; escopo mínimo suficiente para texto corrido de norma, sem parsing de layout complexo.
+* 🔴 **Perdas/Riscos (Contras):** `pypdf` não reconhece estrutura de coluna/tabela (não há tabela nos dois normativos-fonte atuais, mas limitaria a ingestão de normas com layout tabular); o PDF consolidado mais recente (`v5_P`/`v4_P`) é referenciado pelo nome de arquivo específico no `downloader.py` — uma nova versão do normativo exige atualizar o nome do arquivo, não é resolvido automaticamente pela API de metadado.
+
+---
+
+### ADR-016: Modelo de Embedding Definitivo do M4
+- **Data:** 2026-09-18
+- **Status:** Aceito
+
+#### Contexto e Problema
+`ADR-009` deixou o modelo de embedding como candidato provisório (`paraphrase-multilingual-MiniLM-L12-v2`, via FastEmbed), com escolha definitiva reservada ao M4 mediante recall@5 medido no corpus real. Sob prazo de entrega apertado, a rodada de benchmark comparativo foi cancelada pelo autor: a decisão usa o critério explícito de menor custo computacional/tokens, sem nova medição.
+
+#### Alternativas Consideradas
+* **Opção 1 (`paraphrase-multilingual-MiniLM-L12-v2`, já em uso):** 118M parâmetros, já integrado (`norms/store.py`), zero custo de troca.
+* **Opção 2 (`multilingual-e5-small`):** porte comparável, mas exige prefixo `query:`/`passage:` no texto (mudança de código) e nova rodada de recall@5 — custo de token/tempo maior sem ganho comprovado no prazo disponível.
+
+#### Decisão Selecionada
+Mantido o candidato da `ADR-009` como **definitivo**: `paraphrase-multilingual-MiniLM-L12-v2` via FastEmbed. Critério: menor custo de token/tempo (nenhuma mudança de código, nenhum benchmark novo), sob prazo declarado pelo autor.
+
+#### Trade-offs (Consequências)
+* 🟢 **Ganhos (Prós):** zero custo de migração; mantém `EMBEDDING_MODEL` e a coleção `norms` já populada; nenhuma medição adicional consumida.
+* 🔴 **Perdas/Riscos (Contras):** recall@5 do modelo nunca foi medido formalmente contra `multilingual-e5-small` — decisão por custo, não por desempenho comprovado; se o gate de Grounding (`SPEC.md` §10) falhar no M7, este ADR é o primeiro candidato a revisão.
+
+---
+
+### ADR-017: Segundo Provedor de Inferência (RNF-10)
+- **Data:** 2026-09-18
+- **Status:** Aceito
+
+#### Contexto e Problema
+O RNF-10 exige demonstrar portabilidade do gateway LiteLLM trocando de provedor sem mudança de código fora de `config/litellm.yaml` (`SPEC.md` §11, `PLAN.md` M7). Nenhum segundo provedor estava configurado. Sob o critério de menor custo de token do autor, um provedor cloud pago está descartado.
+
+#### Alternativas Consideradas
+* **Opção 1 (provedor cloud pago via LiteLLM):** prova portabilidade "real" entre infraestrutura local e cloud, mas introduz custo de token/API e exigiria enviar dado sanitizado a provedor externo — maior superfície de risco e custo.
+* **Opção 2 (segundo modelo local via Ollama, ex. `llama3.2:3b`):** custo zero, mesma máquina, mesma ausência de dado saindo do host; prova a troca de `model_list`/alias no gateway sem trocar código.
+
+#### Decisão Selecionada
+Adotada a **Opção 2**: `config/litellm.yaml` ganha um segundo `model_name` (`investigacao_alt` → `ollama_chat/llama3.2:3b`), mesma máquina, custo zero. Prova a portabilidade do LiteLLM Router (troca de alias sem tocar código) exigida pelo RNF-10 dentro do custo mínimo.
+
+#### Trade-offs (Consequências)
+* 🟢 **Ganhos (Prós):** custo zero, sem novo risco de exfiltração (nenhum provedor externo); reaproveita a stack (Ollama) já validada nos benchmarks do ADR-013.
+* 🔴 **Perdas/Riscos (Contras):** não prova portabilidade para uma **cloud** real (autenticação, latência de rede, formatos de resposta distintos) — se um avaliador exigir essa prova especificamente, este ADR precisa ser revisto com um provedor pago.

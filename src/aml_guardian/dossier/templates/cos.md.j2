@@ -1,0 +1,46 @@
+{# Template da Comunicação de Operação Suspeita (COS) — T1.9, RF-08. Todo campo vem do DT-11 (Dossier); nenhum #}
+{# texto livre é gerado pelo LLM aqui: os campos marcados abaixo já foram decididos pela Investigação (T1.6). #}
+# Comunicação de Operação Suspeita (COS)
+
+**Alerta:** {{ dossier.alert_id }}
+**Dossiê:** {{ dossier.dossier_id }}
+**Status:** {{ dossier.status.value }}
+
+## Resumo
+{{ dossier.summary }}
+
+## Tipologia (gerado por IA)
+{{ dossier.typology.value }}
+
+## Enquadramento CC 4.001/2020
+Incisos: {{ dossier.cc4001_incisos | join(', ') }}
+
+## Evidências
+{% for item in dossier.evidence %}
+- {{ item.feature_id }} ({{ item.name }}): {{ item.value }}
+{% endfor %}
+
+## Citações normativas verificadas
+{% for citation in dossier.citations %}
+- **{{ citation.article_ref }}**: "{{ citation.quoted_text }}"
+  Aplicabilidade: {{ citation.applicability }}
+{% endfor %}
+
+## Recomendação (gerado por IA)
+{{ dossier.recommendation.value }}
+
+## Prazos
+- Seleção: {{ dossier.deadlines.selecao_em.isoformat() }}
+- Prazo interno: {{ dossier.deadlines.prazo_interno.isoformat() }}
+- Prazo regulatório de análise: {{ dossier.deadlines.prazo_regulatorio_analise.isoformat() }}
+
+## Versões
+- Regras: {{ dossier.versions.rules }}
+- Corpus normativo: {{ dossier.versions.corpus }}
+- Mapeamento: {{ dossier.versions.mapping }}
+- Indicadores: {{ dossier.versions.features }}
+- Prompt: {{ dossier.versions.prompt }}
+- Modelo: {{ dossier.versions.model }}
+
+## Campos gerados por IA
+{{ dossier.ai_generated_fields | join(', ') }}

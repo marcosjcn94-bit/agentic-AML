@@ -105,7 +105,8 @@ def mapeamento():
 
 
 def test_mapeamento_versionado_carrega(mapeamento):
-    assert mapeamento.mapping_version == 1
+    # mapping_version 2 (T1.8): article_ref/applicability curados para Structuring (lote3-brief.md Ask First).
+    assert mapeamento.mapping_version == 2
     assert len(mapeamento.tipologias) == 17
     assert len(mapeamento.normais) == 11
 
@@ -131,8 +132,14 @@ def test_enquadramentos_da_tabela_do_spec(mapeamento):
 
 
 def test_selecao_de_trechos_fica_vazia_ate_t18(mapeamento):
-    assert all(item.article_ref == [] for item in mapeamento.tipologias.values())
-    assert all(item.applicability is None for item in mapeamento.tipologias.values())
+    """T1.8 curou article_ref/applicability só para Structuring (tipologia do alerta E2E); as demais seguem vazias."""
+    outras = {rotulo: item for rotulo, item in mapeamento.tipologias.items() if rotulo != "Structuring"}
+    assert all(item.article_ref == [] for item in outras.values())
+    assert all(item.applicability is None for item in outras.values())
+
+    structuring = mapeamento.tipologias["Structuring"]
+    assert structuring.article_ref == ["CC4001/art1/i1/d", "CC4001/art1/i1/e", "CC4001/art1/i1/k", "CC4001/art1/i4"]
+    assert structuring.applicability is not None
 
 
 def test_rotulos_normais_nao_tem_enquadramento(mapeamento):
