@@ -68,7 +68,7 @@ def _gate_grounding(amostras: list[AmostraGolden]) -> GateResultado:
         status=MEDIDA,
         valor=f"bruto {bruto:.2%}, final 0",
         aprovado=aprovado,
-        nota=f"{len(com_proposta)}/{len(amostras)} alertas propuseram citação — só `Structuring` tem "
+        nota=f"{len(com_proposta)}/{len(amostras)} alertas fizeram proposta de citação — só `Structuring` tem "
         "`applicability` curado em `data/mappings/saml_d_to_cc4001.yaml` (mapping_version 2); as demais 16 "
         "tipologias não propõem citação por desenho (RF-06), não entram no denominador do bruto. Final = 0 "
         "não verificadas é garantido pelo assembler (`dossier/assembler.py` só usa `verified_citations`), não "
@@ -114,7 +114,7 @@ def _gate_tokens(amostras: list[AmostraGolden]) -> GateResultado:
             NAO_MEDIDA,
             None,
             None,
-            "Nenhum alerta da amostra chamou o LLM (ver --limit ou --ollama).",
+            "Nenhum alerta da amostra chamou o LLM (ver --limit ou a flag do CLI que ativa o modelo real).",
         )
     tokens_pipeline_total = sum(a.tokens_in + a.tokens_out for a in amostras)
     media_por_chamada = sum(a.tokens_in + a.tokens_out for a in chamados) / len(chamados)
