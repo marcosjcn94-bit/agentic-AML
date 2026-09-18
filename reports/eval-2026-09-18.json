@@ -1,0 +1,131 @@
+{
+  "gerado_em": "2026-09-18T10:32:19.841199+00:00",
+  "amostra": {
+    "tamanho": 3,
+    "alert_ids": [
+      "6cd5f623-246d-4da0-8978-765e17b84942",
+      "82c4388b-af30-4e14-89d9-b54880c2416a",
+      "5b240586-4915-4495-98db-010f4fa9c8b6"
+    ],
+    "states_finais": [
+      "DRAFT_READY",
+      "DRAFT_READY",
+      "DRAFT_READY"
+    ]
+  },
+  "versoes": {
+    "rules_version": 1,
+    "mapping_version": 2,
+    "features_version": 1,
+    "prompt_version": "1",
+    "model": "qwen2.5:1.5b",
+    "corpus_version": "eval-amostra-sintetica"
+  },
+  "baseline": {
+    "tempo_manual_min": 120.0,
+    "tempo_revisao_min": 15.0
+  },
+  "latencia_fluxo_investigar_ms": {
+    "amostras": [
+      7513.928999949712,
+      1773.910399992019,
+      1666.9641999760643
+    ],
+    "p50": 1773.910399992019,
+    "p95": 6939.927139953942
+  },
+  "latencia_llm_ms": {
+    "amostras": [
+      4145.0,
+      9.0,
+      10.0
+    ],
+    "p50": 10.0,
+    "p95": 3731.4999999999995
+  },
+  "overhead_grafo_sobre_adr013_s": -8.06007286004606,
+  "adr013_estimativa_s": 15.0,
+  "gates": [
+    {
+      "metrica": "Recall crítico",
+      "formula": "RNF-01",
+      "gate": "= 100%",
+      "status": "não medida",
+      "valor": null,
+      "aprovado": null,
+      "nota": "Exige rodar o golden set completo (data/golden/v1, 500 alertas) pelo pipeline real e comparar com o rótulo verdadeiro do SAML-D; reservado para o marco que fecha RF-03/RNF-01 (TASKS.md §5, M3)."
+    },
+    {
+      "metrica": "Grounding",
+      "formula": "RNF-02",
+      "gate": "bruto ≥ 99% e final 0",
+      "status": "não medida",
+      "valor": null,
+      "aprovado": null,
+      "nota": "O Revisor (T1.8) já impõe grounding final 0 por construção (citação não verificada nunca chega ao dossiê) e `pytest -k review` cobre a rejeição; a taxa bruta agregada sobre o golden set fica para M4."
+    },
+    {
+      "metrica": "Redução de falsos positivos",
+      "formula": "1 − FP_pipeline / FP_baseline",
+      "gate": "≥ 65%",
+      "status": "não medida",
+      "valor": null,
+      "aprovado": null,
+      "nota": "Exige rodar o golden set completo pelo pipeline real e contar dossiês COS/NEEDS_HUMAN sobre os alertas normais; reservado para M7 (avaliação Go/No-Go)."
+    },
+    {
+      "metrica": "Velocidade",
+      "formula": "tempo_manual_min / (latência_média_min + baseline.tempo_revisao_min)",
+      "gate": "≥ 3x",
+      "status": "medida",
+      "valor": "7.97x",
+      "aprovado": true,
+      "nota": "tempo_manual_min=120.0, tempo_revisao_min=15.0 (config/baseline.yaml, provisórios); latência_média_min da amostra sintética, não do golden set."
+    },
+    {
+      "metrica": "Redução de tokens",
+      "formula": "SPEC.md §3.3",
+      "gate": "> 70%",
+      "status": "não medida",
+      "valor": null,
+      "aprovado": null,
+      "nota": "Falta o baseline de tokens do processo manual/legado para comparação; os tokens do fluxo agentic (tokens_in/tokens_out do evento MODEL_CALLED) já são medidos por alerta, mas sem referência ainda."
+    },
+    {
+      "metrica": "Latência",
+      "formula": "RNF-03",
+      "gate": "p95 < 20 s",
+      "status": "medida",
+      "valor": "6.94 s",
+      "aprovado": true,
+      "nota": "p95 do fluxo INVESTIGAR completo (grafo) sobre amostra sintética, não o golden set inteiro."
+    },
+    {
+      "metrica": "Prazo interno",
+      "formula": "SPEC.md §3.1",
+      "gate": "100% dentro",
+      "status": "não medida",
+      "valor": null,
+      "aprovado": null,
+      "nota": "É uma métrica de operação ao longo do tempo (prazo_interno vs. data real de conclusão); não se aplica a uma amostra sintética executada em lote único."
+    },
+    {
+      "metrica": "Privacidade",
+      "formula": "RNF-05",
+      "gate": "0 ocorrências",
+      "status": "não medida",
+      "valor": null,
+      "aprovado": null,
+      "nota": "Coberto separadamente por `pytest -k canary` (T1.12) sobre prompts, logs e `data/app.sqlite`; este script não repete a varredura para não duplicar evidência."
+    },
+    {
+      "metrica": "Integridade da auditoria",
+      "formula": "API-08 após a execução",
+      "gate": "valid = true",
+      "status": "medida",
+      "valor": "True",
+      "aprovado": true,
+      "nota": "Cadeia recalculada sobre o banco de auditoria da amostra desta execução."
+    }
+  ]
+}
