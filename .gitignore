@@ -50,3 +50,6 @@ Thumbs.db
 # Dados de origem e payloads regenerados (TASKS.md §2, ADR-014)
 data/raw/
 data/golden/*/payloads/
+
+# Planos gerados pelo plugin superpowers (artefatos de trabalho locais)
+docs/superpowers/
