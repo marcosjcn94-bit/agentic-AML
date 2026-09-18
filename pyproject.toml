@@ -50,6 +50,10 @@ dev = [
     "ruff>=0.6",
     "bandit>=1.7",
     "pip-audit>=2.7",
+    # langfuse >=3 mudou o handler para langfuse.langchain.CallbackHandler (OTel-based),
+    # que lê credenciais das env vars LANGFUSE_SECRET_KEY/LANGFUSE_HOST — sem exigir langchain<1.
+    "langfuse>=4,<5",
+    "langchain>=0.3",
 ]
 # semgrep sem suporte nativo estável no Windows: instalar via WSL/Docker (RNF-07, M6).
 security = [

@@ -23,6 +23,7 @@ Este documento centraliza todas as decisões técnicas, escolhas de design e tra
 | ADR-015 | [Bibliotecas de Suporte à Ingestão Normativa: Extração de PDF e BM25](#adr-015-bibliotecas-de-suporte-à-ingestão-normativa-extração-de-pdf-e-bm25) | 2026-09-17 | Aceito |
 | ADR-016 | [Modelo de Embedding Definitivo do M4](#adr-016-modelo-de-embedding-definitivo-do-m4) | 2026-09-18 | Aceito |
 | ADR-017 | [Segundo Provedor de Inferência (RNF-10)](#adr-017-segundo-provedor-de-inferência-rnf-10) | 2026-09-18 | Aceito |
+| ADR-018 | [Observabilidade Dev-Only via Langfuse Self-Hosted](#adr-018-observabilidade-dev-only-via-langfuse-self-hosted) | 2026-09-18 | Aceito |
 
 ---
 
@@ -391,3 +392,30 @@ Adotada a **Opção 2**: `config/litellm.yaml` ganha um segundo `model_name` (`i
 #### Trade-offs (Consequências)
 * 🟢 **Ganhos (Prós):** custo zero, sem novo risco de exfiltração (nenhum provedor externo); reaproveita a stack (Ollama) já validada nos benchmarks do ADR-013.
 * 🔴 **Perdas/Riscos (Contras):** não prova portabilidade para uma **cloud** real (autenticação, latência de rede, formatos de resposta distintos) — se um avaliador exigir essa prova especificamente, este ADR precisa ser revisto com um provedor pago.
+
+---
+
+### ADR-018: Observabilidade Dev-Only via Langfuse Self-Hosted
+- **Data:** 2026-09-18
+- **Status:** Aceito
+
+#### Contexto e Problema
+A rodada real de T1.13 (`reports/eval-2026-09-18.md`) identificou um gap de +4,69 s entre o LLM isolado (p95 = 18,0 s) e o fluxo `INVESTIGAR` completo (p95 = 19,7 s), sem explicação por nó. A auditoria regulatória (DT-12, RF-11) grava hash+estado em `audit_events`, mas é navegável só por SQL — não por humano. Os orçamentos por nó (`AGENTS.md` §1, p95 por grupo) são verificados só no agregado por `scripts/evaluate.py`. O `SPEC.md` §11 (RNF-10) proíbe provedor cloud, descartando Langfuse Cloud e LangSmith, que são SaaS obrigatório.
+
+#### Alternativas Consideradas
+* **Opção 1 (Langfuse self-hosted via Docker local):** open-source (MIT), roda em `localhost:3000`, 100% offline, tem integração nativa com LangGraph via `LangfuseCallbackHandler`; exige Docker Desktop rodando em dev.
+* **Opção 2 (Arize Phoenix via pip):** open-source (Apache 2.0), zero infraestrutura, só `phoenix serve`; mas sem gestão de datasets/experimentos — que o M7 vai precisar para rodadas do golden set.
+* **Opção 3 (LangSmith):** SaaS da LangChain, free tier existe, mas o dado do grafo (já sanitizado, mas ainda metadado operacional) sairia do host — viola RNF-10.
+* **Opção 4 (estender `audit_events` com UI própria):** re-escrever dashboard é escopo fora do projeto; DT-12 já tem outra missão (trilha regulatória imutável) e não é a ferramenta certa para debug de latência/tokens.
+
+#### Decisão Selecionada
+Adotada a **Opção 1**: Langfuse **self-hosted** como observabilidade **dev-only**, opt-in por variável de ambiente.
+- `pyproject.toml` extra `dev` ganha `langfuse>=2.50,<3`. Produção (`pip install .` sem `[dev]`) não carrega a dependência.
+- `graph/build.py::run_alert` passa a incluir `langfuse.langchain.CallbackHandler` (SDK Langfuse **4.x**, OTel-based — credenciais lidas de `LANGFUSE_SECRET_KEY`/`LANGFUSE_HOST` via env var, não por parâmetro) em `config["callbacks"]` **somente** se `LANGFUSE_PUBLIC_KEY` e `LANGFUSE_SECRET_KEY` estiverem setadas; caso contrário, `callbacks=[]` e o grafo roda idêntico ao comportamento atual.
+- Setup do servidor: `docker compose up -d` em clone local do repo `langfuse/langfuse` (fora deste repositório). Runbook em `docs/operations/langfuse.md`. Nome do projeto na UI: `agentic-AML`.
+- **Sem PII no Langfuse:** o state do grafo só contém tokens (`CPF_01`, `CONTA_01`) desde o Sanitizador (RF-02); o handler é plugado **depois** de `triage`, garantindo que nunca vê `DT-01` cru.
+- **Não substitui auditoria:** DT-12 (hash-chain, RF-11) continua sendo a única fonte regulatória; o Langfuse é apenas janela de debug para o desenvolvedor.
+
+#### Trade-offs (Consequências)
+* 🟢 **Ganhos (Prós):** inspeção por nó (latência, tokens, erros, estado do checkpoint por super-step) ataca diretamente o gap dos +4,69 s; prepara a infraestrutura de experimentos para a Tarefa A do M7 (rodadas do golden set comparáveis lado a lado); zero custo recorrente; desligável com 1 variável de ambiente; nenhum teste muda de comportamento quando as env vars estão ausentes.
+* 🔴 **Perdas/Riscos (Contras):** exige Docker Desktop rodando (novo pré-requisito de dev); risco de um desenvolvedor futuro confundir Langfuse (debug) com `audit_events` (regulatório) — mitigado por nota em `CLAUDE.md` e no runbook; se o Docker não puder ser instalado em algum ambiente de desenvolvimento, este ADR admite fallback para a Opção 2 (Phoenix) sem mudança de código — só muda o setup local e a variável de ambiente.

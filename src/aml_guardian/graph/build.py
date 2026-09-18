@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from typing import Any
 
 from langgraph.graph import END, START, StateGraph
@@ -20,6 +21,21 @@ from aml_guardian.graph.edges import (
 from aml_guardian.graph.nodes_dossier import make_dossier_node, make_human_handoff_node
 from aml_guardian.graph.nodes_retrieval import make_retrieval_node, make_reviewer_node, make_selection_node
 from aml_guardian.graph.nodes_triage import make_investigation_node, make_triage_node
+
+
+def build_callbacks() -> list[Any]:
+    """Langfuse opcional (ADR-018): só ativa se LANGFUSE_PUBLIC_KEY/SECRET_KEY estiverem setadas.
+
+    Opt-in por env var — sem elas o grafo roda idêntico a antes, sem overhead.
+    Produção (`pip install .` sem `[dev]`) nem carrega o pacote `langfuse`.
+    """
+    pub = os.getenv("LANGFUSE_PUBLIC_KEY")
+    sec = os.getenv("LANGFUSE_SECRET_KEY")
+    if not (pub and sec):
+        return []
+    from langfuse.langchain import CallbackHandler
+
+    return [CallbackHandler(public_key=pub)]
 
 
 def build_graph(deps: GraphDeps) -> StateGraph:
@@ -56,6 +72,9 @@ def run_alert(
     sem recompilar — o checkpointer só existe dentro do `with` de `graph.checkpoint.sqlite_checkpointer`.
     """
     compiled = build_graph(deps).compile(checkpointer=checkpointer)
-    config = {"configurable": {"thread_id": thread_id or str(initial_state.alert_id)}}
+    config: dict[str, Any] = {
+        "configurable": {"thread_id": thread_id or str(initial_state.alert_id)},
+        "callbacks": build_callbacks(),
+    }
     resultado = compiled.invoke(initial_state, config=config)
     return InvestigationState.model_validate(resultado), compiled, config

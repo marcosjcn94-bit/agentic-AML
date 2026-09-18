@@ -18,6 +18,7 @@ Não envia dados bancários não anonimizados para provedores externos de LLM.
 2. **FinOps:** Pipeline hierárquico obrigatório: Regras heurísticas determinísticas → Cache semântico → Inferência agêntica (só alertas complexos). Nunca envie 100% dos alertas a LLM.
 3. **Sem lock-in:** Toda chamada de modelo via LiteLLM; toda ferramenta de dados via MCP. Nunca importar SDKs proprietários de cloud diretamente.
 4. **Factualidade:** Respostas regulatórias exigem grounding citado (RAG). Proibido alucinar norma, número de circular ou artigo.
+5. **Observabilidade (ADR-018):** Langfuse (se configurado) é **dev-only/debug**, nunca fonte regulatória. A trilha de auditoria oficial é `audit_events` (DT-12, RF-11, hash-chain). Não gravar nada no Langfuse que não esteja também em `audit_events` (traces são redundantes, não substitutos).
 
 ## Economia Máxima de Tokens (aplicar sempre)
 - **Busca cirúrgica:** `Grep`/`Glob` com limites; nunca ler arquivo inteiro para achar um símbolo.
