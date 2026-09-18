@@ -29,7 +29,6 @@ class Sanitizer:
         if vault is None:
             vault = Vault(key_provider)
         self.vault = vault
-        self.token_counter: dict[str, int] = {}
         self.pii_token_count = 0
 
         # Initialize Presidio analyzer
@@ -42,11 +41,18 @@ class Sanitizer:
             self.anonymizer = None
 
     def _get_token(self, pii_type: str) -> str:
-        """Generate next token for a given PII type."""
-        if pii_type not in self.token_counter:
-            self.token_counter[pii_type] = 0
-        self.token_counter[pii_type] += 1
-        return f"{pii_type}_{self.token_counter[pii_type]:02d}"
+        """Generate next token for a given PII type, unique across the shared Vault.
+
+        O Vault agora vive por processo (ADR-012, `api/state.py`), não por request: o número
+        precisa continuar de onde o Vault já está, senão dois alertas colidem na mesma chave
+        (ex.: `CPF_01` do alerta B sobrescreveria o `CPF_01` do alerta A).
+        """
+        prefix = f"{pii_type}_"
+        existing = {k for k in self.vault.keys() if k.startswith(prefix)}
+        n = 1
+        while f"{prefix}{n:02d}" in existing:
+            n += 1
+        return f"{prefix}{n:02d}"
 
     def _validate_cpf(self, cpf: str) -> bool:
         """Validate CPF check digit."""
@@ -87,8 +93,6 @@ class Sanitizer:
     def sanitize(self, alert: Alert) -> SanitizedAlert | AlertState:
         """Sanitize an alert, returning SanitizedAlert or NEEDS_HUMAN if validation fails."""
         try:
-            # Reset token counter for this alert
-            self.token_counter.clear()
             self.pii_token_count = 0
 
             # Validate sender customer CPF/CNPJ

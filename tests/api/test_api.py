@@ -206,6 +206,24 @@ class TestReidentificacao:
         resp = client.get(f"/reidentify/{token}", headers=_bearer("API_TOKEN_SISTEMA"))
         assert resp.status_code == 403
 
+    def test_dois_alertas_nao_colidem_no_vault_compartilhado(self, client):
+        """Vault é 1/processo (ADR-012): CPF do 2º alerta não pode sobrescrever o token do 1º."""
+        cpf_a = gera_cpf(random.Random(1))
+        cpf_b = gera_cpf(random.Random(2))
+        payload_a = _alert_payload()
+        payload_a["sender_customer"]["cpf_cnpj"] = cpf_a
+        payload_b = _alert_payload()
+        payload_b["sender_customer"]["cpf_cnpj"] = cpf_b
+
+        client.post("/alerts", json=payload_a, headers=_bearer("API_TOKEN_SISTEMA"))
+        client.post("/alerts", json=payload_b, headers=_bearer("API_TOKEN_SISTEMA"))
+
+        state: AppState = client.app.state.aml
+        cpf_tokens = [t for t in state.vault.keys() if t.startswith("CPF_")]
+        assert len(cpf_tokens) == 2
+        valores = {state.vault.retrieve(t) for t in cpf_tokens}
+        assert valores == {cpf_a, cpf_b}
+
 
 class TestDecisaoDoComplianceOfficer:
     def test_aceite_muda_estado_para_approved(self, client):
@@ -236,3 +254,16 @@ class TestDecisaoDoComplianceOfficer:
             headers=_bearer("API_TOKEN_COMPLIANCE_OFFICER"),
         )
         assert resp.status_code == 404
+
+    def test_decisao_repetida_e_409_sem_duplicar_evento(self, client):
+        payload = _alert_payload()
+        client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        body = {"decision": "ARQUIVAR", "justification": "Sem indício de lavagem após revisão manual completa."}
+        primeira = client.post(
+            f"/alerts/{payload['alert_id']}/decision", json=body, headers=_bearer("API_TOKEN_COMPLIANCE_OFFICER")
+        )
+        segunda = client.post(
+            f"/alerts/{payload['alert_id']}/decision", json=body, headers=_bearer("API_TOKEN_COMPLIANCE_OFFICER")
+        )
+        assert primeira.status_code == 200
+        assert segunda.status_code == 409

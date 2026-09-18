@@ -148,8 +148,13 @@ def get_reidentify(
 def _proximo_dia_util(referencia: datetime) -> date:
     feriados = load_feriados()
     dia = referencia.date() + timedelta(days=1)
-    while dia.weekday() >= 5 or feriados.is_feriado(dia):
-        dia += timedelta(days=1)
+    try:
+        while dia.weekday() >= 5 or feriados.is_feriado(dia):
+            dia += timedelta(days=1)
+    except ValueError as exc:
+        # `config/feriados.yaml` cobre um período fechado por desenho (RF-09): fora dele, falha
+        # explícita em vez de inventar dia útil (nunca aprovar comunicação com prazo incerto).
+        raise HTTPException(status_code=500, detail={"code": "FERIADOS_FORA_DO_PERIODO", "message": str(exc)}) from exc
     return dia
 
 
@@ -165,6 +170,12 @@ def post_decision(
     record = get_alert_record(alert_id, db_path=state.db_path)
     if record is None:
         raise HTTPException(status_code=404, detail={"code": "ALERT_NOT_FOUND", "message": "alert_id desconhecido"})
+    if record.state in (AlertState.APPROVED, AlertState.RETURNED):
+        # DT-15: decisão do compliance officer é ato único; repetir (ex.: retry de rede) não pode
+        # duplicar `event_key` no hash-chain (UNIQUE, `persistence/db.py`) nem trocar o veredito já dado.
+        raise HTTPException(
+            status_code=409, detail={"code": "ALERT_ALREADY_DECIDED", "message": "alert_id já teve decisão registrada"}
+        )
 
     with sqlite_checkpointer(state.checkpoint_path) as checkpointer:
         compiled = build_graph(state.graph_deps).compile(checkpointer=checkpointer)
