@@ -3,8 +3,8 @@
 Os três destinos do canário: (1) prompts capturados no callback do LiteLLM antes da chamada ao modelo — a
 produção nunca grava prompt nem resposta (RF-11); aqui o teste espia `litellm.completion` só para provar a
 ausência, sem alterar `investigation/litellm_client.py`; (2) `data/app.sqlite` (DT-05 e DT-12, que só admitem
-token/hash, nunca PII); (3) logs de aplicação — não medido nesta versão: o projeto não tem infraestrutura de
-log formada até o M1 (nenhum `import logging` em `src/`). Ver MEMORY.md T1.12 para a decisão registrada.
+token/hash, nunca PII); (3) logs de aplicação, cobertos pelo formatter JSON
+allow-listado em `tests/observability/test_logging.py`.
 """
 
 from __future__ import annotations
@@ -177,4 +177,4 @@ def test_valores_marcados_nao_aparecem_em_prompt_nem_em_app_sqlite(tmp_path, mon
     for marcador in marcadores:
         assert marcador not in conteudo_sqlite, f"{marcador!r} vazou em data/app.sqlite"
 
-    # Terceiro destino do RNF-05 (logs): não medido nesta versão, ver docstring do módulo.
+    # O terceiro destino (logs) possui canário dedicado em tests/observability.
