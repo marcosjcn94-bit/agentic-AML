@@ -21,6 +21,8 @@ Este documento centraliza todas as decisões técnicas, escolhas de design e tra
 | ADR-013 | [Reorçamento de Latência: Seleção de Chunks Determinística e Investigação Compacta com SLM 1,5B](#adr-013-reorçamento-de-latência-seleção-de-chunks-determinística-e-investigação-compacta-com-slm-15b) | 2026-09-15 | Aceito |
 | ADR-014 | [Formato do Golden Set v1: Partição por Conta, Estrato pela Tipologia Real e Manifesto com Hash](#adr-014-formato-do-golden-set-v1-partição-por-conta-estrato-pela-tipologia-real-e-manifesto-com-hash) | 2026-09-16 | Aceito |
 | ADR-015 | [Bibliotecas de Suporte à Ingestão Normativa: Extração de PDF e BM25](#adr-015-bibliotecas-de-suporte-à-ingestão-normativa-extração-de-pdf-e-bm25) | 2026-09-17 | Aceito |
+| ADR-016 | [Modelo de Embedding Definitivo do M4](#adr-016-modelo-de-embedding-definitivo-do-m4) | 2026-09-18 | Aceito |
+| ADR-017 | [Segundo Provedor de Inferência (RNF-10)](#adr-017-segundo-provedor-de-inferência-rnf-10) | 2026-09-18 | Aceito |
 
 ---
 
@@ -349,3 +351,43 @@ Adotou-se a **Opção 3**. `pypdf` extrai o texto de cada página dos PDFs conso
 #### Trade-offs (Consequências)
 * 🟢 **Ganhos (Prós):** dependências leves e sem binário nativo extra (`pypdf` é puro Python sobre bytes de PDF); instalação idêntica em Windows/Linux; escopo mínimo suficiente para texto corrido de norma, sem parsing de layout complexo.
 * 🔴 **Perdas/Riscos (Contras):** `pypdf` não reconhece estrutura de coluna/tabela (não há tabela nos dois normativos-fonte atuais, mas limitaria a ingestão de normas com layout tabular); o PDF consolidado mais recente (`v5_P`/`v4_P`) é referenciado pelo nome de arquivo específico no `downloader.py` — uma nova versão do normativo exige atualizar o nome do arquivo, não é resolvido automaticamente pela API de metadado.
+
+---
+
+### ADR-016: Modelo de Embedding Definitivo do M4
+- **Data:** 2026-09-18
+- **Status:** Aceito
+
+#### Contexto e Problema
+`ADR-009` deixou o modelo de embedding como candidato provisório (`paraphrase-multilingual-MiniLM-L12-v2`, via FastEmbed), com escolha definitiva reservada ao M4 mediante recall@5 medido no corpus real. Sob prazo de entrega apertado, a rodada de benchmark comparativo foi cancelada pelo autor: a decisão usa o critério explícito de menor custo computacional/tokens, sem nova medição.
+
+#### Alternativas Consideradas
+* **Opção 1 (`paraphrase-multilingual-MiniLM-L12-v2`, já em uso):** 118M parâmetros, já integrado (`norms/store.py`), zero custo de troca.
+* **Opção 2 (`multilingual-e5-small`):** porte comparável, mas exige prefixo `query:`/`passage:` no texto (mudança de código) e nova rodada de recall@5 — custo de token/tempo maior sem ganho comprovado no prazo disponível.
+
+#### Decisão Selecionada
+Mantido o candidato da `ADR-009` como **definitivo**: `paraphrase-multilingual-MiniLM-L12-v2` via FastEmbed. Critério: menor custo de token/tempo (nenhuma mudança de código, nenhum benchmark novo), sob prazo declarado pelo autor.
+
+#### Trade-offs (Consequências)
+* 🟢 **Ganhos (Prós):** zero custo de migração; mantém `EMBEDDING_MODEL` e a coleção `norms` já populada; nenhuma medição adicional consumida.
+* 🔴 **Perdas/Riscos (Contras):** recall@5 do modelo nunca foi medido formalmente contra `multilingual-e5-small` — decisão por custo, não por desempenho comprovado; se o gate de Grounding (`SPEC.md` §10) falhar no M7, este ADR é o primeiro candidato a revisão.
+
+---
+
+### ADR-017: Segundo Provedor de Inferência (RNF-10)
+- **Data:** 2026-09-18
+- **Status:** Aceito
+
+#### Contexto e Problema
+O RNF-10 exige demonstrar portabilidade do gateway LiteLLM trocando de provedor sem mudança de código fora de `config/litellm.yaml` (`SPEC.md` §11, `PLAN.md` M7). Nenhum segundo provedor estava configurado. Sob o critério de menor custo de token do autor, um provedor cloud pago está descartado.
+
+#### Alternativas Consideradas
+* **Opção 1 (provedor cloud pago via LiteLLM):** prova portabilidade "real" entre infraestrutura local e cloud, mas introduz custo de token/API e exigiria enviar dado sanitizado a provedor externo — maior superfície de risco e custo.
+* **Opção 2 (segundo modelo local via Ollama, ex. `llama3.2:3b`):** custo zero, mesma máquina, mesma ausência de dado saindo do host; prova a troca de `model_list`/alias no gateway sem trocar código.
+
+#### Decisão Selecionada
+Adotada a **Opção 2**: `config/litellm.yaml` ganha um segundo `model_name` (`investigacao_alt` → `ollama_chat/llama3.2:3b`), mesma máquina, custo zero. Prova a portabilidade do LiteLLM Router (troca de alias sem tocar código) exigida pelo RNF-10 dentro do custo mínimo.
+
+#### Trade-offs (Consequências)
+* 🟢 **Ganhos (Prós):** custo zero, sem novo risco de exfiltração (nenhum provedor externo); reaproveita a stack (Ollama) já validada nos benchmarks do ADR-013.
+* 🔴 **Perdas/Riscos (Contras):** não prova portabilidade para uma **cloud** real (autenticação, latência de rede, formatos de resposta distintos) — se um avaliador exigir essa prova especificamente, este ADR precisa ser revisto com um provedor pago.

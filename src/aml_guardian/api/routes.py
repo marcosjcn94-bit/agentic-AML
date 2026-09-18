@@ -6,22 +6,36 @@ devolvê-los tal como persistidos já satisfaz o mascaramento da API-03, sem tra
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, timedelta
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel
 
 from aml_guardian.api.auth import require_role
 from aml_guardian.api.health import HealthResult, check_health
 from aml_guardian.api.state import AppState
+from aml_guardian.audit.chain import add_event
+from aml_guardian.config.feriados import load_feriados
 from aml_guardian.contracts.ingestion import Alert, AlertRecord, AlertState
-from aml_guardian.contracts.runtime import Budget, InvestigationState, Role
+from aml_guardian.contracts.runtime import Approval, ApprovalDecision, Budget, InvestigationState, Role
 from aml_guardian.graph.build import build_graph, run_alert
 from aml_guardian.graph.checkpoint import sqlite_checkpointer
 from aml_guardian.persistence.repository import get_alert_record, save_alert_record
 from aml_guardian.sanitizer.sanitizer import sanitize_alert
 
 router = APIRouter()
+
+_DECISION_TO_STATE = {
+    ApprovalDecision.COMUNICAR: AlertState.APPROVED,
+    ApprovalDecision.ARQUIVAR: AlertState.APPROVED,
+    ApprovalDecision.DEVOLVER: AlertState.RETURNED,
+}
+
+
+class DecisionRequest(BaseModel):
+    decision: ApprovalDecision
+    justification: str
 
 
 def _app_state(request: Request) -> AppState:
@@ -55,7 +69,7 @@ def post_alert(
     if get_alert_record(alert.alert_id, db_path=state.db_path) is not None:
         raise HTTPException(status_code=409, detail={"code": "ALERT_ALREADY_EXISTS", "message": "alert_id já recebido"})
 
-    sanitized = sanitize_alert(alert)
+    sanitized = sanitize_alert(alert, vault=state.vault)
     if sanitized is AlertState.NEEDS_HUMAN:
         record = AlertRecord(
             alert_id=alert.alert_id,
@@ -115,6 +129,75 @@ def get_dossier(
             status_code=404, detail={"code": "DOSSIER_NOT_FOUND", "message": "dossiê ainda não disponível"}
         )
     return final_state.dossier.model_dump(mode="json")
+
+
+@router.get("/reidentify/{token}")
+def get_reidentify(
+    token: str,
+    request: Request,
+    _role: Role = Depends(require_role(Role.ANALISTA, Role.COMPLIANCE_OFFICER)),
+) -> dict[str, str]:
+    """API-04 — devolve o valor original de um token de PII; só existe em memória, nunca em log/persistência."""
+    state = _app_state(request)
+    value = state.vault.retrieve(token)
+    if value is None:
+        raise HTTPException(status_code=404, detail={"code": "TOKEN_NOT_FOUND", "message": "token desconhecido"})
+    return {"token": token, "value": value}
+
+
+def _proximo_dia_util(referencia: datetime) -> date:
+    feriados = load_feriados()
+    dia = referencia.date() + timedelta(days=1)
+    while dia.weekday() >= 5 or feriados.is_feriado(dia):
+        dia += timedelta(days=1)
+    return dia
+
+
+@router.post("/alerts/{alert_id}/decision")
+def post_decision(
+    alert_id: UUID,
+    body: DecisionRequest,
+    request: Request,
+    _role: Role = Depends(require_role(Role.COMPLIANCE_OFFICER)),
+) -> AlertRecord:
+    """API-02 — aceite do Compliance Officer (RF-12, DT-15); exige dossiê em `DRAFT_READY` no checkpoint."""
+    state = _app_state(request)
+    record = get_alert_record(alert_id, db_path=state.db_path)
+    if record is None:
+        raise HTTPException(status_code=404, detail={"code": "ALERT_NOT_FOUND", "message": "alert_id desconhecido"})
+
+    with sqlite_checkpointer(state.checkpoint_path) as checkpointer:
+        compiled = build_graph(state.graph_deps).compile(checkpointer=checkpointer)
+        snapshot = compiled.get_state({"configurable": {"thread_id": str(alert_id)}})
+    if not snapshot.values or InvestigationState.model_validate(snapshot.values).dossier is None:
+        raise HTTPException(
+            status_code=404, detail={"code": "DOSSIER_NOT_FOUND", "message": "dossiê ainda não disponível"}
+        )
+
+    now = datetime.now(UTC)
+    prazo_comunicacao = _proximo_dia_util(now) if body.decision is ApprovalDecision.COMUNICAR else None
+    approval = Approval(
+        alert_id=alert_id,
+        decision=body.decision,
+        justification=body.justification,
+        decided_by_role=Role.COMPLIANCE_OFFICER,
+        decided_at=now,
+        prazo_comunicacao=prazo_comunicacao,
+    )
+
+    novo_estado = _DECISION_TO_STATE[approval.decision]
+    add_event(
+        alert_id=str(alert_id),
+        event_type="HUMAN_DECISION",
+        event_key=f"{alert_id}:human_decision:1",
+        actor=Role.COMPLIANCE_OFFICER,
+        state_from=record.state,
+        state_to=novo_estado,
+        db_path=state.db_path,
+    )
+    record = record.model_copy(update={"state": novo_estado, "updated_at": now})
+    save_alert_record(record, db_path=state.db_path)
+    return record
 
 
 @router.get("/health")

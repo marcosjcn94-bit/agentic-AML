@@ -161,9 +161,10 @@ def test_config_litellm_versionado_carrega_valores_aprovados() -> None:
         8,
     )
     assert (cfg.cache.enabled, cfg.cache.threshold) == (True, 0.92)
-    assert cfg.selection.min_score == 0.50
-    assert cfg.selection.aprovacao.situacao is Situacao.PROVISORIO
+    assert cfg.selection.min_score == 0.35  # ADR-016: alinhado a config/retrieval.yaml (fonte real do código)
+    assert cfg.selection.aprovacao.situacao is Situacao.DEFINITIVO
     assert cfg.investigation.aprovacao.situacao is Situacao.DEFINITIVO
+    assert len(cfg.model_list) == 2  # ADR-017 (RNF-10): segundo provedor local, mesmo custo zero
 
 
 @pytest.mark.parametrize(

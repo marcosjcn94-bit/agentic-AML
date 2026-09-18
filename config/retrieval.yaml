@@ -1,12 +1,11 @@
 # Limiar de descarte da Seleção determinística de trechos normativos (SPEC.md RF-06; T1.8 Ask First).
-# config/baseline.yaml não tem valor pronto para isto (é sobre o processo manual simulado, SPEC.md §3.3/§10);
-# min_score é definido aqui, provisório, sem medição real de recall@5 no corpus (T1.7/T1.8 não mediram ainda).
-# Reavaliar no M4 junto da escolha definitiva do modelo de embedding (ADR-009).
+# config/baseline.yaml não tem valor pronto para isto (é sobre o processo manual simulado, SPEC.md §3.3/§10).
+# Definitivo desde o M4 (ADR-016): sem recall@5 medido, mantido pelo critério de menor custo (sem nova rodada).
 selection:
   min_score: 0.35    # score = 1 - distância do ChromaDB (aml_guardian.norms.store); abaixo disso, descarta (RF-06)
 
 aprovacao:
   por: marcosjcn94@gmail.com
-  em: 2026-09-17
-  situacao: provisorio
-  referencia: "T1.8 Ask First (lote3-brief.md): min_score provisório; recalibrar no M4 com o conjunto de desenvolvimento"
+  em: 2026-09-18
+  situacao: definitivo
+  referencia: "ADR-016: mantido o valor provisório da T1.8, sem nova medição, por menor custo de token/tempo"

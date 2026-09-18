@@ -182,3 +182,57 @@ class TestHealth:
         )
         resp = TestClient(create_app(state=state)).get("/health")
         assert resp.status_code == 503
+
+
+class TestReidentificacao:
+    def test_token_existente_devolve_valor_original(self, client):
+        payload = _alert_payload()
+        client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        state: AppState = client.app.state.aml
+        token = next(iter(state.vault.keys()))
+        resp = client.get(f"/reidentify/{token}", headers=_bearer("API_TOKEN_ANALISTA"))
+        assert resp.status_code == 200
+        assert resp.json()["value"]
+
+    def test_token_desconhecido_e_404(self, client):
+        resp = client.get("/reidentify/CPF_99", headers=_bearer("API_TOKEN_COMPLIANCE_OFFICER"))
+        assert resp.status_code == 404
+
+    def test_sistema_nao_reidentifica(self, client):
+        payload = _alert_payload()
+        client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        state: AppState = client.app.state.aml
+        token = next(iter(state.vault.keys()))
+        resp = client.get(f"/reidentify/{token}", headers=_bearer("API_TOKEN_SISTEMA"))
+        assert resp.status_code == 403
+
+
+class TestDecisaoDoComplianceOfficer:
+    def test_aceite_muda_estado_para_approved(self, client):
+        payload = _alert_payload()
+        client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        resp = client.post(
+            f"/alerts/{payload['alert_id']}/decision",
+            json={"decision": "ARQUIVAR", "justification": "Sem indício de lavagem após revisão manual completa."},
+            headers=_bearer("API_TOKEN_COMPLIANCE_OFFICER"),
+        )
+        assert resp.status_code == 200
+        assert resp.json()["state"] == "APPROVED"
+
+    def test_analista_nao_decide(self, client):
+        payload = _alert_payload()
+        client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        resp = client.post(
+            f"/alerts/{payload['alert_id']}/decision",
+            json={"decision": "ARQUIVAR", "justification": "Sem indício de lavagem após revisão manual completa."},
+            headers=_bearer("API_TOKEN_ANALISTA"),
+        )
+        assert resp.status_code == 403
+
+    def test_alerta_desconhecido_e_404(self, client):
+        resp = client.post(
+            f"/alerts/{uuid4()}/decision",
+            json={"decision": "ARQUIVAR", "justification": "Sem indício de lavagem após revisão manual completa."},
+            headers=_bearer("API_TOKEN_COMPLIANCE_OFFICER"),
+        )
+        assert resp.status_code == 404

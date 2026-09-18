@@ -1,8 +1,7 @@
 """Coleção ChromaDB `norms` para busca vetorial (MCP-03) e recuperação por id (MCP-04) — T1.7, RF-14, ADR-009.
 
-Embedding: candidato provisório `paraphrase-multilingual-MiniLM-L12-v2` via FastEmbed (`SPEC.md` §6). A escolha
-DEFINITIVA do modelo de embedding fica para o M4, com recall@5 medido no corpus (Ask First do lote3-brief.md;
-aqui é só o candidato provisório, decisão registrada em `lote3-report.md`).
+Embedding: `paraphrase-multilingual-MiniLM-L12-v2` via FastEmbed (`SPEC.md` §6), definitivo desde o M4 (ADR-016) —
+mantido o candidato da ADR-009 pelo critério de menor custo de token/tempo, sem nova rodada de recall@5.
 """
 
 from __future__ import annotations

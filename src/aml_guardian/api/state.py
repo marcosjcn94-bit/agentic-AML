@@ -6,11 +6,12 @@ no mesmo espírito das dependências injetáveis do grafo (T1.10, `graph/deps.py
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from aml_guardian.api.health import HealthDeps
 from aml_guardian.graph.deps import GraphDeps
+from aml_guardian.sanitizer.vault import Vault
 
 
 @dataclass
@@ -19,3 +20,5 @@ class AppState:
     health_deps: HealthDeps
     db_path: Path | None = None
     checkpoint_path: Path | str | None = None
+    vault: Vault = field(default_factory=Vault)
+    """Vault único do processo (ADR-012, SOUL.md §2 P2): reidentificação (API-04) só lê daqui, nunca persiste."""

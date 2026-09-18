@@ -11,6 +11,15 @@ model_list:
       num_ctx: 2048
       num_predict: 60           # RF-05: <= 60 tokens de saída
       num_thread: 8             # ADR-013 (C): varredura no hardware de referência
+  - model_name: investigacao_alt
+    litellm_params:
+      model: ollama_chat/llama3.2:3b   # RNF-10 (ADR-017): segundo provedor de custo zero, mesma máquina
+      api_base: http://localhost:11434
+      temperature: 0
+      seed: 42
+      num_ctx: 2048
+      num_predict: 60
+      num_thread: 8
 
 investigation:
   model_alias: investigacao
@@ -30,9 +39,11 @@ cache:
     referencia: "SPEC.md RF-04 (padrão 0,92)"
 
 selection:
-  min_score: 0.50               # RF-06: cosseno mínimo do trecho antes do RRF
+  min_score: 0.35               # RF-06: cosseno mínimo do trecho antes do RRF (ADR-016: alinhado a config/retrieval.yaml)
   aprovacao:
     por: marcosjcn94@gmail.com
-    em: 2026-09-15
-    situacao: provisorio
-    referencia: "T0.5 Ask First: valor provisório de selection.min_score (RF-06)"
+    em: 2026-09-18
+    situacao: definitivo
+    referencia: "ADR-016: corrigida divergência com config/retrieval.yaml (fonte real lida por retrieval/selection.py)"
+# RNF-10 (ADR-017): `investigacao_alt` em model_list acima já prova a troca de provedor/modelo só pelo YAML
+# (basta apontar `investigation.model_alias` para ele); nenhum campo novo de schema foi necessário.

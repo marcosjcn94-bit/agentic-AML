@@ -2,11 +2,11 @@
 
 | Campo | Valor |
 | :--- | :--- |
-| Versão | 1.0.0 |
+| Versão | 1.1.0 |
 | Status | Aprovado |
 | Origem | `INTENT.md` · `SPEC.md` 1.1.0 · `SOUL.md` 1.0.0 · `AGENTS.md` 1.0.0 · `PLAN.md` 1.0.0 (todos aprovados em 2026-09-15) |
-| Decisões vinculadas | `docs/ADR.md` — ADR-001 a ADR-013 |
-| Escopo desta versão | M0 e M1 (M2–M7 detalhados após o gate do M1) |
+| Decisões vinculadas | `docs/ADR.md` — ADR-001 a ADR-017 |
+| Escopo desta versão | M0 a M7. M2–M7 em formato reduzido (`tasks/M2-M7.md`, §3) por decisão do autor de 2026-09-18: execução autônoma, sem Ask First, um arquivo/uma tarefa por marco. |
 | Evidência reutilizada | `scripts/bench_ollama.py` · `reports/benchmark-ollama-2026-09-15-v2.md` |
 | Gate | Aprovado por: marcosjcn94@gmail.com — Data: 2026-09-15 |
 
@@ -90,6 +90,7 @@ Cada marco fica num arquivo próprio para manter os arquivos abaixo de 300 linha
 | :--- | :--- | :--- | :--- |
 | M0 | Fundação, contratos e dados sintéticos | T0.1 a T0.9 + gate de saída | [`tasks/M0.md`](tasks/M0.md) |
 | M1 | Esqueleto ponta a ponta (pré-condição: gate do M0) | T1.1 a T1.13 + gate de saída | [`tasks/M1.md`](tasks/M1.md) |
+| M2–M7 | Fechamento dos marcos restantes (formato reduzido, ver nota acima) | T2 a T7 | [`tasks/M2-M7.md`](tasks/M2-M7.md) |
 
 ---
 
@@ -121,22 +122,7 @@ Cada marco fica num arquivo próprio para manter os arquivos abaixo de 300 linha
 
 ---
 
-## 5. Marcos seguintes
-
-Detalhados após o gate do M1 em `tasks/M<n>.md`, com o mesmo formato, e incluídos na §3 em nova versão deste documento.
-
-| Marco | Objetivo (`PLAN.md` §2) | Depende de |
-| :--- | :--- | :--- |
-| M2 | Privacidade Zero-Trust | M1 |
-| M3 | Triagem determinística e recall crítico | M1 |
-| M4 | RAG normativo, Revisor e cache | M2, M3 |
-| M5 | Resiliência, auditoria e prazos | M4 |
-| M6 | Fluxo humano, UI e segurança | M5 |
-| M7 | Avaliação Go/No-Go | M6 |
-
----
-
-## 6. Governança deste documento
+## 5. Governança deste documento
 
 - **Precedência:** `SOUL.md` §5. Este documento não pode afrouxar nenhum limite do `SPEC.md`, `SOUL.md`, `AGENTS.md` ou `PLAN.md`; em conflito, vale a regra mais restritiva e o conflito é registrado em ADR.
 - **Abrangência:** esta governança vale para o índice e para todos os arquivos `tasks/M<n>.md`, que compartilham a versão deste documento e ficam abaixo de 300 linhas (`CLAUDE.md`).
@@ -145,4 +131,4 @@ Detalhados após o gate do M1 em `tasks/M<n>.md`, com o mesmo formato, e incluí
 - **Revisão:** reler este documento sempre que `SPEC.md`, `SOUL.md`, `AGENTS.md` ou `PLAN.md` mudarem de versão.
 
 ## Gate
-Status: aprovado pelo autor em 2026-09-15. A execução começa pela T0.1; M2–M7 entram em nova versão após o gate do M1.
+Status: aprovado pelo autor em 2026-09-15 (M0/M1) e em 2026-09-18 (M2–M7, formato reduzido e execução autônoma).
