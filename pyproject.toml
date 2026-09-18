@@ -29,7 +29,9 @@ dependencies = [
     "pypdf>=5.0",
     "rank-bm25>=0.2",
     # Cifra do Vault
-    "cryptography>=43",
+    # Presidio-anonymizer 2.2.364 ainda restringe cryptography a <49;
+    # manter a faixa compatível evita quebrar pip check (RNF-07).
+    "cryptography>=48.0.1,<49",
     # API, UI e templates
     "fastapi>=0.115",
     "pydantic>=2.8",
@@ -54,6 +56,7 @@ dev = [
     # que lê credenciais das env vars LANGFUSE_SECRET_KEY/LANGFUSE_HOST — sem exigir langchain<1.
     "langfuse>=4,<5",
     "langchain>=0.3",
+    "langchain-text-splitters>=1.1.2",
 ]
 # semgrep sem suporte nativo estável no Windows: instalar via WSL/Docker (RNF-07, M6).
 security = [

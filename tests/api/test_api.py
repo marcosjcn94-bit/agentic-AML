@@ -105,9 +105,18 @@ class TestPostAlertsAceite:
         body = resp.json()
         assert body["state"] == "DRAFT_READY"
 
-    def test_alert_id_repetido_e_409(self, client):
+    def test_payload_idempotente_retorna_200_sem_reprocessar(self, client):
+        payload = _alert_payload()
+        primeira = client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        resp = client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        assert primeira.status_code == 202
+        assert resp.status_code == 200
+        assert resp.json() == primeira.json()
+
+    def test_alert_id_com_payload_diferente_e_409(self, client):
         payload = _alert_payload()
         client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        payload["source_rule_id"] = "LEG-TEST-02"
         resp = client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
         assert resp.status_code == 409
 
@@ -229,6 +238,10 @@ class TestDecisaoDoComplianceOfficer:
     def test_aceite_muda_estado_para_approved(self, client):
         payload = _alert_payload()
         client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        submitted = client.post(
+            f"/dossiers/{payload['alert_id']}/submit", headers=_bearer("API_TOKEN_ANALISTA")
+        )
+        assert submitted.status_code == 200
         resp = client.post(
             f"/alerts/{payload['alert_id']}/decision",
             json={"decision": "ARQUIVAR", "justification": "Sem indício de lavagem após revisão manual completa."},
@@ -258,6 +271,10 @@ class TestDecisaoDoComplianceOfficer:
     def test_decisao_repetida_e_409_sem_duplicar_evento(self, client):
         payload = _alert_payload()
         client.post("/alerts", json=payload, headers=_bearer("API_TOKEN_SISTEMA"))
+        submitted = client.post(
+            f"/dossiers/{payload['alert_id']}/submit", headers=_bearer("API_TOKEN_ANALISTA")
+        )
+        assert submitted.status_code == 200
         body = {"decision": "ARQUIVAR", "justification": "Sem indício de lavagem após revisão manual completa."}
         primeira = client.post(
             f"/alerts/{payload['alert_id']}/decision", json=body, headers=_bearer("API_TOKEN_COMPLIANCE_OFFICER")

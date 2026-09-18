@@ -24,6 +24,7 @@ Este documento centraliza todas as decisões técnicas, escolhas de design e tra
 | ADR-016 | [Modelo de Embedding Definitivo do M4](#adr-016-modelo-de-embedding-definitivo-do-m4) | 2026-09-18 | Aceito |
 | ADR-017 | [Segundo Provedor de Inferência (RNF-10)](#adr-017-segundo-provedor-de-inferência-rnf-10) | 2026-09-18 | Aceito |
 | ADR-018 | [Observabilidade Dev-Only via Langfuse Self-Hosted](#adr-018-observabilidade-dev-only-via-langfuse-self-hosted) | 2026-09-18 | Aceito |
+| ADR-019 | [Remediação do baseline de segurança e do No-Go](#adr-019-remediação-do-baseline-de-segurança-e-do-no-go) | 2026-09-18 | Aceito |
 
 ---
 
@@ -394,6 +395,19 @@ Adotada a **Opção 2**: `config/litellm.yaml` ganha um segundo `model_name` (`i
 * 🔴 **Perdas/Riscos (Contras):** não prova portabilidade para uma **cloud** real (autenticação, latência de rede, formatos de resposta distintos) — se um avaliador exigir essa prova especificamente, este ADR precisa ser revisto com um provedor pago.
 
 ---
+
+### ADR-019: Remediação do baseline de segurança e do No-Go
+- **Data:** 2026-09-18
+- **Status:** Aceito
+
+#### Contexto e Problema
+O baseline auditado em 2026-09-18 encontrou o `B701` no renderer Jinja, vulnerabilidades conhecidas em dependências e um No-Go funcional por recall crítico insuficiente. A remediação não pode usar exemplos individuais do golden set para calibrar regras.
+
+#### Decisão
+Registrar a remediação como primeira etapa do plano: escapar valores renderizados, atualizar `langchain-text-splitters` para `1.1.2` e manter `cryptography` na faixa compatível com `presidio-anonymizer` (`>=48.0.1,<49`). As vulnerabilidades restantes de `cryptography` e ChromaDB serão reportadas com risco residual enquanto o Presidio não publicar compatibilidade com a versão corrigida. Detectores e mapeamento normativo só serão ampliados nas tarefas posteriores usando o conjunto de desenvolvimento; uma nova rodada golden ocorrerá apenas na validação final.
+
+#### Consequências
+O renderer não produz HTML ativo a partir de valores externos. O ambiente permanece consistente (`pip check`), mas o gate de dependências continua explicitamente pendente para os avisos sem correção compatível; o estado global segue No-Go até a avaliação final.
 
 ### ADR-018: Observabilidade Dev-Only via Langfuse Self-Hosted
 - **Data:** 2026-09-18

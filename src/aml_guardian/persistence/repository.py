@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
 from uuid import UUID
 
-from aml_guardian.contracts.ingestion import AlertRecord
+from aml_guardian.contracts.ingestion import AlertRecord, AlertState
 from aml_guardian.persistence.db import get_connection, get_db_path
 
 
@@ -54,3 +55,61 @@ def get_alert_record(alert_id: UUID, db_path: Path | None = None) -> AlertRecord
     if row is None:
         return None
     return AlertRecord.model_validate(dict(row))
+
+
+def save_ingestion_hash(alert_id: UUID, payload_sha256: str, db_path: Path | None = None) -> None:
+    """Persiste somente o hash do payload canônico recebido (RF-01)."""
+    conn = get_connection(db_path or get_db_path())
+    try:
+        conn.execute(
+            "INSERT INTO alert_ingestions (alert_id, payload_sha256) VALUES (?, ?)",
+            (str(alert_id), payload_sha256),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def get_ingestion_hash(alert_id: UUID, db_path: Path | None = None) -> str | None:
+    """Consulta o hash do payload original sem carregar ou persistir o payload."""
+    conn = get_connection(db_path or get_db_path())
+    try:
+        row = conn.execute(
+            "SELECT payload_sha256 FROM alert_ingestions WHERE alert_id = ?", (str(alert_id),)
+        ).fetchone()
+    finally:
+        conn.close()
+    return None if row is None else str(row["payload_sha256"])
+
+
+def list_alert_records(
+    state: AlertState | None = None,
+    em_risco: bool | None = None,
+    reference_date: date | None = None,
+    db_path: Path | None = None,
+) -> list[AlertRecord]:
+    """Lista DT-05 com filtros parametrizados e ordenação por prazo (API-02)."""
+    conn = get_connection(db_path or get_db_path())
+    try:
+        clauses: list[str] = []
+        params: list[object] = []
+        if state is not None:
+            clauses.append("state = ?")
+            params.append(state.value)
+        if em_risco is True:
+            clauses.append("state NOT IN (?, ?) AND prazo_interno IS NOT NULL AND date(prazo_interno) <= date(?)")
+            params.extend(
+                [AlertState.APPROVED.value, AlertState.NEEDS_HUMAN.value, (reference_date or date.today()).isoformat()]
+            )
+        elif em_risco is False:
+            clauses.append("(state IN (?, ?) OR prazo_interno IS NULL OR date(prazo_interno) > date(?))")
+            params.extend(
+                [AlertState.APPROVED.value, AlertState.NEEDS_HUMAN.value, (reference_date or date.today()).isoformat()]
+            )
+        where = f" WHERE {' AND '.join(clauses)}" if clauses else ""
+        rows = conn.execute(
+            f"SELECT * FROM alert_records{where} ORDER BY prazo_interno IS NULL, prazo_interno, selected_at", params
+        ).fetchall()
+    finally:
+        conn.close()
+    return [AlertRecord.model_validate(dict(row)) for row in rows]

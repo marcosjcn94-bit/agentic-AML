@@ -19,6 +19,7 @@ from aml_guardian.contracts.pipeline import (
 )
 from aml_guardian.deadlines.calculator import calculate_deadlines
 from aml_guardian.dossier.assembler import assemble_from_investigation, assemble_from_triage
+from aml_guardian.dossier.renderer import render_dossier
 
 ALERT_ID = UUID("00000000-0000-0000-0000-000000000001")
 DOSSIER_ID = UUID("00000000-0000-0000-0000-0000000000d1")
@@ -223,3 +224,31 @@ class TestCampoObrigatorioAusente:
         assert resultado.state == AlertState.NEEDS_HUMAN
         assert resultado.dossier is None
         assert resultado.failure_reason is not None
+
+
+class TestRenderizacaoSegura:
+    def test_conteudo_interpretavel_como_html_e_escapado(self):
+        review = ReviewVerdict(
+            verified_citations=[_citation().model_copy(update={"quoted_text": "<script>alert(1)</script>"})],
+            rejected_citations=[],
+            grounding_raw_ratio=1.0,
+        )
+        resultado = assemble_from_investigation(
+            ALERT_ID,
+            _investigation(Recommendation.COMUNICAR),
+            _features(),
+            review,
+            cc4001_incisos=["I"],
+            deadlines=DEADLINES,
+            rules_version=1,
+            corpus_version="corpus-v1",
+            mapping_version=2,
+            prompt_version="prompt-v1",
+            model_id="qwen2.5:1.5b",
+            dossier_id=DOSSIER_ID,
+        )
+
+        assert resultado.dossier is not None
+        rendered = render_dossier(resultado.dossier)
+        assert "&lt;script&gt;alert(1)&lt;/script&gt;" in rendered
+        assert "## Recomenda\u00e7\u00e3o (gerado por IA)" in rendered

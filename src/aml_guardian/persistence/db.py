@@ -75,6 +75,13 @@ def init_db(db_path: Path | None = None) -> None:
             )
         """)
 
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS alert_ingestions (
+                alert_id TEXT PRIMARY KEY,
+                payload_sha256 TEXT NOT NULL
+            )
+        """)
+
         # Create trigger to prevent UPDATE on audit_events
         cursor.execute("""
             CREATE TRIGGER IF NOT EXISTS prevent_audit_update

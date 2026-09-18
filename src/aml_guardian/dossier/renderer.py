@@ -17,7 +17,7 @@ TEMPLATES_DIR = Path(__file__).parent / "templates"
 
 _ENV = Environment(  # noqa: S701 - saída é markdown/texto, não HTML; conteúdo vem só do DT-11 já validado
     loader=FileSystemLoader(TEMPLATES_DIR),
-    autoescape=False,
+    autoescape=True,
     trim_blocks=True,
     lstrip_blocks=True,
 )

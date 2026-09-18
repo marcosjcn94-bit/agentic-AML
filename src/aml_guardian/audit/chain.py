@@ -187,6 +187,10 @@ class AuditChain:
 
     def verify_chain(self) -> bool:
         """Verify the integrity of the entire hash chain."""
+        return self.verify_details()["valid"]
+
+    def verify_details(self) -> dict[str, bool | int | None]:
+        """Recalcula a cadeia e informa o primeiro seq inválido (API-08)."""
         conn = get_connection(self.db_path)
         try:
             cursor = conn.cursor()
@@ -194,16 +198,17 @@ class AuditChain:
             rows = cursor.fetchall()
 
             if not rows:
-                return True
+                return {"valid": True, "events_checked": 0, "first_invalid_seq": None}
 
+            previous_hash = None
             for row in rows:
                 seq = row[0]
                 prev_hash = row[17]
                 stored_hash = row[18]
 
                 # First event must have prev_hash = None
-                if seq == 1 and prev_hash is not None:
-                    return False
+                if (seq == 1 and prev_hash is not None) or (seq != 1 and prev_hash != previous_hash):
+                    return {"valid": False, "events_checked": seq, "first_invalid_seq": seq}
 
                 # Recalculate hash
                 event_data = {
@@ -230,9 +235,10 @@ class AuditChain:
                 calculated_hash = hashlib.sha256(json_str.encode()).hexdigest()
 
                 if calculated_hash != stored_hash:
-                    return False
+                    return {"valid": False, "events_checked": seq, "first_invalid_seq": seq}
+                previous_hash = stored_hash
 
-            return True
+            return {"valid": True, "events_checked": len(rows), "first_invalid_seq": None}
         finally:
             conn.close()
 
